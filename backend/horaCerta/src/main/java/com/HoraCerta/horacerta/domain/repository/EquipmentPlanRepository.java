@@ -18,4 +18,6 @@ public interface EquipmentPlanRepository extends JpaRepository<EquipmentPlan, Lo
     boolean existsByEquipment_Id(Long equipmentId);
 
     boolean existsByMaintenancePlan_Id(Long maintenancePlanId);
+
+    boolean existsByEquipment_IdAndMaintenancePlan_IdAndActiveTrue(Long equipmentId, Long maintenancePlanId);
 }

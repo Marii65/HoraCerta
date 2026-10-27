@@ -1,4 +1,4 @@
-package com.HoraCerta.horacerta.adapter.dto.request;
+package com.HoraCerta.horacerta.adapter.dto.request.horometerreading;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
