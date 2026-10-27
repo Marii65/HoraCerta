@@ -1,9 +1,6 @@
 package com.HoraCerta.horacerta.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -30,12 +27,10 @@ public class EquipmentPlan {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotNull(message = "Equipment is mandatory")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipment_id", nullable = false)
     private Equipment equipment;
 
-    @NotNull(message = "Maintenance plan is mandatory")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "maintenance_plan_id", nullable = false)
     private MaintenancePlan maintenancePlan;

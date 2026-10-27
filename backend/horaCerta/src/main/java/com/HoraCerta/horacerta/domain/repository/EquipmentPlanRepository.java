@@ -9,4 +9,9 @@ public interface EquipmentPlanRepository extends JpaRepository<EquipmentPlan, Lo
     List<EquipmentPlan> findByEquipmentId(Long equipmentId);
 
     List<EquipmentPlan> findByMaintenancePlanId(Long maintenancePlanId);
+
+    boolean existsByEquipmentIdAndMaintenancePlanId(
+            Long equipmentId,
+            Long maintenancePlanId
+    );
 }
