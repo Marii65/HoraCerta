@@ -125,7 +125,7 @@ public class EquipmentService {
     public void delete(Long id) {
         Equipment equipment = getEquipmentOrThrow(id);
 
-        boolean hasReadings = horometerReadingRepository.existsByEquipmentId(id);
+        boolean hasReadings = horometerReadingRepository.existsByEquipment_Id(id);
         boolean hasPlans = equipmentPlanRepository.existsByEquipment_Id(id);
         boolean hasWorkOrders = workOrderRepository.existsByEquipmentPlan_Equipment_Id(id);
 
