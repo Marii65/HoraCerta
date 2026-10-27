@@ -9,7 +9,7 @@ import java.util.List;
 public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     List<WorkOrder> findByStatus(WorkOrderStatus status);
 
-    List<WorkOrder> findByEquipmentPlanId(Long equipmentPlanId);
+    List<WorkOrder> findByEquipmentPlan_Id(Long equipmentPlanId);
 
-    boolean existsByEquipmentId(Long equipmentId);
+    boolean existsByEquipmentPlan_Equipment_Id(Long equipmentId);
 }

@@ -6,6 +6,7 @@ import com.HoraCerta.horacerta.adapter.dto.response.EquipmentResponseDTO;
 import com.HoraCerta.horacerta.domain.entity.Equipment;
 import com.HoraCerta.horacerta.domain.enums.equipment.EquipmentStatus;
 import com.HoraCerta.horacerta.domain.exception.DuplicateEquipmentCodeException;
+import com.HoraCerta.horacerta.domain.exception.EquipmentHasHistoryException;
 import com.HoraCerta.horacerta.domain.exception.ResourceNotFoundException;
 import com.HoraCerta.horacerta.domain.repository.*;
 import org.springframework.stereotype.Service;
@@ -45,9 +46,11 @@ public class EquipmentService {
         Equipment equipment = new Equipment();
         equipment.setCode(code);
         equipment.setName(dto.name().trim());
-        equipment.setCategory(dto.category() != null ? dto.category().trim() : null);
-        equipment.setModel(dto.model() != null ? dto.model().trim() : null);
-        equipment.setSerialNumber(dto.serialNumber() != null ? dto.serialNumber().trim() : null);
+        equipment.setCategory(normalizeOptionalText(dto.category()));
+        equipment.setModel(normalizeOptionalText(dto.model()));
+        equipment.setSerialNumber(
+                normalizeOptionalText(dto.serialNumber())
+        );
         equipment.setCurrentHorometer(BigDecimal.ZERO);
         equipment.setStatus(EquipmentStatus.ACTIVE);
 
@@ -102,9 +105,11 @@ public class EquipmentService {
 
         equipment.setCode(code);
         equipment.setName(dto.name().trim());
-        equipment.setCategory(dto.category() != null ? dto.category().trim() : null);
-        equipment.setModel(dto.model() != null ? dto.model().trim() : null);
-        equipment.setSerialNumber(dto.serialNumber() != null ? dto.serialNumber().trim() : null);
+        equipment.setCategory(normalizeOptionalText(dto.category()));
+        equipment.setModel(normalizeOptionalText(dto.model()));
+        equipment.setSerialNumber(
+                normalizeOptionalText(dto.serialNumber())
+        );
 
         if (dto.status() != null) {
             equipment.setStatus(dto.status());
@@ -122,10 +127,10 @@ public class EquipmentService {
 
         boolean hasReadings = horometerReadingRepository.existsByEquipmentId(id);
         boolean hasPlans = equipmentPlanRepository.existsByEquipmentId(id);
-        boolean hasWorkOrders = workOrderRepository.existsByEquipmentId(id);
+        boolean hasWorkOrders = workOrderRepository.existsByEquipmentPlan_Equipment_Id(id);
 
         if (hasReadings || hasPlans || hasWorkOrders) {
-            throw new IllegalStateException(
+            throw new EquipmentHasHistoryException(
                     "Cannot delete equipment because it has associated history or active links."
             );
         }
@@ -158,5 +163,13 @@ public class EquipmentService {
 
     private String normalizeCode(String code) {
         return code.trim().toUpperCase(Locale.ROOT);
+    }
+
+    private String normalizeOptionalText(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        return value.trim();
     }
 }
