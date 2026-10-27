@@ -1,4 +1,4 @@
-package com.HoraCerta.horacerta.adapter.dto.request;
+package com.HoraCerta.horacerta.adapter.dto.request.maintenanceplanitem;
 
 import jakarta.validation.constraints.*;
 
