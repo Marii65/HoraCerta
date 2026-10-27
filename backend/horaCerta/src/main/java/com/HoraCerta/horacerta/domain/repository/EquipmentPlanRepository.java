@@ -6,14 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EquipmentPlanRepository extends JpaRepository<EquipmentPlan, Long> {
-    List<EquipmentPlan> findByEquipmentId(Long equipmentId);
+    List<EquipmentPlan> findByEquipment_Id(Long equipmentId);
 
-    List<EquipmentPlan> findByMaintenancePlanId(Long maintenancePlanId);
+    List<EquipmentPlan> findByMaintenancePlan_Id(Long maintenancePlanId);
 
-    boolean existsByEquipmentIdAndMaintenancePlanId(
+    boolean existsByEquipment_IdAndMaintenancePlan_Id(
             Long equipmentId,
             Long maintenancePlanId
     );
 
-    boolean existsByEquipmentId(Long equipmentId);
+    boolean existsByEquipment_Id(Long equipmentId);
+
+    boolean existsByMaintenancePlan_Id(Long maintenancePlanId);
 }

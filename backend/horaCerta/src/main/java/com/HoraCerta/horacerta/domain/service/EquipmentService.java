@@ -126,7 +126,7 @@ public class EquipmentService {
         Equipment equipment = getEquipmentOrThrow(id);
 
         boolean hasReadings = horometerReadingRepository.existsByEquipmentId(id);
-        boolean hasPlans = equipmentPlanRepository.existsByEquipmentId(id);
+        boolean hasPlans = equipmentPlanRepository.existsByEquipment_Id(id);
         boolean hasWorkOrders = workOrderRepository.existsByEquipmentPlan_Equipment_Id(id);
 
         if (hasReadings || hasPlans || hasWorkOrders) {
