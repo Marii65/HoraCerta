@@ -9,4 +9,6 @@ public interface HorometerReadingRepository extends JpaRepository<HorometerReadi
 
     List<HorometerReading> findByEquipment_IdOrderByReadAtDesc(Long equipmentId);
 
+    boolean existsByEquipmentId(Long equipmentId);
+
 }

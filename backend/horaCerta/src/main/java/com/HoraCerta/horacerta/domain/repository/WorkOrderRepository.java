@@ -10,4 +10,6 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     List<WorkOrder> findByStatus(WorkOrderStatus status);
 
     List<WorkOrder> findByEquipmentPlanId(Long equipmentPlanId);
+
+    boolean existsByEquipmentId(Long equipmentId);
 }
