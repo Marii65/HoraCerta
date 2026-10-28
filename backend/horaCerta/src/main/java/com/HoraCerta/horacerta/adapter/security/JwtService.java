@@ -28,6 +28,12 @@ public class JwtService {
             );
         }
 
+        if (expirationMs <= 0) {
+            throw new IllegalArgumentException(
+                    "JWT expiration must be greater than zero."
+            );
+        }
+
         this.signinKey = Keys.hmacShaKeyFor(keyBytes);
         this.expirationMs = expirationMs;
 

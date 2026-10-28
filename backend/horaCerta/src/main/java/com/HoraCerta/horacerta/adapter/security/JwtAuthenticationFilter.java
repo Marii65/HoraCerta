@@ -56,11 +56,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .orElse(null);
 
             if (user == null || !Boolean.TRUE.equals(user.getActive())){
+                SecurityContextHolder.clearContext();
                 filterChain.doFilter(request, response);
                 return;
             }
 
             if (!jwtService.isTokenValid(token, user.getEmail())){
+                SecurityContextHolder.clearContext();
                 filterChain.doFilter(request, response);
                 return;
             }
