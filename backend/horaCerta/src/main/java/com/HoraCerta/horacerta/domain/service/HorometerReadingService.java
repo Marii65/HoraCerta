@@ -93,10 +93,14 @@ public class HorometerReadingService {
             throw new ResourceNotFoundException("Equipment not found with id: " + equipmentId);
         }
 
-        if (startDate == null || endDate == null
-                || startDate.isAfter(endDate)) {
+        if (startDate == null || endDate == null) {
             throw new IllegalArgumentException(
-                    "The start date must be provided and cannot be after the end date."
+                    "Both start date and end date are required."
+            );
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException(
+                    "The start date cannot be after the end date."
             );
         }
 
