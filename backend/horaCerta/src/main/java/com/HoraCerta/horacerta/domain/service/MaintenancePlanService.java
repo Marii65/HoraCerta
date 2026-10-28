@@ -95,7 +95,8 @@ public class MaintenancePlanService {
 
     public void validatePlanIsActive(Long id) {
         MaintenancePlan plan = getMaintenancePlanOrThrow(id);
-        if (Boolean.FALSE.equals(plan.getActive())) {
+
+        if (Boolean.TRUE.equals(plan.getActive())) {
             throw new MaintenancePlanHasHistoryException
                     ("Cannot link equipments to an inactive maintenance plan.");
         }
