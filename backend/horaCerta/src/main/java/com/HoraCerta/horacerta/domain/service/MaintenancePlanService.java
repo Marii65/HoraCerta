@@ -69,7 +69,6 @@ public class MaintenancePlanService {
     public void delete (Long id){
         MaintenancePlan plan = getMaintenancePlanOrThrow(id);
 
-        // Regra de negócio: Impedir exclusão se houver vínculos ativos ou ordens de serviço no histórico
         boolean hasLinkedEquipments = equipmentPlanRepository.existsByMaintenancePlan_Id(id);
         boolean hasWorkOrders = workOrderRepository.existsByEquipmentPlan_MaintenancePlan_Id(id);
 
