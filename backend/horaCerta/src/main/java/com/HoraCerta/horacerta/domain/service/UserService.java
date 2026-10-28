@@ -98,7 +98,7 @@ public class UserService {
         user.setRole(dto.role());
 
         User updatedUser = userRepository.save(user);
-        
+
         return toResponseDTO(updatedUser);
     }
 

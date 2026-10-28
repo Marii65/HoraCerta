@@ -30,7 +30,9 @@ public class MaintenancePlanItemService {
     }
 
     @Transactional
-    public MaintenancePlanItemResponseDTO register(MaintenancePlanItemRequestDTO dto) {
+    public MaintenancePlanItemResponseDTO register(
+            Long planId,
+            MaintenancePlanItemRequestDTO dto) {
 
         MaintenancePlan plan = planRepository.findById(dto.maintenancePlanId())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -42,7 +44,9 @@ public class MaintenancePlanItemService {
         }
 
         if (dto.alertMarginHours().compareTo(dto.intervalHours()) >= 0) {
-            throw new IllegalArgumentException("Alert margin hours must be less than the interval hours.");
+            throw new IllegalArgumentException(
+                    "Alert margin hours must be less than the interval hours."
+            );
         }
 
         MaintenancePlanItem item = new MaintenancePlanItem();
