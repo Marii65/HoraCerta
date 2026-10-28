@@ -78,7 +78,7 @@ public class EquipmentPlanService {
             }
             equipmentPlan.setActive(true);
 
-            equipmentPlan.setStartHourMeter(startHourMeter);
+            equipmentPlan.setStartHourMeter(equipment.getCurrentHorometer());
 
         } else {
             equipmentPlan = new EquipmentPlan();
