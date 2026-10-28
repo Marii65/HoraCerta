@@ -55,7 +55,7 @@ public class AuthService {
                 user.getPasswordHash()
         )) {
             throw new BadCredentialsException(
-                    "Invalid password");
+                    "Invalid email or password");
         }
 
         if (!Boolean.TRUE.equals(user.getActive())){
