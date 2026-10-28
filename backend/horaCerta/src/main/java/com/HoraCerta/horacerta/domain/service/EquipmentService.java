@@ -8,7 +8,10 @@ import com.HoraCerta.horacerta.domain.enums.EquipmentStatus;
 import com.HoraCerta.horacerta.domain.exception.DuplicateEquipmentCodeException;
 import com.HoraCerta.horacerta.domain.exception.EquipmentHasHistoryException;
 import com.HoraCerta.horacerta.domain.exception.ResourceNotFoundException;
-import com.HoraCerta.horacerta.domain.repository.*;
+import com.HoraCerta.horacerta.domain.repository.EquipmentRepository;
+import com.HoraCerta.horacerta.domain.repository.EquipmentPlanRepository;
+import com.HoraCerta.horacerta.domain.repository.HorometerReadingRepository;
+import com.HoraCerta.horacerta.domain.repository.WorkOrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,11 +81,11 @@ public class EquipmentService {
         List<Equipment> equipments;
 
         if (status != null && category != null && !category.isBlank()) {
-            equipments = equipmentRepository.findByStatusAndCategory(status, category.trim());
+            equipments = equipmentRepository.findByStatusAndCategoryIgnoreCase(status, category.trim());
         } else if (status != null) {
             equipments = equipmentRepository.findByStatus(status);
         } else if (category != null && !category.isBlank()) {
-            equipments = equipmentRepository.findByCategory(category.trim());
+            equipments = equipmentRepository.findByCategoryIgnoreCase(category.trim());
         } else {
             equipments = equipmentRepository.findAll();
         }

@@ -23,9 +23,9 @@ public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
 
     List<Equipment> findByStatus(EquipmentStatus status);
 
-    List<Equipment> findByCategory(String category);
+    List<Equipment> findByCategoryIgnoreCase(String category);
 
-    List<Equipment> findByStatusAndCategory(EquipmentStatus status, String category);
+    List<Equipment> findByStatusAndCategoryIgnoreCase(EquipmentStatus status, String category);
 
     //fará o update somente se o valor atual armazenado no banco for menor do que a nova leitura.
     @Modifying

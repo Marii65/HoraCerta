@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/work-orders")
 public class WorkOrderController {
     private final WorkOrderService workOrderService;
-    
+
     public WorkOrderController(WorkOrderService workOrderService) {
         this.workOrderService = workOrderService;
     }

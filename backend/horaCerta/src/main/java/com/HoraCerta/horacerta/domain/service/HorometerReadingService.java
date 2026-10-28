@@ -61,8 +61,6 @@ public class HorometerReadingService {
                 dto.readingValue()
         );
 
-        equipment.setCurrentHorometer(dto.readingValue());
-
         HorometerReading reading = new HorometerReading();
         reading.setEquipment(equipment);
         reading.setUser(currentUser);
