@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             var authorities = List.of(
                     new SimpleGrantedAuthority(
-                            "ROLE_USER" + user.getRole().name()
+                            "ROLE_" + user.getRole().name()
                     )
             );
 
@@ -89,5 +89,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/api/auth/");
     }
 }
