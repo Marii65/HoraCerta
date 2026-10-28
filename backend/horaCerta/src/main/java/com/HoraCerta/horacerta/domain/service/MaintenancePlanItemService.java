@@ -34,7 +34,7 @@ public class MaintenancePlanItemService {
             Long planId,
             MaintenancePlanItemRequestDTO dto) {
 
-        MaintenancePlan plan = planRepository.findById(dto.maintenancePlanId())
+        MaintenancePlan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Maintenance plan not found with id: " + dto.maintenancePlanId()
                 ));
