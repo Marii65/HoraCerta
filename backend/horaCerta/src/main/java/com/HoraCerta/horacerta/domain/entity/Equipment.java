@@ -1,6 +1,6 @@
 package com.HoraCerta.horacerta.domain.entity;
 
-import com.HoraCerta.horacerta.domain.enums.equipment.EquipmentStatus;
+import com.HoraCerta.horacerta.domain.enums.EquipmentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,6 +1,6 @@
 package com.HoraCerta.horacerta.adapter.dto.request.equipment;
 
-import com.HoraCerta.horacerta.domain.enums.equipment.EquipmentStatus;
+import com.HoraCerta.horacerta.domain.enums.EquipmentStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 

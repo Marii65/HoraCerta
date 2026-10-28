@@ -1,7 +1,7 @@
 package com.HoraCerta.horacerta.adapter.dto.response;
 
-import com.HoraCerta.horacerta.domain.enums.workorder.MaintenanceType;
-import com.HoraCerta.horacerta.domain.enums.workorder.WorkOrderStatus;
+import com.HoraCerta.horacerta.domain.enums.MaintenanceType;
+import com.HoraCerta.horacerta.domain.enums.WorkOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

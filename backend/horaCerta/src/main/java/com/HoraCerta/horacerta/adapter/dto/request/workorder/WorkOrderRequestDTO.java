@@ -1,7 +1,8 @@
 package com.HoraCerta.horacerta.adapter.dto.request.workorder;
 
-import com.HoraCerta.horacerta.domain.enums.workorder.MaintenanceType;
+import com.HoraCerta.horacerta.domain.enums.MaintenanceType;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -9,9 +10,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record WorkOrderRequestDTO(
+        @Positive(message = "Equipment Plan ID must be positive")
         @NotNull(message = "Equipment Plan ID is mandatory")
         Long equipmentPlanId,
 
+        @Positive(message = "Maintenance Plan Item ID must be positive")
         Long maintenancePlanItemId,
 
         @NotNull(message = "Maintenance type is mandatory")
@@ -19,7 +22,6 @@ public record WorkOrderRequestDTO(
 
         @PositiveOrZero(message = "Scheduled horometer must be positive or zero")
         BigDecimal scheduledHorometer,
-
 
         LocalDate scheduledDate,
 

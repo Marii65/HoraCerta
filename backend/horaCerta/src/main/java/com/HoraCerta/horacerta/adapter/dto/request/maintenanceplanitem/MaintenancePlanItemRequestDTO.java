@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 public record MaintenancePlanItemRequestDTO(
 
+        @Positive(message = "Maintenance Plan ID must be positive")
         @NotNull(message = "Maintenance ID plan is mandatory")
         Long maintenancePlanId,
 

@@ -1,7 +1,7 @@
 package com.HoraCerta.horacerta.domain.entity;
 
-import com.HoraCerta.horacerta.domain.enums.workorder.MaintenanceType;
-import com.HoraCerta.horacerta.domain.enums.workorder.WorkOrderStatus;
+import com.HoraCerta.horacerta.domain.enums.MaintenanceType;
+import com.HoraCerta.horacerta.domain.enums.WorkOrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

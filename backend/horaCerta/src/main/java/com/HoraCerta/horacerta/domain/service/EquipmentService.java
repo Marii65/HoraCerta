@@ -4,7 +4,7 @@ import com.HoraCerta.horacerta.adapter.dto.request.equipment.EquipmentRequestDTO
 import com.HoraCerta.horacerta.adapter.dto.request.equipment.EquipmentUpdateRequestDTO;
 import com.HoraCerta.horacerta.adapter.dto.response.EquipmentResponseDTO;
 import com.HoraCerta.horacerta.domain.entity.Equipment;
-import com.HoraCerta.horacerta.domain.enums.equipment.EquipmentStatus;
+import com.HoraCerta.horacerta.domain.enums.EquipmentStatus;
 import com.HoraCerta.horacerta.domain.exception.DuplicateEquipmentCodeException;
 import com.HoraCerta.horacerta.domain.exception.EquipmentHasHistoryException;
 import com.HoraCerta.horacerta.domain.exception.ResourceNotFoundException;
@@ -136,6 +136,36 @@ public class EquipmentService {
         }
 
         equipmentRepository.delete(equipment);
+    }
+
+    @Transactional
+    public void updateHorometer(Equipment equipment, BigDecimal newHorometer) {
+        if (newHorometer == null || newHorometer.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException(
+                    "Horometer cannot be null or negative."
+            );
+        }
+
+        BigDecimal currentHorometer = equipment.getCurrentHorometer();
+
+        if (currentHorometer == null) {
+            throw new IllegalStateException(
+                    "Equipment current horometer is not initialized."
+            );
+        }
+
+        int rowsUpdated = equipmentRepository.updateHorometerIfGreater(
+                equipment.getId(),
+                newHorometer
+        );
+
+        if (rowsUpdated == 0) {
+            throw new IllegalStateException(
+                    "The equipment horometer was updated concurrently. Please retry."
+            );
+        }
+
+        equipment.setCurrentHorometer(newHorometer);
     }
 
     private EquipmentResponseDTO toResponseDTO(Equipment equipment) {

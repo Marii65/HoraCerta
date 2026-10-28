@@ -1,4 +1,4 @@
-package com.HoraCerta.horacerta.domain.enums.workorder;
+package com.HoraCerta.horacerta.domain.enums;
 
 public enum WorkOrderStatus {
     SCHEDULED,

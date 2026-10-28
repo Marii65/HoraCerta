@@ -1,6 +1,6 @@
 package com.HoraCerta.horacerta.adapter.dto.response;
 
-import com.HoraCerta.horacerta.domain.enums.equipment.EquipmentStatus;
+import com.HoraCerta.horacerta.domain.enums.EquipmentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

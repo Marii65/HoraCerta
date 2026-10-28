@@ -1,4 +1,4 @@
-package com.HoraCerta.horacerta.domain.enums.equipment;
+package com.HoraCerta.horacerta.domain.enums;
 
 public enum EquipmentStatus {
     ACTIVE,

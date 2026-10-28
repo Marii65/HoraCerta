@@ -1,7 +1,7 @@
 package com.HoraCerta.horacerta.domain.repository;
 
 import com.HoraCerta.horacerta.domain.entity.Equipment;
-import com.HoraCerta.horacerta.domain.enums.equipment.EquipmentStatus;
+import com.HoraCerta.horacerta.domain.enums.EquipmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

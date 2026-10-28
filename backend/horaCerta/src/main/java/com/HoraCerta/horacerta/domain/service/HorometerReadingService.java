@@ -20,13 +20,16 @@ public class HorometerReadingService {
     private final HorometerReadingRepository readingRepository;
     private final EquipmentRepository equipmentRepository;
     private final SecurityContextService securityContextService;
+    private final EquipmentService equipmentService;
 
     public HorometerReadingService(HorometerReadingRepository readingRepository,
                                    EquipmentRepository equipmentRepository,
-                                   SecurityContextService securityContextService) {
+                                   SecurityContextService securityContextService,
+                                   EquipmentService equipmentService) {
         this.readingRepository = readingRepository;
         this.equipmentRepository = equipmentRepository;
         this.securityContextService = securityContextService;
+        this.equipmentService = equipmentService;
     }
 
     @Transactional
@@ -53,14 +56,10 @@ public class HorometerReadingService {
 
         User currentUser = securityContextService.getAuthenticatedUser();
 
-        int rowsUpdated = equipmentRepository.updateHorometerIfGreater(dto.equipmentId(), dto.readingValue());
-
-        if (rowsUpdated == 0) {
-            throw new IllegalStateException(
-                    "Concurrent update detected or reading value is lower "
-                            + "than the latest equipment horometer."
-            );
-        }
+        equipmentService.updateHorometer(
+                equipment,
+                dto.readingValue()
+        );
 
         equipment.setCurrentHorometer(dto.readingValue());
 
