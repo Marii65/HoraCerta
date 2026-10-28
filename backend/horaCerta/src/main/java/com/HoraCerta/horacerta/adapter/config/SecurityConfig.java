@@ -3,6 +3,7 @@ package com.HoraCerta.horacerta.adapter.config;
 import com.HoraCerta.horacerta.adapter.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
@@ -43,4 +46,23 @@ public class SecurityConfig {
                 );
         return http.build();
     }
+
+    // Apenas ADMIN poderá executar esta operação.
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteEquipment(UUID id){
+        //
+    }
+
+    // ADMIN e TECHNICIAN poderá executar esta operação.
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
+    public void createServiceOrder(){
+        //
+    }
+
+    // Os três perfis podem consultar equipamentos.
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN', 'OPERATOR')")
+    public void listEquipments() {
+        //
+    }
+
 }

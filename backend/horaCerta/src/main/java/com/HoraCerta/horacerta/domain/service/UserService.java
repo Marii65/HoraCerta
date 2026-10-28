@@ -1,6 +1,7 @@
 package com.HoraCerta.horacerta.domain.service;
 
 import com.HoraCerta.horacerta.adapter.dto.request.user.UserRequestDTO;
+import com.HoraCerta.horacerta.adapter.dto.request.user.UserRoleUpdateRequestDTO;
 import com.HoraCerta.horacerta.adapter.dto.request.user.UserUpdateRequestDTO;
 import com.HoraCerta.horacerta.adapter.dto.response.UserResponseDTO;
 import com.HoraCerta.horacerta.domain.entity.User;
@@ -88,6 +89,17 @@ public class UserService {
         User user = getUserOrThrow(id);
 
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public UserResponseDTO updateRole(UUID id, UserRoleUpdateRequestDTO dto) {
+        User user = getUserOrThrow(id);
+
+        user.setRole(dto.role());
+
+        User updatedUser = userRepository.save(user);
+        
+        return toResponseDTO(updatedUser);
     }
 
 
