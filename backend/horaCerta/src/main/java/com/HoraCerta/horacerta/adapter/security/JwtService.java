@@ -11,6 +11,15 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+/**
+ * Serviço responsável pela geração e validação de tokens JWT
+ * utilizados na autenticação da aplicação.
+ *
+ * <p>A chave de assinatura e o tempo de expiração são definidos
+ * por propriedades externas da aplicação.</p>
+ *
+ * @author Maria Luiza
+ */
 @Service
 public class JwtService {
     private final SecretKey signinKey;
@@ -39,6 +48,12 @@ public class JwtService {
 
     }
 
+    /**
+     * Gera um token JWT assinado para o usuário identificado pelo e-mail.
+     *
+     * @param email e-mail utilizado como identificador do usuário no token
+     * @return token JWT assinado, com datas de emissão e expiração
+     */
     public String generateToken(String email){
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationMs);
@@ -51,10 +66,26 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Extrai o identificador do usuário registrado no token.
+     *
+     * @param token token JWT que será analisado
+     * @return identificador do usuário presente no campo subject
+     * @throws JwtException se o token não puder ser validado ou analisado
+     */
     public String extractUsername(String token){
         return extractClaims(token).getSubject();
     }
 
+    /**
+     * Verifica se o token corresponde ao e-mail esperado e se
+     * possui uma data de expiração válida.
+     *
+     * @param token token JWT a ser validado
+     * @param expectedEmail e-mail esperado para o usuário
+     * @return {@code true} se as verificações forem satisfeitas;
+     *         {@code false} caso contrário
+     */
     public boolean isTokenValid(String token, String expectedEmail){
         try {
             Claims claims = extractClaims(token);
@@ -68,6 +99,13 @@ public class JwtService {
         }
     }
 
+    /**
+     * Extrai as informações de um token JWT após verificar sua assinatura.
+     *
+     * @param token token JWT que será analisado
+     * @return informações contidas no corpo do token
+     * @throws JwtException se a assinatura ou a estrutura do token for inválida
+     */
     private Claims extractClaims(String token) {
         return Jwts.parser()
                 .verifyWith(signinKey)
