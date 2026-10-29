@@ -1,16 +1,19 @@
+<script setup>
+import WelcomeBanner from '../components/dashboard/WelcomeBanner.vue';
+</script>
 
 <template>
-  <section class="page-section">
-    <div class="page-intro">
-      <span class="section-label">VISÃO GERAL</span>
-      <h2>Monitoramento da frota</h2>
-      <p>Acompanhe os equipamentos e as necessidades de manutenção preventiva.</p>
-    </div>
+  <div class="dashboard-page">
 
-    <div class="placeholder-panel">
-      <div class="placeholder-symbol">⌁</div>
-      <h3>Dashboard</h3>
-      <p>Os indicadores e alertas serão implementados após a integração com a API.</p>
-    </div>
-  </section>
+    <WelcomeBanner />
+
+  </div>
 </template>
+
+<style scoped>
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+</style>
