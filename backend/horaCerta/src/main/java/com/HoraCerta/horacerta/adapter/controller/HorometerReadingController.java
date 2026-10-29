@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controlador REST responsável pelo registro e pela consulta
+ * das leituras de horímetro dos equipamentos.
+ *
+ * @author Maria Luiza
+ */
 @RestController
 @RequestMapping("/api/horometer-readings")
 public class HorometerReadingController {
@@ -22,6 +28,12 @@ public class HorometerReadingController {
         this.horometerReadingService = horometerReadingService;
     }
 
+    /**
+     * Registra uma nova leitura de horímetro para um equipamento.
+     *
+     * @param dto dados necessários para registrar a leitura
+     * @return leitura registrada com status HTTP 201 (Created)
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<HorometerReadingResponseDTO> register(@RequestBody @Valid HorometerReadingRequestDTO dto) {
@@ -29,6 +41,12 @@ public class HorometerReadingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Consulta o histórico de leituras de horímetro de um equipamento.
+     *
+     * @param equipmentId identificador do equipamento
+     * @return lista de leituras registradas para o equipamento
+     */
     @GetMapping("/equipment/{equipmentId}")
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<List<HorometerReadingResponseDTO>> findByEquipmentId(@PathVariable Long equipmentId) {
@@ -36,6 +54,18 @@ public class HorometerReadingController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Consulta as leituras de horímetro de um equipamento dentro
+     * de um período informado.
+     *
+     * <p>As datas devem ser enviadas no formato ISO 8601,
+     * compatível com {@link LocalDateTime}.</p>
+     *
+     * @param equipmentId identificador do equipamento
+     * @param startDate início do período da consulta
+     * @param endDate fim do período da consulta
+     * @return lista de leituras encontradas no período informado
+     */
     @GetMapping("/equipment/{equipmentId}/period")
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<List<HorometerReadingResponseDTO>> findByEquipmentIdAndPeriod(
