@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST responsável pelo gerenciamento dos vínculos
+ * entre equipamentos e planos de manutenção.
+ *
+ * <p>Permite associar planos a equipamentos, consultar os planos
+ * vinculados a um equipamento e ativar ou desativar essas associações.</p>
+ *
+ * @author Maria Luiza
+ */
 @RestController
 @RequestMapping("/api/equipment-plans")
 public class EquipmentPlanController {
@@ -20,6 +29,12 @@ public class EquipmentPlanController {
         this.equipmentPlanService = equipmentPlanService;
     }
 
+    /**
+     * Associa um plano de manutenção a um equipamento.
+     *
+     * @param dto dados necessários para criar o vínculo
+     * @return vínculo criado com status HTTP 201
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public ResponseEntity<EquipmentPlanResponseDTO> register(@RequestBody @Valid EquipmentPlanRequestDTO dto) {
@@ -27,6 +42,12 @@ public class EquipmentPlanController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Lista os vínculos de planos de manutenção associados a um equipamento.
+     *
+     * @param equipmentId identificador do equipamento
+     * @return lista de vínculos encontrados
+     */
     @GetMapping("/equipment/{equipmentId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN', 'OPERATOR')")
     public ResponseEntity<List<EquipmentPlanResponseDTO>> findByEquipmentId(
@@ -36,6 +57,12 @@ public class EquipmentPlanController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Alterna o estado de ativação de um vínculo entre equipamento e plano.
+     *
+     * @param id identificador do vínculo
+     * @return vínculo com o estado atualizado
+     */
     @PatchMapping("/{id}/toggle")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public  ResponseEntity<EquipmentPlanResponseDTO> toggleStatus(
