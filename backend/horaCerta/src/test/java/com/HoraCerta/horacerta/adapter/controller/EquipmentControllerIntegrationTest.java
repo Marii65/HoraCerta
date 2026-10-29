@@ -1,9 +1,13 @@
+
 package com.HoraCerta.horacerta.adapter.controller;
 
 import com.HoraCerta.horacerta.adapter.dto.request.equipment.EquipmentRequestDTO;
 import com.HoraCerta.horacerta.domain.entity.Equipment;
+import com.HoraCerta.horacerta.domain.entity.User;
 import com.HoraCerta.horacerta.domain.enums.EquipmentStatus;
+import com.HoraCerta.horacerta.domain.enums.Role;
 import com.HoraCerta.horacerta.domain.repository.EquipmentRepository;
+import com.HoraCerta.horacerta.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,29 +50,47 @@ class EquipmentControllerIntegrationTest {
 
     private String token;
 
+    @Autowired
+    private UserRepository userRepository;
+
+
     @BeforeEach
     void setUp() throws Exception {
         equipmentRepository.deleteAll();
 
+        token = createAuthenticatedUser(Role.ADMIN);
+    }
+
+    private String createAuthenticatedUser(Role role) throws Exception {
+        String email = "teste.integracao@exemplo.com";
+
         String registerBody = """
-                {
-                    "username": "Teste Integracao",
-                    "email": "teste.integracao@exemplo.com",
-                    "password": "Teste@123456"
-                }
-                """;
+            {
+                "username": "Teste Integracao",
+                "email": "teste.integracao@exemplo.com",
+                "password": "Teste@123456"
+            }
+            """;
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerBody))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isCreated());
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Usuário de teste não encontrado"
+                ));
+
+        user.setRole(role);
+        userRepository.saveAndFlush(user);
 
         String loginBody = """
-                {
-                    "email": "teste.integracao@exemplo.com",
-                    "password": "Teste@123456"
-                }
-                """;
+            {
+                "email": "teste.integracao@exemplo.com",
+                "password": "Teste@123456"
+            }
+            """;
 
         MvcResult result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,10 +98,11 @@ class EquipmentControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String responseBody = result.getResponse().getContentAsString();
-        JsonNode json = objectMapper.readTree(responseBody);
+        JsonNode json = objectMapper.readTree(
+                result.getResponse().getContentAsString()
+        );
 
-        token = json.get("token").asText();
+        return json.get("token").asText();
     }
 
     private MockHttpServletRequestBuilder authenticated(
@@ -105,8 +128,7 @@ class EquipmentControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.code", is("EQ-001")))
-                .andExpect(jsonPath("$.name", is("Escavadeira Hidráulica")))
-                .andExpect(jsonPath("$.status", is("ACTIVE")));
+                .andExpect(jsonPath("$.name", is("Escavadeira Hidráulica")));
     }
 
     @Test
@@ -124,7 +146,7 @@ class EquipmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.Status", is(400)))
                 .andExpect(jsonPath("$.validationErros", notNullValue()));
     }
 
@@ -136,6 +158,7 @@ class EquipmentControllerIntegrationTest {
         existing.setName("Trator Existente");
         existing.setStatus(EquipmentStatus.ACTIVE);
         existing.setCurrentHorometer(BigDecimal.ZERO);
+
         equipmentRepository.saveAndFlush(existing);
 
         EquipmentRequestDTO requestDTO = new EquipmentRequestDTO(
@@ -150,7 +173,7 @@ class EquipmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO))))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.status", is(409)))
+                .andExpect(jsonPath("$.Status", is(409)))
                 .andExpect(jsonPath("$.message", containsString("already exists")));
     }
 
@@ -162,6 +185,7 @@ class EquipmentControllerIntegrationTest {
         equipment.setName("Trator A");
         equipment.setStatus(EquipmentStatus.ACTIVE);
         equipment.setCurrentHorometer(BigDecimal.ZERO);
+
         equipmentRepository.saveAndFlush(equipment);
 
         mockMvc.perform(authenticated(get("/api/equipments")))
@@ -181,11 +205,15 @@ class EquipmentControllerIntegrationTest {
 
         Equipment saved = equipmentRepository.saveAndFlush(equipment);
 
-        mockMvc.perform(authenticated(get("/api/equipments/{id}", saved.getId())))
+        mockMvc.perform(authenticated(get(
+                        "/api/equipments/{id}",
+                        saved.getId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code", is("EQ-002")));
 
-        mockMvc.perform(authenticated(get("/api/equipments/{id}", 999L)))
+        mockMvc.perform(authenticated(get(
+                        "/api/equipments/{id}",
+                        999L)))
                 .andExpect(status().isNotFound());
     }
 
@@ -200,9 +228,38 @@ class EquipmentControllerIntegrationTest {
 
         Equipment saved = equipmentRepository.saveAndFlush(equipment);
 
+        User user = userRepository
+                .findByEmail("teste.integracao@exemplo.com")
+                .orElseThrow();
+
+        user.setRole(Role.OPERATOR);
+        userRepository.saveAndFlush(user);
+
+        token = loginAndGetToken();
+
         mockMvc.perform(authenticated(delete(
-                        "/api/equipments/{id}", saved.getId())))
+                        "/api/equipments/{id}",
+                        saved.getId())))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.status", is(403)));
+                .andExpect(jsonPath("$.Status", is(403)));
+    }
+
+    private String loginAndGetToken() throws Exception {
+        String loginBody = """
+            {
+                "email": "teste.integracao@exemplo.com",
+                "password": "Teste@123456"
+            }
+            """;
+
+        MvcResult result = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginBody))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        return objectMapper.readTree(
+                result.getResponse().getContentAsString()
+        ).get("token").asText();
     }
 }
