@@ -1,0 +1,453 @@
+/*LAYOUT PRINCIPAL*/
+
+.app-layout {
+  display: flex;
+
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: var(--color-background);
+}
+
+/*CONTAINER PRINCIPAL*/
+
+.app-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  min-width: 0;
+  min-height: 100vh;
+}
+
+/*CONTEÚDO DAS PÁGINAS*/
+
+.app-content {
+  flex: 1;
+
+  padding: 0 32px 32px;
+
+  overflow-x: hidden;
+}
+
+/*RESPONSIVIDADE*/
+
+@media (max-width: 1024px) {
+  .app-content {
+    padding: 0 24px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-content {
+    padding: 0 16px 16px;
+  }
+}
+
+/*SIDEBAR*/
+
+.sidebar {
+  position: sticky;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  width: var(--sidebar-width);
+  height: 100vh;
+
+  padding: 28px 16px 20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-primary-dark) 0%,
+      var(--color-primary-darker) 100%
+    );
+
+  color: white;
+}
+
+
+/* LOGO */
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 12px;
+  margin-bottom: 42px;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 12px;
+
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #9be0c5;
+}
+
+
+/* NAVEGAÇÃO */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  min-height: 50px;
+
+  padding: 0 16px;
+
+  border-radius: var(--radius-md);
+
+  color: rgba(255, 255, 255, 0.72);
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+
+.sidebar-link.router-link-exact-active {
+  background-color: rgba(255, 255, 255, 0.12);
+
+  color: white;
+}
+
+
+.sidebar-link.router-link-exact-active::before {
+  position: absolute;
+
+  left: 0;
+
+  width: 3px;
+  height: 28px;
+
+  border-radius: 0 4px 4px 0;
+
+  background-color: #72d5af;
+
+  content: "";
+}
+
+/*STATUS DA FROTA*/
+
+.sidebar-footer {
+  margin-top: auto;
+}
+
+.fleet-status {
+  padding: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.fleet-status-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 18px;
+
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fleet-status-number {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+
+  margin-bottom: 12px;
+}
+
+.fleet-status-number strong {
+  font-size: 28px;
+}
+
+.fleet-status-number span {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.fleet-progress {
+  width: 100%;
+  height: 7px;
+
+  margin-bottom: 10px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.fleet-progress-bar {
+  width: 75%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background-color: #69d1a8;
+}
+
+.fleet-percentage {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+}
+
+/*HEADER*/
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  min-height: var(--header-height);
+
+  padding: 16px 32px;
+
+  background-color: var(--color-background);
+}
+
+
+/*BUSCA*/
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: min(520px, 45%);
+
+  padding: 0 16px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+
+  box-shadow: var(--shadow-sm);
+}
+
+.header-search input {
+  width: 100%;
+  height: 44px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: var(--color-text-primary);
+}
+
+.header-search input::placeholder {
+  color: var(--color-text-muted);
+}
+
+
+/*AÇÕES DO HEADER*/
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+
+/*DATA*/
+
+.header-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--color-text-secondary);
+}
+
+.header-date > svg {
+  color: var(--color-primary);
+}
+
+.header-date div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header-date strong {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.header-date span {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+/*NOTIFICAÇÕES*/
+
+.notification-button {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  background-color: transparent;
+  color: var(--color-text-secondary);
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.notification-button:hover {
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 17px;
+  height: 17px;
+
+  padding: 0 4px;
+
+  border: 2px solid var(--color-background);
+  border-radius: 999px;
+
+  background-color: var(--color-danger);
+  color: white;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/*PERFIL*/
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  padding: 5px 8px;
+
+  border-radius: var(--radius-md);
+
+  background: transparent;
+
+  color: var(--color-text-primary);
+
+  transition: background-color 0.2s ease;
+}
+
+.user-profile:hover {
+  background-color: var(--color-surface);
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+
+  background-color: var(--color-primary);
+  color: white;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  min-width: 100px;
+}
+
+.user-info strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.user-info span {
+  margin-top: 2px;
+
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+}
+
+/*RESPONSIVIDADE DO HEADER*/
+
+@media (max-width: 1100px) {
+  .header-date {
+    display: none;
+  }
+
+  .header-search {
+    width: min(480px, 60%);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 14px 16px;
+  }
+
+  .header-search {
+    width: 100%;
+  }
+
+  .user-info {
+    display: none;
+  }
+}
