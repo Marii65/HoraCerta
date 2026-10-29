@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Controlador REST responsável pelo gerenciamento das ordens de serviço,
+ * incluindo criação, conclusão, cancelamento e consulta com filtros.
+ *
+ * @author Maria Luiza
+ */
 @RestController
 @RequestMapping("/api/work-orders")
 public class WorkOrderController {
@@ -24,6 +30,12 @@ public class WorkOrderController {
         this.workOrderService = workOrderService;
     }
 
+    /**
+     * Cria uma nova ordem de serviço.
+     *
+     * @param dto dados necessários para criar a ordem de serviço
+     * @return ordem criada com status HTTP 201 (Created)
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<WorkOrderResponseDTO> create(@RequestBody @Valid WorkOrderRequestDTO dto) {
@@ -31,6 +43,13 @@ public class WorkOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Registra a conclusão de uma ordem de serviço.
+     *
+     * @param id identificador da ordem de serviço
+     * @param dto dados necessários para registrar a conclusão
+     * @return ordem de serviço atualizada
+     */
     @PatchMapping("/{id}/complete")
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<WorkOrderResponseDTO> complete(
@@ -41,6 +60,12 @@ public class WorkOrderController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Cancela uma ordem de serviço.
+     *
+     * @param id identificador da ordem de serviço que será cancelada
+     * @return ordem de serviço atualizada
+     */
     @PatchMapping("/{id}/cancel")
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<WorkOrderResponseDTO> cancel(
@@ -50,6 +75,19 @@ public class WorkOrderController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Consulta ordens de serviço aplicando os filtros informados.
+     *
+     * <p>Todos os filtros são opcionais e podem ser combinados.</p>
+     *
+     * @param equipmentPlanId identificador do vínculo entre equipamento
+     *                        e plano de manutenção
+     * @param status status da ordem de serviço
+     * @param maintenanceType tipo de manutenção
+     * @param startDate data inicial do período de consulta
+     * @param endDate data final do período de consulta
+     * @return lista de ordens de serviço que correspondem aos filtros
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<List<WorkOrderResponseDTO>> findWithFilters(
@@ -65,6 +103,12 @@ public class WorkOrderController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Busca uma ordem de serviço pelo identificador.
+     *
+     * @param id identificador da ordem de serviço
+     * @return ordem de serviço encontrada
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<WorkOrderResponseDTO> findById(
