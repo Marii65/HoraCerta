@@ -160,4 +160,4 @@ Os testes automatizados implementados no projeto foram executados com sucesso no
 
 ## Autoria
 
-Desenvolvido por **Maria Luiza** como projeto técnico de desenvolvimento de software.
+Desenvolvido por **Maria Luiza** como desafio técnico de desenvolvimento de software para a [Support](https://supportsistemas.com.br/).
