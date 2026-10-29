@@ -17,6 +17,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Filtro de segurança responsável por autenticar requisições
+ * que apresentam um token JWT válido no cabeçalho Authorization.
+ *
+ * <p>Consulta o usuário associado ao token, verifica se está ativo
+ * e registra sua autenticação no contexto de segurança do Spring.</p>
+ *
+ * @author Maria Luiza
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -30,6 +39,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Processa a requisição para verificar o token JWT e configurar
+     * o contexto de autenticação quando as validações são satisfeitas.
+     *
+     * <p>Requisições sem o cabeçalho Bearer seguem a cadeia de filtros
+     * sem autenticação realizada por este filtro. Tokens inválidos ou
+     * associados a usuários inativos não estabelecem autenticação.</p>
+     *
+     * @param request requisição HTTP recebida
+     * @param response resposta HTTP
+     * @param filterChain cadeia de filtros de segurança
+     * @throws ServletException se ocorrer um erro no processamento do filtro
+     * @throws IOException se ocorrer um erro de entrada ou saída
+     */
     @Override
     protected  void  doFilterInternal(
             HttpServletRequest request,
@@ -93,6 +116,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Define os endpoints de autenticação que não precisam passar
+     * pelo processamento deste filtro JWT.
+     *
+     * @param request requisição HTTP recebida
+     * @return {@code true} para caminhos iniciados por /api/auth/
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().startsWith("/api/auth/");
