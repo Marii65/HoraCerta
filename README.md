@@ -151,9 +151,7 @@ Os testes automatizados implementados no projeto foram executados com sucesso no
 
 ## Frontend
 
-O frontend está localizado em uma pasta separada dentro do repositório.
 
-Para executá-lo, acesse essa pasta e siga as instruções do `README` específico, caso exista. Os comandos dependem das configurações e dos scripts definidos no `package.json`.
 
 ## Demonstração
 
