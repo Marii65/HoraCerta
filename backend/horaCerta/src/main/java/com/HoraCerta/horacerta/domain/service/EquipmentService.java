@@ -19,6 +19,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Gerencia o cadastro, a consulta, a atualização e a exclusão de equipamentos,
+ * incluindo a atualização do horímetro.
+ *
+ * @author Maria Luiza
+ */
 @Service
 public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
@@ -36,6 +42,14 @@ public class EquipmentService {
         this.workOrderRepository = workOrderRepository;
     }
 
+    /**
+     * Cadastra um equipamento com código normalizado, horímetro inicial zero
+     * e status ativo.
+     *
+     * @param dto dados do equipamento
+     * @return dados do equipamento cadastrado
+     * @throws DuplicateEquipmentCodeException se o código já estiver em uso
+     */
     @Transactional
     public EquipmentResponseDTO register(EquipmentRequestDTO dto) {
         String code = normalizeCode(dto.code());
@@ -62,6 +76,11 @@ public class EquipmentService {
         return toResponseDTO(savedEquipment);
     }
 
+    /**
+     * Lista todos os equipamentos cadastrados.
+     *
+     * @return lista de equipamentos
+     */
     @Transactional(readOnly = true)
     public List<EquipmentResponseDTO> findAll() {
         return equipmentRepository.findAll()
@@ -70,12 +89,27 @@ public class EquipmentService {
                 .toList();
     }
 
+    /**
+     * Busca um equipamento pelo identificador.
+     *
+     * @param id identificador do equipamento
+     * @return dados do equipamento encontrado
+     * @throws ResourceNotFoundException se o equipamento não existir
+     */
     @Transactional(readOnly = true)
     public EquipmentResponseDTO findById(Long id) {
         Equipment equipment = getEquipmentOrThrow(id);
         return toResponseDTO(equipment);
     }
 
+    /**
+     * Filtra equipamentos pelo status, pela categoria ou por ambos.
+     * Quando nenhum filtro válido é informado, retorna todos os equipamentos.
+     *
+     * @param status status pelo qual filtrar, podendo ser nulo
+     * @param category categoria pela qual filtrar, podendo ser nula ou vazia
+     * @return lista de equipamentos correspondentes aos filtros
+     */
     @Transactional(readOnly = true)
     public List<EquipmentResponseDTO> filter(EquipmentStatus status, String category) {
         List<Equipment> equipments;
@@ -95,6 +129,16 @@ public class EquipmentService {
                 .toList();
     }
 
+    /**
+     * Atualiza os dados cadastrais de um equipamento.
+     * O horímetro não é alterado por este método.
+     *
+     * @param id identificador do equipamento
+     * @param dto novos dados cadastrais
+     * @return dados atualizados do equipamento
+     * @throws ResourceNotFoundException se o equipamento não existir
+     * @throws DuplicateEquipmentCodeException se o novo código pertencer a outro equipamento
+     */
     @Transactional
     public EquipmentResponseDTO update(Long id, EquipmentUpdateRequestDTO dto) {
         Equipment equipment = getEquipmentOrThrow(id);
@@ -124,6 +168,14 @@ public class EquipmentService {
         return toResponseDTO(updatedEquipment);
     }
 
+    /**
+     * Exclui um equipamento somente quando não existem leituras,
+     * vínculos com planos ou ordens de serviço associados.
+     *
+     * @param id identificador do equipamento
+     * @throws ResourceNotFoundException se o equipamento não existir
+     * @throws EquipmentHasHistoryException se houver histórico ou vínculos associados
+     */
     @Transactional
     public void delete(Long id) {
         Equipment equipment = getEquipmentOrThrow(id);
@@ -141,6 +193,16 @@ public class EquipmentService {
         equipmentRepository.delete(equipment);
     }
 
+    /**
+     * Atualiza o horímetro do equipamento por meio de uma operação condicional
+     * no banco de dados, evitando sobrescrever uma atualização concorrente.
+     *
+     * @param equipment equipamento cujo horímetro será atualizado
+     * @param newHorometer novo valor do horímetro
+     * @throws IllegalArgumentException se o novo valor for nulo ou negativo
+     * @throws IllegalStateException se o horímetro atual não estiver inicializado
+     * ou se a atualização condicional não modificar nenhuma linha
+     */
     @Transactional
     public void updateHorometer(Equipment equipment, BigDecimal newHorometer) {
         if (newHorometer == null || newHorometer.compareTo(BigDecimal.ZERO) < 0) {

@@ -15,6 +15,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Gerencia o registro e a consulta das leituras de horímetro dos equipamentos.
+ * Cada leitura é associada ao usuário autenticado e atualiza o horímetro atual
+ * do equipamento.
+ *
+ * @author Maria Luiza
+ */
 @Service
 public class HorometerReadingService {
     private final HorometerReadingRepository readingRepository;
@@ -32,6 +39,16 @@ public class HorometerReadingService {
         this.equipmentService = equipmentService;
     }
 
+    /**
+     * Registra uma leitura de horímetro para um equipamento existente.
+     * O valor informado não pode ser negativo nem inferior ao horímetro atual.
+     *
+     * @param dto dados da leitura, incluindo o equipamento e o valor registrado
+     * @return dados da leitura cadastrada
+     * @throws ResourceNotFoundException se o equipamento não existir
+     * @throws IllegalArgumentException se o valor for nulo, negativo ou inferior
+     * ao horímetro atual
+     */
     @Transactional
     public HorometerReadingResponseDTO register(HorometerReadingRequestDTO dto) {
         Equipment equipment = equipmentRepository.findById(dto.equipmentId())
@@ -73,6 +90,14 @@ public class HorometerReadingService {
         return toResponseDTO(savedReading);
     }
 
+    /**
+     * Consulta o histórico de leituras de um equipamento,
+     * ordenado da mais recente para a mais antiga.
+     *
+     * @param equipmentId identificador do equipamento
+     * @return lista de leituras encontradas
+     * @throws ResourceNotFoundException se o equipamento não existir
+     */
     @Transactional(readOnly = true)
     public List<HorometerReadingResponseDTO> findByEquipmentId(Long equipmentId) {
         if (!equipmentRepository.existsById(equipmentId)) {
@@ -85,6 +110,18 @@ public class HorometerReadingService {
                 .toList();
     }
 
+    /**
+     * Consulta as leituras de um equipamento dentro de um período.
+     * Os limites inicial e final são incluídos na consulta.
+     *
+     * @param equipmentId identificador do equipamento
+     * @param startDate início do período
+     * @param endDate fim do período
+     * @return lista de leituras do período, da mais recente para a mais antiga
+     * @throws ResourceNotFoundException se o equipamento não existir
+     * @throws IllegalArgumentException se alguma data for nula ou o início
+     * ocorrer depois do fim
+     */
     @Transactional(readOnly = true)
     public List<HorometerReadingResponseDTO> findByEquipmentAndPeriod(Long equipmentId,
                                                                       LocalDateTime startDate,
@@ -112,6 +149,13 @@ public class HorometerReadingService {
                 .toList();
     }
 
+    /**
+     * Busca uma leitura pelo identificador.
+     *
+     * @param id identificador da leitura
+     * @return dados da leitura encontrada
+     * @throws ResourceNotFoundException se a leitura não existir
+     */
     @Transactional(readOnly = true)
     public HorometerReadingResponseDTO findById(Long id) {
         HorometerReading reading = readingRepository.findById(id)

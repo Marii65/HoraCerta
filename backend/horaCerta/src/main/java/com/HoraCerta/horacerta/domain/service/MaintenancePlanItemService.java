@@ -15,6 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Gerencia os itens dos planos de manutenção, incluindo cadastro,
+ * consulta e exclusão com preservação do histórico de ordens de serviço.
+ *
+ * @author Maria Luiza
+ */
 @Service
 public class MaintenancePlanItemService {
     private final MaintenancePlanItemRepository itemRepository;
@@ -29,6 +35,18 @@ public class MaintenancePlanItemService {
         this.workOrderRepository = workOrderRepository;
     }
 
+    /**
+     * Cadastra um item em um plano de manutenção ativo.
+     * A margem de alerta deve ser inferior ao intervalo de manutenção.
+     *
+     * @param planId identificador do plano de manutenção
+     * @param dto descrição do serviço, intervalo e margem de alerta
+     * @return dados do item cadastrado
+     * @throws ResourceNotFoundException se o plano não existir
+     * @throws InactiveMaintenancePlanException se o plano estiver inativo
+     * @throws IllegalArgumentException se a margem de alerta for maior ou igual
+     * ao intervalo de manutenção
+     */
     @Transactional
     public MaintenancePlanItemResponseDTO register(
             Long planId,
@@ -59,6 +77,14 @@ public class MaintenancePlanItemService {
 
         return toResponseDTO(savedItem);
     }
+
+    /**
+     * Lista os itens associados a um plano de manutenção.
+     *
+     * @param planId identificador do plano de manutenção
+     * @return lista de itens do plano
+     * @throws ResourceNotFoundException se o plano não existir
+     */
     @Transactional(readOnly = true)
     public List<MaintenancePlanItemResponseDTO> findByPlanId(Long planId) {
         if (!planRepository.existsById(planId)) {
@@ -71,12 +97,28 @@ public class MaintenancePlanItemService {
                 .toList();
     }
 
+    /**
+     * Busca um item de plano de manutenção pelo identificador.
+     *
+     * @param id identificador do item
+     * @return dados do item encontrado
+     * @throws ResourceNotFoundException se o item não existir
+     */
     @Transactional(readOnly = true)
     public MaintenancePlanItemResponseDTO findById(Long id) {
         MaintenancePlanItem item = getItemOrThrow(id);
         return toResponseDTO(item);
     }
 
+    /**
+     * Exclui um item somente quando ele não estiver referenciado
+     * por ordens de serviço.
+     *
+     * @param id identificador do item
+     * @throws ResourceNotFoundException se o item não existir
+     * @throws MaintenancePlanItemHasHistoryException se houver ordens de serviço
+     * associadas ao item
+     */
     @Transactional
     public void delete(Long id) {
         MaintenancePlanItem item = getItemOrThrow(id);

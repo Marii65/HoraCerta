@@ -4,6 +4,7 @@ import com.HoraCerta.horacerta.adapter.dto.request.maintenanceplan.MaintenancePl
 import com.HoraCerta.horacerta.adapter.dto.request.maintenanceplan.MaintenancePlanUpdateRequestDTO;
 import com.HoraCerta.horacerta.adapter.dto.response.MaintenancePlanResponseDTO;
 import com.HoraCerta.horacerta.domain.entity.MaintenancePlan;
+import com.HoraCerta.horacerta.domain.exception.InactiveMaintenancePlanException;
 import com.HoraCerta.horacerta.domain.exception.MaintenancePlanHasHistoryException;
 import com.HoraCerta.horacerta.domain.exception.ResourceNotFoundException;
 import com.HoraCerta.horacerta.domain.repository.EquipmentPlanRepository;
@@ -14,6 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Gerencia os planos de manutenção, incluindo cadastro, consulta,
+ * atualização, ativação, desativação e exclusão.
+ *
+ * @author Maria Luiza
+ */
 @Service
 public class MaintenancePlanService {
     private final MaintenancePlanRepository maintenancePlanRepository;
@@ -27,6 +34,13 @@ public class MaintenancePlanService {
         this.equipmentPlanRepository = equipmentPlanRepository;
         this.workOrderRepository = workOrderRepository;
     }
+
+    /**
+     * Cadastra um novo plano de manutenção com status ativo.
+     *
+     * @param dto nome e descrição do plano
+     * @return dados do plano cadastrado
+     */
     @Transactional
     public MaintenancePlanResponseDTO register(MaintenancePlanRequestDTO dto) {
         MaintenancePlan plan = new MaintenancePlan();
@@ -39,6 +53,11 @@ public class MaintenancePlanService {
         return toResponseDTO(savedPlan);
     }
 
+    /**
+     * Lista todos os planos de manutenção cadastrados.
+     *
+     * @return lista de planos de manutenção
+     */
     @Transactional(readOnly = true)
     public List<MaintenancePlanResponseDTO> findAll(){
         return maintenancePlanRepository.findAll()
@@ -47,12 +66,27 @@ public class MaintenancePlanService {
                 .toList();
     }
 
+    /**
+     * Busca um plano de manutenção pelo identificador.
+     *
+     * @param id identificador do plano
+     * @return dados do plano encontrado
+     * @throws ResourceNotFoundException se o plano não existir
+     */
     @Transactional(readOnly = true)
     public MaintenancePlanResponseDTO findById(Long id){
         MaintenancePlan plan = getMaintenancePlanOrThrow(id);
         return toResponseDTO(plan);
     }
 
+    /**
+     * Atualiza o nome e a descrição de um plano existente.
+     *
+     * @param id identificador do plano
+     * @param dto novos dados do plano
+     * @return dados atualizados do plano
+     * @throws ResourceNotFoundException se o plano não existir
+     */
     @Transactional
     public MaintenancePlanResponseDTO update(Long id, MaintenancePlanUpdateRequestDTO dto) {
         MaintenancePlan plan = getMaintenancePlanOrThrow(id);
@@ -65,6 +99,15 @@ public class MaintenancePlanService {
         return toResponseDTO(updatedPlan);
     }
 
+    /**
+     * Exclui um plano quando não existem vínculos com equipamentos
+     * nem ordens de serviço associadas.
+     *
+     * @param id identificador do plano
+     * @throws ResourceNotFoundException se o plano não existir
+     * @throws MaintenancePlanHasHistoryException se houver vínculos
+     * ou histórico de ordens de serviço
+     */
     @Transactional
     public void delete (Long id){
         MaintenancePlan plan = getMaintenancePlanOrThrow(id);
@@ -82,6 +125,13 @@ public class MaintenancePlanService {
         maintenancePlanRepository.delete(plan);
     }
 
+    /**
+     * Alterna o status de ativação do plano de manutenção.
+     *
+     * @param id identificador do plano
+     * @return dados atualizados do plano
+     * @throws ResourceNotFoundException se o plano não existir
+     */
     @Transactional
     public MaintenancePlanResponseDTO toggleStatus(Long id) {
         MaintenancePlan plan = getMaintenancePlanOrThrow(id);
@@ -93,12 +143,21 @@ public class MaintenancePlanService {
         return toResponseDTO(updatedPlan);
     }
 
+    /**
+     * Valida o status do plano antes de permitir sua associação a equipamentos.
+     *
+     * @param id identificador do plano
+     * @throws ResourceNotFoundException se o plano não existir
+     * @throws MaintenancePlanHasHistoryException quando a condição de bloqueio
+     * definida pelo método for satisfeita
+     */
     public void validatePlanIsActive(Long id) {
         MaintenancePlan plan = getMaintenancePlanOrThrow(id);
 
-        if (Boolean.TRUE.equals(plan.getActive())) {
-            throw new MaintenancePlanHasHistoryException
-                    ("Cannot link equipments to an inactive maintenance plan.");
+        if (Boolean.FALSE.equals(plan.getActive())) {
+            throw new InactiveMaintenancePlanException(
+                    "Cannot link equipments to an inactive maintenance plan."
+            );
         }
     }
 

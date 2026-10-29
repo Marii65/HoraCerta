@@ -12,6 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+/**
+ * Serviço responsável por recuperar o usuário autenticado no contexto
+ * de segurança da aplicação.
+ *
+ * <p>Utiliza o contexto do Spring Security para identificar o usuário
+ * da requisição e consultar seus dados no banco de dados.</p>
+ */
 @Service
 public class SecurityContextService {
     private final UserRepository userRepository;
@@ -19,6 +26,16 @@ public class SecurityContextService {
     public SecurityContextService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    /**
+     * Recupera o usuário correspondente à autenticação atual.
+     *
+     * @return usuário autenticado encontrado no banco de dados
+     * @throws AuthenticationCredentialsNotFoundException se não houver
+     *         uma autenticação válida no contexto de segurança
+     * @throws ResourceNotFoundException se o usuário autenticado não
+     *         for encontrado no banco de dados
+     */
     @Transactional(readOnly = true)
     public User getAuthenticatedUser() {
         Authentication authentication =
@@ -40,6 +57,15 @@ public class SecurityContextService {
                 ));
     }
 
+    /**
+     * Recupera o identificador do usuário autenticado.
+     *
+     * @return UUID do usuário autenticado
+     * @throws AuthenticationCredentialsNotFoundException se não houver
+     *         uma autenticação válida no contexto de segurança
+     * @throws ResourceNotFoundException se o usuário autenticado não
+     *         for encontrado no banco de dados
+     */
     @Transactional(readOnly = true)
     public UUID getAuthenticatedUserId() {
         return getAuthenticatedUser().getId();

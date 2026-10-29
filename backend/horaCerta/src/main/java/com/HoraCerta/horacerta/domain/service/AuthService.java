@@ -14,6 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 
+/**
+ * Gerencia o cadastro de usuários e a autenticação,
+ * validando as credenciais e emitindo tokens JWT.
+ *
+ * @author Maria Luiza
+ */
 @Service
 public class AuthService {
     private final UserService userService;
@@ -33,11 +39,26 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Registra um novo usuário por meio do serviço de usuários.
+     *
+     * @param dto dados necessários para o cadastro
+     * @return dados do usuário cadastrado
+     */
     @Transactional
     public UserResponseDTO register(UserRequestDTO dto){
         return userService.register(dto);
     }
 
+    /**
+     * Autentica um usuário usando e-mail e senha e gera um token JWT
+     * quando as credenciais são válidas e a conta está ativa.
+     *
+     * @param dto credenciais informadas para autenticação
+     * @return token de acesso e tipo de autenticação
+     * @throws BadCredentialsException quando as credenciais são inválidas
+     *         ou a conta está inativa
+     */
     @Transactional(readOnly = true)
     public AuthResponseDTO login(LoginRequestDTO dto){
         String email = dto.email()

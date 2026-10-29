@@ -17,6 +17,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+/**
+ * Serviço responsável pelo cadastro, consulta, atualização e exclusão
+ * de usuários, incluindo o gerenciamento de seus níveis de acesso.
+ *
+ * <p>Também realiza a normalização dos e-mails e a codificação das
+ * senhas antes de persistir os dados.</p>
+ */
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -27,6 +34,13 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Cadastra um novo usuário com o perfil padrão de operador.
+     *
+     * @param dto dados necessários para o cadastro
+     * @return dados do usuário cadastrado
+     * @throws EmailAlreadyExistsException se o e-mail já estiver registrado
+     */
     @Transactional
     public UserResponseDTO register(UserRequestDTO dto) {
         String email = normalizeEmail(dto.email());
@@ -47,6 +61,12 @@ public class UserService {
 
         return toResponseDTO(savedUser);
     }
+
+    /**
+     * Retorna todos os usuários cadastrados.
+     *
+     * @return lista de usuários convertidos para DTOs de resposta
+     */
     @Transactional(readOnly = true)
     public List<UserResponseDTO> findAll() {
         return userRepository.findAll()
@@ -55,6 +75,13 @@ public class UserService {
                 .toList();
     }
 
+    /**
+     * Busca um usuário pelo identificador.
+     *
+     * @param id identificador UUID do usuário
+     * @return dados do usuário encontrado
+     * @throws ResourceNotFoundException se o usuário não existir
+     */
     @Transactional(readOnly = true)
     public UserResponseDTO findById(UUID id) {
         User user = userRepository.findById(id)
@@ -64,6 +91,16 @@ public class UserService {
         return toResponseDTO(user);
     }
 
+    /**
+     * Atualiza o nome de usuário e o e-mail de um usuário existente.
+     *
+     * @param id identificador UUID do usuário
+     * @param dto novos dados do usuário
+     * @return dados atualizados do usuário
+     * @throws ResourceNotFoundException se o usuário não existir
+     * @throws EmailAlreadyExistsException se o novo e-mail pertencer
+     *         a outro usuário
+     */
     @Transactional
     public UserResponseDTO update(UUID id, UserUpdateRequestDTO dto) {
         User user = getUserOrThrow(id);
@@ -84,6 +121,12 @@ public class UserService {
         return toResponseDTO(updatedUser);
     }
 
+    /**
+     * Exclui um usuário pelo identificador.
+     *
+     * @param id identificador UUID do usuário
+     * @throws ResourceNotFoundException se o usuário não existir
+     */
     @Transactional
     public void delete(UUID id) {
         User user = getUserOrThrow(id);
@@ -91,6 +134,14 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    /**
+     * Atualiza o perfil de acesso de um usuário.
+     *
+     * @param id identificador UUID do usuário
+     * @param dto dados contendo o novo perfil
+     * @return dados atualizados do usuário
+     * @throws ResourceNotFoundException se o usuário não existir
+     */
     @Transactional
     public UserResponseDTO updateRole(UUID id, UserRoleUpdateRequestDTO dto) {
         User user = getUserOrThrow(id);
@@ -102,7 +153,13 @@ public class UserService {
         return toResponseDTO(updatedUser);
     }
 
-
+    /**
+     * Converte uma entidade de usuário para seu DTO de resposta,
+     * sem expor o hash da senha.
+     *
+     * @param user entidade do usuário
+     * @return DTO com os dados públicos do usuário
+     */
     private UserResponseDTO toResponseDTO(User user) {
         return new UserResponseDTO(
                 user.getId(),
@@ -114,6 +171,13 @@ public class UserService {
         );
     }
 
+    /**
+     * Busca um usuário ou lança uma exceção caso não exista.
+     *
+     * @param id identificador UUID do usuário
+     * @return entidade do usuário encontrado
+     * @throws ResourceNotFoundException se o usuário não existir
+     */
     private User getUserOrThrow(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->

@@ -21,6 +21,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Serviço responsável pelo gerenciamento das ordens de serviço,
+ * incluindo criação, conclusão, cancelamento, consulta e verificação
+ * de proximidade do vencimento das manutenções preventivas.
+ */
 @Service
 public class WorkOrderService {
     private final WorkOrderRepository workOrderRepository;
@@ -38,6 +43,20 @@ public class WorkOrderService {
         this.maintenancePlanItemRepository = maintenancePlanItemRepository;
         this.equipmentService = equipmentService;
     }
+
+    /**
+     * Cria uma ordem de serviço vinculada a um equipamento e a um plano
+     * de manutenção ativo.
+     *
+     * @param dto dados necessários para criar a ordem de serviço
+     * @return dados da ordem de serviço criada
+     * @throws ResourceNotFoundException se o vínculo ou o item de manutenção
+     *         informado não existir
+     * @throws IllegalStateException se o vínculo do equipamento com o plano
+     *         estiver inativo
+     * @throws IllegalArgumentException se o item não pertencer ao plano
+     *         associado ao equipamento
+     */
     @Transactional
     public WorkOrderResponseDTO create(WorkOrderRequestDTO dto) {
         EquipmentPlan equipmentPlan = equipmentPlanRepository.findById(dto.equipmentPlanId())
@@ -80,6 +99,19 @@ public class WorkOrderService {
         WorkOrder savedWorkOrder = workOrderRepository.save(workOrder);
         return toResponseDTO(savedWorkOrder);
     }
+
+    /**
+     * Registra a conclusão de uma ordem de serviço e atualiza o horímetro
+     * atual do equipamento com o valor informado.
+     *
+     * @param id identificador da ordem de serviço
+     * @param dto dados da conclusão, incluindo o horímetro executado
+     * @return dados atualizados da ordem de serviço
+     * @throws ResourceNotFoundException se a ordem não existir
+     * @throws IllegalStateException se a ordem já estiver concluída ou cancelada
+     * @throws IllegalArgumentException se o horímetro executado for inválido
+     *         ou inferior ao horímetro atual do equipamento
+     */
     @Transactional
     public WorkOrderResponseDTO complete(Long id, WorkOrderCompletionRequestDTO dto) {
         WorkOrder workOrder = getWorkOrderOrThrow(id);
@@ -121,6 +153,14 @@ public class WorkOrderService {
         return toResponseDTO(updatedWorkOrder);
     }
 
+    /**
+     * Cancela uma ordem de serviço que ainda não foi concluída.
+     *
+     * @param id identificador da ordem de serviço
+     * @return dados atualizados da ordem de serviço
+     * @throws ResourceNotFoundException se a ordem não existir
+     * @throws IllegalStateException se a ordem já estiver concluída
+     */
     @Transactional
     public WorkOrderResponseDTO cancel(Long id) {
         WorkOrder workOrder = getWorkOrderOrThrow(id);
@@ -134,6 +174,16 @@ public class WorkOrderService {
         return toResponseDTO(updated);
     }
 
+    /**
+     * Consulta ordens de serviço aplicando os filtros informados.
+     *
+     * @param equipmentPlanId identificador opcional do vínculo equipamento-plano
+     * @param status status opcional da ordem de serviço
+     * @param maintenanceType tipo opcional de manutenção
+     * @param startDate data inicial opcional para o período de consulta
+     * @param endDate data final opcional para o período de consulta
+     * @return lista de ordens de serviço correspondentes aos filtros
+     */
     @Transactional(readOnly = true)
     public List<WorkOrderResponseDTO> findWithFilters(Long equipmentPlanId,
                                                       WorkOrderStatus status,
@@ -146,11 +196,27 @@ public class WorkOrderService {
                 .toList();
     }
 
+    /**
+     * Busca uma ordem de serviço pelo identificador.
+     *
+     * @param id identificador da ordem de serviço
+     * @return dados da ordem encontrada
+     * @throws ResourceNotFoundException se a ordem não existir
+     */
     @Transactional(readOnly = true)
     public WorkOrderResponseDTO findById(Long id) {
         return toResponseDTO(getWorkOrderOrThrow(id));
     }
 
+    /**
+     * Verifica se o horímetro atual atingiu o limite de alerta para a
+     * próxima manutenção prevista no item informado.
+     *
+     * @param equipmentPlan vínculo entre o equipamento e o plano de manutenção
+     * @param item item de manutenção com intervalo e margem de alerta
+     * @return {@code true} se o horímetro atual for igual ou superior
+     *         ao limite de alerta; caso contrário, {@code false}
+     */
     @Transactional(readOnly = true)
     public boolean isMaintenanceNearDue(EquipmentPlan equipmentPlan, MaintenancePlanItem item) {
         BigDecimal currentHorometer = equipmentPlan.getEquipment().getCurrentHorometer();
@@ -164,11 +230,24 @@ public class WorkOrderService {
         return currentHorometer.compareTo(alertThreshold) >= 0;
     }
 
+    /**
+     * Busca uma ordem de serviço ou lança uma exceção caso não exista.
+     *
+     * @param id identificador da ordem de serviço
+     * @return entidade da ordem encontrada
+     * @throws ResourceNotFoundException se a ordem não existir
+     */
     private WorkOrder getWorkOrderOrThrow(Long id) {
         return workOrderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Work order not found with id: " + id));
     }
 
+    /**
+     * Converte uma entidade de ordem de serviço para seu DTO de resposta.
+     *
+     * @param wo entidade da ordem de serviço
+     * @return DTO com os dados da ordem
+     */
     private WorkOrderResponseDTO toResponseDTO(WorkOrder wo) {
         return new WorkOrderResponseDTO(
                 wo.getId(),

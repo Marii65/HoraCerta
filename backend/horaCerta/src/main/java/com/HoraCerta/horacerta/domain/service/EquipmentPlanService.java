@@ -18,6 +18,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Gerencia os vínculos entre equipamentos e planos de manutenção,
+ * incluindo cadastro, consulta, reativação e alteração de status.
+ *
+ * @author Maria Luiza
+ */
 @Service
 public class EquipmentPlanService {
     private final EquipmentPlanRepository equipmentPlanRepository;
@@ -32,6 +38,17 @@ public class EquipmentPlanService {
         this.maintenancePlanRepository = maintenancePlanRepository;
     }
 
+    /**
+     * Cria um vínculo entre um equipamento e um plano de manutenção
+     * ou reativa um vínculo existente.
+     *
+     * @param dto dados do equipamento, plano e horímetro inicial
+     * @return dados do vínculo registrado ou reativado
+     * @throws ResourceNotFoundException se o equipamento ou plano não existir
+     * @throws InactiveMaintenancePlanException se o plano estiver inativo
+     * @throws EquipmentPlanAlreadyActiveException se o vínculo já estiver ativo
+     * @throws IllegalArgumentException se o horímetro inicial for inválido
+     */
     @Transactional
     public EquipmentPlanResponseDTO register(EquipmentPlanRequestDTO dto) {
         Equipment equipment = equipmentRepository.findById(dto.equipmentId())
@@ -93,6 +110,13 @@ public class EquipmentPlanService {
         return toResponseDTO(savedEquipmentPlan);
     }
 
+    /**
+     * Lista os vínculos associados a um equipamento.
+     *
+     * @param equipmentId identificador do equipamento
+     * @return lista de vínculos encontrados
+     * @throws ResourceNotFoundException se o equipamento não existir
+     */
     @Transactional(readOnly = true)
     public List<EquipmentPlanResponseDTO> findByEquipmentId(Long equipmentId) {
         if (!equipmentRepository.existsById(equipmentId)) {
@@ -105,12 +129,26 @@ public class EquipmentPlanService {
                 .toList();
     }
 
+    /**
+     * Busca um vínculo pelo identificador.
+     *
+     * @param id identificador do vínculo
+     * @return dados do vínculo encontrado
+     * @throws ResourceNotFoundException se o vínculo não existir
+     */
     @Transactional(readOnly = true)
     public EquipmentPlanResponseDTO findById(Long id) {
         EquipmentPlan equipmentPlan = getEquipmentPlanOrThrow(id);
         return toResponseDTO(equipmentPlan);
     }
 
+    /**
+     * Alterna o estado de ativação de um vínculo existente.
+     *
+     * @param id identificador do vínculo
+     * @return dados atualizados do vínculo
+     * @throws ResourceNotFoundException se o vínculo não existir
+     */
     @Transactional
     public EquipmentPlanResponseDTO toggleStatus(Long id) {
         EquipmentPlan equipmentPlan = getEquipmentPlanOrThrow(id);
@@ -121,6 +159,13 @@ public class EquipmentPlanService {
         return toResponseDTO(updatedPlan);
     }
 
+    /**
+     * Verifica se existe um vínculo ativo entre o equipamento e o plano.
+     *
+     * @param equipmentId identificador do equipamento
+     * @param maintenancePlanId identificador do plano de manutenção
+     * @throws IllegalStateException se não existir um vínculo ativo
+     */
     @Transactional(readOnly = true)
     public void validateLinkIsActive(Long equipmentId, Long maintenancePlanId) {
         boolean isActive = equipmentPlanRepository.existsByEquipment_IdAndMaintenancePlan_IdAndActiveTrue(
