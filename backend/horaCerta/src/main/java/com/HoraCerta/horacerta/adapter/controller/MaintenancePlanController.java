@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST responsável pelo gerenciamento dos planos
+ * de manutenção preventiva e de seus itens.
+ *
+ * @author Maria Luiza
+ */
 @RestController
 @RequestMapping("/api/maintenance-plans")
 public class MaintenancePlanController {
@@ -27,6 +33,12 @@ public class MaintenancePlanController {
         this.maintenancePlanItemService = maintenancePlanItemService;
     }
 
+    /**
+     * Cadastra um novo plano de manutenção.
+     *
+     * @param dto dados necessários para cadastrar o plano
+     * @return plano cadastrado com status HTTP 201 (Created)
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<MaintenancePlanResponseDTO> register(@RequestBody @Valid MaintenancePlanRequestDTO dto) {
@@ -34,6 +46,11 @@ public class MaintenancePlanController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Lista todos os planos de manutenção cadastrados.
+     *
+     * @return lista de planos de manutenção
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<List<MaintenancePlanResponseDTO>> findAll() {
@@ -41,6 +58,12 @@ public class MaintenancePlanController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Busca um plano de manutenção pelo identificador.
+     *
+     * @param id identificador do plano
+     * @return plano de manutenção encontrado
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<MaintenancePlanResponseDTO> findById(@PathVariable Long id) {
@@ -48,6 +71,13 @@ public class MaintenancePlanController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Atualiza os dados de um plano de manutenção existente.
+     *
+     * @param id identificador do plano que será atualizado
+     * @param dto novos dados do plano
+     * @return plano atualizado
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public ResponseEntity<MaintenancePlanResponseDTO> update(
@@ -57,6 +87,12 @@ public class MaintenancePlanController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Exclui um plano de manutenção.
+     *
+     * @param id identificador do plano que será excluído
+     * @return resposta sem conteúdo, com status HTTP 204 (No Content)
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
@@ -64,6 +100,12 @@ public class MaintenancePlanController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Alterna o estado de ativação de um plano de manutenção.
+     *
+     * @param id identificador do plano
+     * @return plano com o estado atualizado
+     */
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public ResponseEntity<MaintenancePlanResponseDTO> toggleStatus(@PathVariable Long id) {
@@ -71,6 +113,13 @@ public class MaintenancePlanController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Adiciona um item a um plano de manutenção existente.
+     *
+     * @param planId identificador do plano que receberá o item
+     * @param dto dados do item de manutenção
+     * @return item cadastrado com status HTTP 201 (Created)
+     */
     @PostMapping("/{planId}/items")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public ResponseEntity<MaintenancePlanItemResponseDTO> addItem(
