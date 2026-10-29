@@ -157,7 +157,6 @@ Os testes automatizados implementados no projeto foram executados com sucesso no
 
 **Vídeo de apresentação:** a ser adicionado.
 
-A demonstração deve apresentar os fluxos principais da aplicação e as funcionalidades efetivamente implementadas.
 
 ## Autoria
 
