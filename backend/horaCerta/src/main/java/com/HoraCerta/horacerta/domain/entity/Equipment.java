@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Representa um equipamento monitorado pelo sistema HoraCerta,
+ * incluindo sua identificação, horímetro atual e estado de ativação.
+ *
+ * @author Maria Luiza
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -45,6 +51,10 @@ public class Equipment {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * Inicializa a data de criação e garante os valores padrão
+     * do horímetro e do estado antes de persistir a entidade.
+     */
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

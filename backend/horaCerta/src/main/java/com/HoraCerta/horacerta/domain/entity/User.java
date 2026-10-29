@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Representa um usuário do sistema, armazenando seus dados de identificação,
+ * credenciais, perfil de acesso e estado de ativação.
+ *
+ * @author Maria Luiza
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -40,6 +46,10 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * Define a data de criação e garante que o usuário seja ativado
+     * por padrão quando nenhum estado tiver sido informado.
+     */
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

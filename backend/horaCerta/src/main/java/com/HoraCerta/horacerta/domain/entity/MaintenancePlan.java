@@ -9,6 +9,12 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representa um plano de manutenção preventiva, contendo sua identificação,
+ * descrição, estado de ativação e os itens de manutenção associados.
+ *
+ * @author Maria Luiza
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -35,6 +41,10 @@ public class MaintenancePlan {
     @EqualsAndHashCode.Exclude
     private List<MaintenancePlanItem> items = new ArrayList<>();
 
+    /**
+     * Define o plano como ativo antes da persistência quando
+     * nenhum estado de ativação tiver sido informado.
+     */
     @PrePersist
     protected void onCreate() {
         if (this.active == null) {

@@ -11,6 +11,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Representa uma ordem de serviço vinculada a um equipamento e,
+ * opcionalmente, a um item de manutenção preventiva.
+ * Armazena o tipo, o status, os horímetros, as datas e as
+ * informações relacionadas à execução do serviço.
+ *
+ * @author Maria Luiza
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -56,6 +64,10 @@ public class WorkOrder {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    /**
+     * Define os valores padrão para o tipo e o status da ordem
+     * de serviço antes de sua primeira persistência.
+     */
     @PrePersist
     protected void onCreate() {
         if (this.maintenanceType == null) {

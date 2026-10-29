@@ -8,6 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Representa um item de manutenção preventiva de um plano,
+ * definindo o serviço a executar, o intervalo entre manutenções
+ * e a margem de horas utilizada para alertas de vencimento.
+ *
+ * @author Maria Luiza
+ */
 @Entity
 @Data
 @NoArgsConstructor

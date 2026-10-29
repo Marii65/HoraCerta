@@ -9,6 +9,13 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Representa uma leitura do horímetro de um equipamento,
+ * registrando o valor informado, a data da leitura,
+ * o usuário responsável e uma observação opcional.
+ *
+ * @author Maria Luiza
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -39,6 +46,10 @@ public class HorometerReading {
     @Column(columnDefinition = "TEXT")
     private String observation;
 
+    /**
+     * Define a data e hora atuais como momento da leitura
+     * quando nenhuma data tiver sido informada.
+     */
     @PrePersist
     protected void onCreate() {
         if (this.readAt == null) {

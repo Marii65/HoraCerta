@@ -8,6 +8,15 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Representa o vínculo entre um equipamento e um plano de manutenção,
+ * armazenando o horímetro inicial de referência e o estado da associação.
+ *
+ * <p>A combinação de equipamento e plano deve ser única no sistema,
+ * evitando vínculos duplicados entre os mesmos registros.</p>
+ *
+ * @author Maria Luiza
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -44,6 +53,10 @@ public class EquipmentPlan {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * Inicializa a data de criação e garante os valores padrão
+     * do horímetro inicial e do estado da associação antes da persistência.
+     */
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
