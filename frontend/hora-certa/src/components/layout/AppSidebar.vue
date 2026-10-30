@@ -8,6 +8,8 @@ import {
   Clock3
 } from 'lucide-vue-next';
 
+import horaCertaLogo from '../../assets/images/logo/horacerta-logo.png';
+
 const menuItems = [
   {
     label: 'Dashboard',
@@ -40,28 +42,16 @@ const menuItems = [
 <template>
   <aside class="sidebar">
 
-    <!-- Logo -->
     <div class="sidebar-brand">
-      <div class="brand-icon">
-        <Clock3 :size="24" />
-      </div>
-
-      <span>HoraCerta</span>
+      <RouterLink to="/" class="sidebar-brand-link">
+        <img :src="horaCertaLogo" alt="HoraCerta" class="sidebar-logo" />
+      </RouterLink>
     </div>
 
     <nav class="sidebar-nav">
 
-      <RouterLink
-        v-for="item in menuItems"
-        :key="item.route"
-        :to="item.route"
-        class="sidebar-link"
-      >
-        <component
-          :is="item.icon"
-          :size="20"
-          stroke-width="1.8"
-        />
+      <RouterLink v-for="item in menuItems" :key="item.route" :to="item.route" class="sidebar-link">
+        <component :is="item.icon" :size="20" stroke-width="1.8" />
 
         <span>{{ item.label }}</span>
       </RouterLink>
