@@ -51,7 +51,7 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
   display: flex;
   align-items: stretch;
 
-  min-height: 230px;
+  min-height: 210px;
 
   overflow: hidden;
 
@@ -77,7 +77,7 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
 
   max-width: 52%;
 
-  padding: 32px 0 32px 40px;
+  padding: 28px 0 28px 34px;
 }
 
 .welcome-label {
@@ -85,7 +85,7 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
 
   color: var(--color-success);
 
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -95,7 +95,7 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
 
   color: var(--color-text-primary);
 
-  font-size: clamp(26px, 3vw, 34px);
+  font-size: clamp(30px, 3vw, 38px);
   line-height: 1.15;
 }
 
@@ -106,7 +106,7 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
 
   color: var(--color-text-secondary);
 
-  font-size: 14px;
+  font-size: 20px;
   line-height: 1.6;
 }
 
@@ -149,7 +149,7 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
   position: relative;
 
   width: 52%;
-  min-height: 230px;
+  min-height: 210px;
 
   overflow: hidden;
 }
