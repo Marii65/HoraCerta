@@ -177,10 +177,6 @@ function toggleEquipmentStatus(equipment) {
         <h1>
           Equipamentos
         </h1>
-
-        <p>
-          Gerencie os equipamentos cadastrados na sua frota.
-        </p>
       </div>
 
 

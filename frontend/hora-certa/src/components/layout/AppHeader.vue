@@ -1,6 +1,5 @@
 <script setup>
 import {
-  Search,
   CalendarDays,
   Bell,
   ChevronDown
@@ -9,15 +8,6 @@ import {
 
 <template>
   <header class="app-header">
-
-    <div class="header-search">
-      <Search :size="19" />
-
-      <input
-        type="text"
-        placeholder="Buscar equipamento, plano ou ordem de serviço..."
-      />
-    </div>
 
     <div class="header-actions">
 

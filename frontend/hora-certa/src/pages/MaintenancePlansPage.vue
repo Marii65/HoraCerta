@@ -1,6 +1,10 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { Plus } from 'lucide-vue-next';
+
+import {
+  Plus,
+  Settings2
+} from 'lucide-vue-next';
 
 import MaintenancePlanFilters
   from '../components/maintenance/MaintenancePlanFilters.vue';
@@ -21,29 +25,45 @@ const maintenancePlans = ref([
 ]);
 
 const searchTerm = ref('');
-const selectedStatus = ref('');
 
+const selectedStatus = ref('all');
 
 const filteredMaintenancePlans = computed(() => {
+
   const search = searchTerm.value
     .trim()
     .toLowerCase();
+
 
   return maintenancePlans.value.filter((plan) => {
 
     const matchesSearch =
       !search ||
-      plan.name.toLowerCase().includes(search) ||
+      plan.name
+        .toLowerCase()
+        .includes(search) ||
       (plan.description ?? '')
         .toLowerCase()
         .includes(search);
 
     const matchesStatus =
-      selectedStatus.value === '' ||
-      String(plan.active) === selectedStatus.value;
+      selectedStatus.value === 'all' ||
+
+      (
+        selectedStatus.value === 'active' &&
+        plan.active
+      ) ||
+
+      (
+        selectedStatus.value === 'inactive' &&
+        !plan.active
+      );
+
 
     return matchesSearch && matchesStatus;
+
   });
+
 });
 
 const isPlanModalOpen = ref(false);
@@ -68,11 +88,11 @@ function closePlanModal() {
   editingPlan.value = null;
 }
 
-
 function handleSavePlan(formData) {
 
   if (editingPlan.value) {
     updatePlan(formData);
+
     return;
   }
 
@@ -89,6 +109,7 @@ function createPlan(formData) {
     active: true
   };
 
+
   maintenancePlans.value.unshift(newPlan);
 
   closePlanModal();
@@ -100,18 +121,20 @@ function updatePlan(formData) {
     (plan) => plan.id === editingPlan.value.id
   );
 
+
   if (index === -1) {
     return;
   }
+
 
   maintenancePlans.value[index] = {
     ...maintenancePlans.value[index],
     ...formData
   };
 
+
   closePlanModal();
 }
-
 
 function togglePlanStatus(plan) {
 
@@ -119,18 +142,22 @@ function togglePlanStatus(plan) {
     (item) => item.id === plan.id
   );
 
+
   if (index === -1) {
     return;
   }
 
+
   const currentPlan =
     maintenancePlans.value[index];
+
 
   maintenancePlans.value[index] = {
     ...currentPlan,
 
     active: !currentPlan.active
   };
+
 }
 </script>
 
@@ -138,28 +165,69 @@ function togglePlanStatus(plan) {
 <template>
   <div class="maintenance-plans-page">
 
-    <header class="maintenance-plans-header">
+    <header class="maintenance-plans-banner">
 
-      <div>
-        <h1>
-          Planos de Manutenção
-        </h1>
+      <div class="maintenance-banner-content">
 
-        <p>
-          Crie e gerencie os planos de manutenção preventiva.
-        </p>
+        <div class="maintenance-breadcrumb">
+
+          <span>
+            Home
+          </span>
+
+          <span class="breadcrumb-separator">
+            ›
+          </span>
+
+          <strong>
+            Planos de Manutenção
+          </strong>
+
+        </div>
+
+        <div class="maintenance-banner-main">
+
+          <div class="maintenance-banner-text">
+
+            <h1>
+              Planos de Manutenção
+            </h1>
+
+            <p>
+              Organize as rotinas preventivas dos seus equipamentos
+              e mantenha sua frota sempre em dia.
+            </p>
+
+          </div>
+
+
+          <button
+            class="new-plan-button"
+            type="button"
+            @click="openCreateModal"
+          >
+
+            <Plus :size="18" />
+
+            Novo Plano
+
+          </button>
+
+        </div>
+
       </div>
 
+      <div class="maintenance-banner-decoration">
 
-      <button
-        class="new-plan-button"
-        type="button"
-        @click="openCreateModal"
-      >
-        <Plus :size="18" />
+        <div class="maintenance-banner-circle"></div>
 
-        Novo Plano
-      </button>
+        <Settings2
+          class="maintenance-banner-gear"
+          :size="82"
+          stroke-width="1.2"
+        />
+
+      </div>
 
     </header>
 
