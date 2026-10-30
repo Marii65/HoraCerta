@@ -34,7 +34,7 @@ Oferecer uma solução para registrar equipamentos, configurar planos de manuten
 | Flyway | Versionamento das migrações do banco |
 | Maven Wrapper | Compilação e execução do backend |
 | SpringDoc OpenAPI | Documentação interativa da API |
-| React | Tecnologia prevista para o frontend |
+| Vue | Tecnologia prevista para o frontend |
 
 ## Arquitetura
 
