@@ -8,57 +8,43 @@ import {
 
 import StatCard from './StatCard.vue';
 
-const stats = [
-  {
-    id: 'equipment',
-    value: 28,
-    label: 'Equipamentos',
-    description: 'Total da frota',
-    icon: Truck,
-    variant: 'default'
-  },
-  {
-    id: 'ok',
-    value: 21,
-    label: 'Em dia',
-    description: '75% da frota',
-    icon: CircleCheck,
-    variant: 'success'
-  },
-  {
-    id: 'warning',
-    value: 4,
-    label: 'Em atenção',
-    description: 'Necessitam planejamento',
-    icon: TriangleAlert,
-    variant: 'warning'
-  },
-  {
-    id: 'overdue',
-    value: 3,
-    label: 'Vencidos',
-    description: 'Ação necessária',
-    icon: CircleAlert,
-    variant: 'danger'
+
+const props = defineProps({
+  stats: {
+    type: Array,
+    required: true
   }
-];
+});
+
+const icons = {
+  equipment: Truck,
+  ok: CircleCheck,
+  warning: TriangleAlert,
+  overdue: CircleAlert
+};
+
+function getStatIcon(statId) {
+  return icons[statId] ?? Truck;
+}
 </script>
+
 
 <template>
   <section class="stats-grid">
 
     <StatCard
-      v-for="stat in stats"
+      v-for="stat in props.stats"
       :key="stat.id"
       :value="stat.value"
       :label="stat.label"
       :description="stat.description"
-      :icon="stat.icon"
+      :icon="getStatIcon(stat.id)"
       :variant="stat.variant"
     />
 
   </section>
 </template>
+
 
 <style scoped>
 .stats-grid {
@@ -68,9 +54,6 @@ const stats = [
 
   gap: 16px;
 }
-
-
-/*RESPONSIVIDADE*/
 
 @media (max-width: 1100px) {
   .stats-grid {

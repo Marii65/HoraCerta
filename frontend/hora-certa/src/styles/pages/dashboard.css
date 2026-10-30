@@ -1,0 +1,39 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(300px, 0.95fr);
+
+  gap: 16px;
+
+  align-items: start;
+}
+
+.dashboard-main {
+  min-width: 0;
+}
+
+.dashboard-side {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  min-width: 0;
+}
+
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1000px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

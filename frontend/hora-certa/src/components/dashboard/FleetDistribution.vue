@@ -1,94 +1,171 @@
 <script setup>
-const fleet = {
-  total: 28,
-  ok: 21,
-  warning: 4,
-  overdue: 3
-};
+import { computed } from 'vue';
 
-const okPercentage = Math.round(
-  (fleet.ok / fleet.total) * 100
-);
 
-const warningPercentage = Math.round(
-  (fleet.warning / fleet.total) * 100
-);
+const props = defineProps({
+  fleet: {
+    type: Object,
+    required: true
+  }
+});
 
-const overduePercentage = Math.round(
-  (fleet.overdue / fleet.total) * 100
-);
+const okPercentage = computed(() => {
+  if (!props.fleet.total) {
+    return 0;
+  }
 
-const okEnd = (fleet.ok / fleet.total) * 100;
+  return Math.round(
+    (props.fleet.ok / props.fleet.total) * 100
+  );
+});
 
-const warningEnd =
-  ((fleet.ok + fleet.warning) / fleet.total) * 100;
 
-const chartStyle = {
+const warningPercentage = computed(() => {
+  if (!props.fleet.total) {
+    return 0;
+  }
+
+  return Math.round(
+    (props.fleet.warning / props.fleet.total) * 100
+  );
+});
+
+
+const overduePercentage = computed(() => {
+  if (!props.fleet.total) {
+    return 0;
+  }
+
+  return Math.round(
+    (props.fleet.overdue / props.fleet.total) * 100
+  );
+});
+
+const okEnd = computed(() => {
+  if (!props.fleet.total) {
+    return 0;
+  }
+
+  return (
+    props.fleet.ok /
+    props.fleet.total
+  ) * 100;
+});
+
+
+const warningEnd = computed(() => {
+  if (!props.fleet.total) {
+    return 0;
+  }
+
+  return (
+    (props.fleet.ok + props.fleet.warning) /
+    props.fleet.total
+  ) * 100;
+});
+
+const chartStyle = computed(() => ({
   background: `
     conic-gradient(
-      var(--color-success) 0% ${okEnd}%,
-      var(--color-warning) ${okEnd}% ${warningEnd}%,
-      var(--color-danger) ${warningEnd}% 100%
+      var(--color-success) 0% ${okEnd.value}%,
+      var(--color-warning) ${okEnd.value}% ${warningEnd.value}%,
+      var(--color-danger) ${warningEnd.value}% 100%
     )
   `
-};
+}));
 </script>
+
 
 <template>
   <section class="fleet-card">
 
     <div class="fleet-header">
-      <h2>Distribuição da frota</h2>
+
+      <h2>
+        Distribuição da frota
+      </h2>
 
       <select aria-label="Filtrar distribuição">
-        <option>Por status</option>
+        <option>
+          Por status
+        </option>
       </select>
+
     </div>
+
 
     <div class="fleet-content">
 
-      <!-- GRÁFICO -->
       <div
         class="donut-chart"
         :style="chartStyle"
       >
+
         <div class="donut-center">
-          <strong>{{ fleet.total }}</strong>
-          <span>Total</span>
+
+          <strong>
+            {{ props.fleet.total }}
+          </strong>
+
+          <span>
+            Total
+          </span>
+
         </div>
+
       </div>
 
-      <!-- LEGENDA -->
+
       <div class="fleet-legend">
 
         <div class="legend-item">
-          <span class="legend-dot legend-dot--success"></span>
 
-          <strong>{{ fleet.ok }}</strong>
+          <span
+            class="legend-dot legend-dot--success"
+          ></span>
+
+          <strong>
+            {{ props.fleet.ok }}
+          </strong>
 
           <span>
             Em dia ({{ okPercentage }}%)
           </span>
+
         </div>
 
-        <div class="legend-item">
-          <span class="legend-dot legend-dot--warning"></span>
 
-          <strong>{{ fleet.warning }}</strong>
+        <div class="legend-item">
+
+          <span
+            class="legend-dot legend-dot--warning"
+          ></span>
+
+          <strong>
+            {{ props.fleet.warning }}
+          </strong>
 
           <span>
             Em atenção ({{ warningPercentage }}%)
           </span>
+
         </div>
 
-        <div class="legend-item">
-          <span class="legend-dot legend-dot--danger"></span>
 
-          <strong>{{ fleet.overdue }}</strong>
+        <div class="legend-item">
+
+          <span
+            class="legend-dot legend-dot--danger"
+          ></span>
+
+          <strong>
+            {{ props.fleet.overdue }}
+          </strong>
 
           <span>
             Vencidos ({{ overduePercentage }}%)
           </span>
+
         </div>
 
       </div>
@@ -97,6 +174,7 @@ const chartStyle = {
 
   </section>
 </template>
+
 
 <style scoped>
 .fleet-card {
@@ -150,9 +228,6 @@ const chartStyle = {
   gap: 24px;
 }
 
-
-/* GRÁFICO */
-
 .donut-chart {
   position: relative;
 
@@ -205,9 +280,6 @@ const chartStyle = {
   font-size: 11px;
 }
 
-
-/* LEGENDA */
-
 .fleet-legend {
   display: flex;
   flex-direction: column;
@@ -258,10 +330,11 @@ const chartStyle = {
   white-space: nowrap;
 }
 
-
 @media (max-width: 1250px) {
+
   .fleet-content {
     flex-direction: column;
   }
+
 }
 </style>
