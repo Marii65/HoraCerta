@@ -1,0 +1,23 @@
+export const equipmentCategories = [
+  'Caminhão Articulado',
+  'Caminhão Fora de Estrada',
+  'Caminhão Pipa',
+  'Caminhão Vácuo',
+  'Caminhão',
+  'Compressor de Ar',
+  'Empilhadeira',
+  'Escavadeira',
+  'Gerador',
+  'Guindaste',
+  'Manipulador Telescópico',
+  'Motoniveladora',
+  'Pá Carregadeira',
+  'Plataforma Elevatória',
+  'Retroescavadeira',
+  'Rolo Compactador',
+  'Silo',
+  'Torre de Iluminação',
+  'Trator de Esteiras',
+  'Trator',
+  'Vibroacabadora'
+];
