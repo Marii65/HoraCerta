@@ -226,13 +226,13 @@
 
 
 .work-order-table th {
-  padding: 12px 14px;
+  padding: 11px 16px;
 
   border-bottom: 1px solid var(--color-border);
 
   color: var(--color-text-muted);
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
 
   text-align: left;
@@ -264,7 +264,7 @@
 .work-order-number {
   color: var(--color-primary-dark);
 
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 750;
 
   white-space: nowrap;
@@ -327,7 +327,7 @@
 
   color: var(--color-text-muted);
 
-  font-size: 11px;
+  font-size: 12px;
 
   text-overflow: ellipsis;
 
@@ -371,7 +371,7 @@
 .work-order-maintenance-title strong {
   max-width: 220px;
 
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -404,7 +404,7 @@
 
   border-radius: 20px;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
 
   white-space: nowrap;
@@ -599,12 +599,12 @@
 .work-order-observation > span {
   color: var(--color-text-muted);
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
 
   text-transform: uppercase;
 
-  letter-spacing: 0.4px;
+  letter-spacing: 1.0px;
 }
 
 
@@ -613,13 +613,15 @@
 
   font-size: 13px;
   font-weight: 650;
+  letter-spacing: 1.0px;
 }
 
 
 .work-order-detail small {
   color: var(--color-text-muted);
 
-  font-size: 11px;
+  font-size: 15px;
+  letter-spacing: 1.0px;
 }
 
 /*EXECUÇÃO DA ORDEM*/
@@ -649,7 +651,7 @@
 .work-order-execution strong {
   color: var(--color-text-primary);
 
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 650;
 }
 
@@ -669,8 +671,8 @@
 
   color: var(--color-text-secondary);
 
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.0;
 }
 
 /*AÇÕES DA ORDEM EXPANDIDA*/
@@ -695,7 +697,7 @@
 
   border-radius: var(--radius-md);
 
-  font-size: 11px;
+  font-size: 14 px;
   font-weight: 650;
 
   cursor: pointer;
@@ -955,8 +957,8 @@
     color 0.2s ease;
 }
 
-
 /* BOTÃO DE CONCLUSÃO */
+
 .complete-work-order-actions .primary-button {
   border: 1px solid var(--color-primary);
 
@@ -992,6 +994,282 @@
   background-color: var(--color-background);
 
   color: var(--color-text-primary);
+}
+
+/*MODAL - NOVA ORDEM DE SERVIÇO*/
+
+.work-order-form-modal {
+  width: min(620px, calc(100% - 32px));
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  border-radius: var(--radius-xl);
+
+  background-color: var(--color-surface);
+
+  box-shadow:
+    0 24px 60px rgba(10, 25, 21, 0.20);
+}
+
+/* CABEÇALHO DO FORMULÁRIO*/
+
+.work-order-form-heading {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+}
+
+
+.work-order-form-heading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/*FORMULÁRIO - NOVA ORDEM*/
+
+.work-order-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  padding: 24px 26px 26px;
+}
+
+.work-order-form .form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  width: 100%;
+}
+
+
+.work-order-form .form-field > label {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/*INPUTS, SELECTS E TEXTAREA*/
+
+.work-order-form input,
+.work-order-form select,
+.work-order-form textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  outline: none;
+
+  background-color: #ffffff;
+  color: var(--color-text-primary);
+
+  font-family: inherit;
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.work-order-form input,
+.work-order-form select {
+  height: 42px;
+
+  padding: 0 12px;
+}
+
+
+.work-order-form textarea {
+  min-height: 100px;
+
+  padding: 11px 12px;
+
+  resize: vertical;
+
+  line-height: 1.5;
+}
+
+
+.work-order-form input:focus,
+.work-order-form select:focus,
+.work-order-form textarea:focus {
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 3px rgba(27, 105, 80, 0.08);
+}
+
+
+.work-order-form input::placeholder,
+.work-order-form textarea::placeholder {
+  color: var(--color-text-muted);
+
+  opacity: 0.7;
+}
+
+/*LINHA DE AGENDAMENTO*/
+
+.work-order-form-row {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px;
+}
+
+/*INFORMAÇÃO DO EQUIPAMENTO*/
+
+.work-order-form-equipment-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 14px;
+
+  border: 1px solid #d6e8e0;
+  border-radius: var(--radius-md);
+
+  background-color: #f0f7f4;
+}
+
+
+.work-order-form-equipment-info span {
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+}
+
+
+.work-order-form-equipment-info strong {
+  color: var(--color-primary-dark);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/*VALIDAÇÃO*/
+
+.work-order-form-error {
+  color: var(--color-danger);
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+.work-order-form .optional-field {
+  color: var(--color-text-muted);
+
+  font-size: 10px;
+  font-weight: 400;
+}
+
+/*AÇÕES DO FORMULÁRIO*/
+
+.work-order-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+
+.work-order-form-actions .primary-button,
+.work-order-form-actions .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 40px;
+
+  padding: 0 16px;
+
+  border-radius: var(--radius-md);
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+
+/* BOTÃO CANCELAR */
+
+.work-order-form-actions .secondary-button {
+  border: 1px solid var(--color-border);
+
+  background-color: transparent;
+  color: var(--color-text-secondary);
+}
+
+
+.work-order-form-actions .secondary-button:hover {
+  background-color: var(--color-background);
+
+  color: var(--color-text-primary);
+}
+
+
+/* BOTÃO CRIAR ORDEM */
+
+.work-order-form-actions .primary-button {
+  border: 1px solid var(--color-primary);
+
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+
+.work-order-form-actions .primary-button:hover:not(:disabled) {
+  border-color: var(--color-primary-dark);
+
+  background-color: var(--color-primary-dark);
+}
+
+
+.work-order-form-actions .primary-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
 }
 
 /*RESPONSIVE*/

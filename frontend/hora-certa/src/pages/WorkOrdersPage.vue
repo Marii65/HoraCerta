@@ -1,22 +1,19 @@
 <script setup>
 import { computed, ref } from 'vue';
 
-import {
-  ClipboardList,
-  Plus
-} from 'lucide-vue-next';
+import { ClipboardList, Plus } from 'lucide-vue-next';
 
 import { workOrderMocks } from '../mocks/workOrders';
 import { equipmentMocks } from '../mocks/equipments';
 
-import WorkOrderTable
-  from '../components/workorders/WorkOrderTable.vue';
+import WorkOrderTable from '../components/workorders/WorkOrderTable.vue';
 
-import CompleteWorkOrderModal
-  from '../components/workorders/CompleteWorkOrderModal.vue';
+import CompleteWorkOrderModal from '../components/workorders/CompleteWorkOrderModal.vue';
 
 import '../styles/pages/work-orders.css';
 
+import WorkOrderFormModal from '../components/workorders/WorkOrderFormModal.vue';
+import { maintenancePlanMocks } from '../mocks/maintenancePlans';
 
 const workOrders = ref([
   ...workOrderMocks
@@ -30,6 +27,8 @@ const selectedStatus = ref('all');
 const selectedWorkOrder = ref(null);
 
 const isCompleteModalOpen = ref(false);
+
+const isWorkOrderModalOpen = ref(false);
 
 const filteredWorkOrders = computed(() => {
 
@@ -87,13 +86,14 @@ const selectedWorkOrderEquipment = computed(() => {
 });
 
 function openWorkOrderModal() {
+  isWorkOrderModalOpen.value = true;
+}
 
-  console.log('Abrir modal de nova ordem');
-
+function closeWorkOrderModal() {
+  isWorkOrderModalOpen.value = false;
 }
 
 function handleStartWorkOrder(workOrder) {
-
   if (workOrder.status !== 'SCHEDULED') {
     return;
   }
@@ -103,11 +103,9 @@ function handleStartWorkOrder(workOrder) {
 
   workOrder.startedAt =
     new Date().toISOString();
-
 }
 
 function handleCancelWorkOrder(workOrder) {
-
   if (workOrder.status !== 'SCHEDULED') {
     return;
   }
@@ -121,35 +119,25 @@ function handleCancelWorkOrder(workOrder) {
   if (!confirmed) {
     return;
   }
-
-
   workOrder.status = 'CANCELED';
-
 }
 
 function openCompleteWorkOrderModal(workOrder) {
-
   if (workOrder.status !== 'IN_PROGRESS') {
     return;
   }
-
-
   selectedWorkOrder.value = workOrder;
 
   isCompleteModalOpen.value = true;
-
 }
 
 function closeCompleteWorkOrderModal() {
-
   isCompleteModalOpen.value = false;
 
   selectedWorkOrder.value = null;
-
 }
 
 function handleCompleteWorkOrder(formData) {
-
   if (
     !selectedWorkOrder.value ||
     !selectedWorkOrderEquipment.value
@@ -164,11 +152,9 @@ function handleCompleteWorkOrder(formData) {
   const equipment =
     selectedWorkOrderEquipment.value;
 
-
   if (workOrder.status !== 'IN_PROGRESS') {
     return;
   }
-
 
   workOrder.status = 'COMPLETED';
 
@@ -187,11 +173,92 @@ function handleCompleteWorkOrder(formData) {
       formData.completionObservation;
 
   }
-
-
   closeCompleteWorkOrderModal();
+}
+
+function handleSaveWorkOrder(formData) {
+  const equipment = equipmentMocks.find(
+    (item) =>
+      item.id === formData.equipmentId
+  );
+
+
+  const maintenancePlan =
+    maintenancePlanMocks.find(
+      (item) =>
+        item.id === formData.maintenancePlanId
+    );
+
+  if (!equipment || !maintenancePlan) {
+    return;
+  }
+
+  const nextNumber =
+    Math.max(
+      0,
+      ...workOrders.value.map(
+        (workOrder) =>
+          Number(
+            workOrder.orderNumber
+              .replace('OS-', '')
+          ) || 0
+      )
+    ) + 1;
+
+
+  const newWorkOrder = {
+
+    id: Date.now(),
+
+    orderNumber:
+      `OS-${String(nextNumber).padStart(3, '0')}`,
+
+    equipmentId:
+      equipment.id,
+
+    equipmentCode:
+      equipment.code,
+
+    equipmentName:
+      equipment.name,
+
+    equipmentCategory:
+      equipment.category,
+
+    maintenancePlanId:
+      maintenancePlan.id,
+
+    maintenancePlanName:
+      maintenancePlan.name,
+
+    scheduledDate:
+      formData.scheduledDate,
+
+    scheduledHorometer:
+      formData.scheduledHorometer,
+
+    status: 'SCHEDULED',
+
+    observation:
+      formData.observation,
+
+    startedAt: null,
+
+    completedAt: null,
+
+    completionHorometer: null
+
+  };
+
+  workOrders.value.unshift(
+    newWorkOrder
+  );
+
+
+  closeWorkOrderModal();
 
 }
+
 </script>
 
 
@@ -207,10 +274,7 @@ function handleCompleteWorkOrder(formData) {
 
         <div class="work-orders-title-icon">
 
-          <ClipboardList
-            :size="22"
-            stroke-width="1.8"
-          />
+          <ClipboardList :size="22" stroke-width="1.8" />
 
         </div>
 
@@ -231,11 +295,7 @@ function handleCompleteWorkOrder(formData) {
       </div>
 
 
-      <button
-        class="new-work-order-button"
-        type="button"
-        @click="openWorkOrderModal"
-      >
+      <button class="new-work-order-button" type="button" @click="openWorkOrderModal">
 
         <Plus :size="17" />
 
@@ -248,19 +308,6 @@ function handleCompleteWorkOrder(formData) {
     <section class="work-orders-list">
 
       <div class="work-orders-list-heading">
-
-        <div>
-
-          <span class="work-orders-eyebrow">
-            MANUTENÇÕES
-          </span>
-
-          <h2>
-            Ordens registradas
-          </h2>
-
-        </div>
-
 
         <span class="work-orders-total">
 
@@ -284,11 +331,7 @@ function handleCompleteWorkOrder(formData) {
             Buscar
           </span>
 
-          <input
-            v-model="searchTerm"
-            type="text"
-            placeholder="Número, equipamento ou plano..."
-          />
+          <input v-model="searchTerm" type="text" placeholder="Número, equipamento ou plano..." />
 
         </label>
 
@@ -327,26 +370,20 @@ function handleCompleteWorkOrder(formData) {
 
       </div>
 
-      <WorkOrderTable
-        :work-orders="filteredWorkOrders"
-        @start="handleStartWorkOrder"
-        @cancel="handleCancelWorkOrder"
-        @complete="openCompleteWorkOrderModal"
-      />
+      <WorkOrderTable :work-orders="filteredWorkOrders" @start="handleStartWorkOrder" @cancel="handleCancelWorkOrder"
+        @complete="openCompleteWorkOrderModal" />
 
     </section>
 
-    <CompleteWorkOrderModal
-      v-if="
-        isCompleteModalOpen &&
-        selectedWorkOrder &&
-        selectedWorkOrderEquipment
-      "
-      :work-order="selectedWorkOrder"
-      :equipment="selectedWorkOrderEquipment"
-      @close="closeCompleteWorkOrderModal"
-      @complete="handleCompleteWorkOrder"
-    />
+    <WorkOrderFormModal v-if="isWorkOrderModalOpen" :equipments="equipmentMocks"
+      :maintenance-plans="maintenancePlanMocks" @close="closeWorkOrderModal" @save="handleSaveWorkOrder" />
+
+    <CompleteWorkOrderModal v-if="
+      isCompleteModalOpen &&
+      selectedWorkOrder &&
+      selectedWorkOrderEquipment
+    " :work-order="selectedWorkOrder" :equipment="selectedWorkOrderEquipment" @close="closeCompleteWorkOrderModal"
+      @complete="handleCompleteWorkOrder" />
 
   </div>
 
