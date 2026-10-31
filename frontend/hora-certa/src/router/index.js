@@ -8,8 +8,20 @@ import EquipmentPage from '../pages/EquipmentPage.vue';
 import MaintenancePlansPage from '../pages/MaintenancePlansPage.vue';
 import ReadingsPage from '../pages/ReadingsPage.vue';
 import WorkOrdersPage from '../pages/WorkOrdersPage.vue';
+import LoginPage from '../pages/LoginPage.vue';
+import RegisterPage from '../pages/RegisterPage.vue';
 
 const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginPage
+  },
+  {
+    path: '/cadastro',
+    name: 'register',
+    component: RegisterPage
+  },
   {
     path: '/',
     component: AppLayout,
@@ -45,6 +57,7 @@ const routes = [
         meta: { title: 'Ordens de Serviço' }
       }
     ]
+
   },
   {
     path: '/:pathMatch(.*)*',
