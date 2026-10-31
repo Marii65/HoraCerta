@@ -18,22 +18,22 @@ const menuItems = [
   },
   {
     label: 'Equipamentos',
-    route: '/equipamentos',
+    route: '/app/equipamentos',
     icon: Truck
   },
   {
     label: 'Planos de Manutenção',
-    route: '/planos-manutencao',
+    route: '/app/planos-manutencao',
     icon: ClipboardList
   },
   {
     label: 'Leituras de Horímetro',
-    route: '/leituras',
+    route: 'app//leituras',
     icon: Gauge
   },
   {
     label: 'Ordens de Serviço',
-    route: '/ordens-servico',
+    route: 'app//ordens-servico',
     icon: Settings
   }
 ];

@@ -11,63 +11,130 @@ import WorkOrdersPage from '../pages/WorkOrdersPage.vue';
 import LoginPage from '../pages/LoginPage.vue';
 import RegisterPage from '../pages/RegisterPage.vue';
 
+import { isAuthenticated } from '../services/authService';
+
 const routes = [
+
+  {
+    path: '/',
+    redirect: '/login'
+  },
+
+  // Rotas públicas
   {
     path: '/login',
     name: 'login',
-    component: LoginPage
+    component: LoginPage,
+    meta: {
+      guestOnly: true
+    }
   },
+
   {
     path: '/cadastro',
     name: 'register',
-    component: RegisterPage
+    component: RegisterPage,
+    meta: {
+      guestOnly: true
+    }
   },
+
+  // Sistema
   {
-    path: '/',
+    path: '/app',
     component: AppLayout,
+    meta: {
+      requiresAuth: true
+    },
+
     children: [
       {
         path: '',
         name: 'dashboard',
         component: DashboardPage,
-        meta: { title: 'Painel Principal' }
+        meta: {
+          title: 'Painel Principal'
+        }
       },
+
       {
         path: 'equipamentos',
         name: 'equipments',
         component: EquipmentPage,
-        meta: { title: 'Equipamentos' }
+        meta: {
+          title: 'Equipamentos'
+        }
       },
+
       {
         path: 'planos-manutencao',
         name: 'maintenance-plans',
         component: MaintenancePlansPage,
-        meta: { title: 'Planos de Manutenção' }
+        meta: {
+          title: 'Planos de Manutenção'
+        }
       },
+
       {
         path: 'leituras',
         name: 'readings',
         component: ReadingsPage,
-        meta: { title: 'Leituras de Horímetro' }
+        meta: {
+          title: 'Leituras'
+        }
       },
+
       {
         path: 'ordens-servico',
         name: 'work-orders',
         component: WorkOrdersPage,
-        meta: { title: 'Ordens de Serviço' }
+        meta: {
+          title: 'Ordens de Serviço'
+        }
       }
     ]
-
   },
+
   {
     path: '/:pathMatch(.*)*',
     redirect: '/'
   }
 ];
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
+
+router.beforeEach((to) => {
+
+  const authenticated = isAuthenticated();
+
+  if (
+    to.matched.some(
+      route => route.meta.requiresAuth
+    ) &&
+    !authenticated
+  ) {
+    return {
+      name: 'login',
+      query: {
+        redirect: to.fullPath
+      }
+    };
+  }
+
+  if (
+    to.meta.guestOnly &&
+    authenticated
+  ) {
+    return {
+      name: 'dashboard'
+    };
+  }
+});
+
 
 export default router;

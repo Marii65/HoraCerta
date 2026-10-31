@@ -34,39 +34,40 @@ function togglePasswordVisibility() {
 }
 
 async function handleLogin() {
-
     errorMessage.value = '';
 
     if (!email.value || !password.value) {
-        errorMessage.value =
-            'Preencha o e-mail e a senha.';
-
+        errorMessage.value = 'Preencha o e-mail e a senha.';
         return;
     }
 
     try {
-
         isLoading.value = true;
 
-        await login({
-            email: email.value.trim(),
-            password: password.value
-        });
+        await login(
+            {
+                email: email.value.trim(),
+                password: password.value
+            },
+            rememberMe.value
+        );
 
-        await router.push('/');
+        const redirect =
+            router.currentRoute.value.query.redirect;
+
+        await router.push(
+            typeof redirect === 'string'
+                ? redirect
+                : '/app'
+        );
 
     } catch (error) {
-
         errorMessage.value =
             error.message ||
             'Não foi possível realizar o login.';
-
     } finally {
-
         isLoading.value = false;
-
     }
-
 }
 
 function goToRegister() {

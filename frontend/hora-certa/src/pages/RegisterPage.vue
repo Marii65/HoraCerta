@@ -15,6 +15,7 @@ import horaCertaLogo from '../assets/images/logo/horacerta-logo.png';
 import fundoLogin from '../assets/images/fundo-login.png';
 
 import '../styles/pages/login.css';
+import { register } from '../services/authService';
 
 
 const router = useRouter();
@@ -62,11 +63,35 @@ async function handleRegister() {
         return;
     }
 
+    if (password.value.length < 8) {
+        errorMessage.value =
+            'A senha deve  possuir pelo menos 8 caracteres';
+        return;
+    }
+
     if (password.value !== confirmPassword.value) {
         errorMessage.value =
             'As senhas não coincidem.';
 
         return;
+    }
+
+    try {
+        isLoading.value = true;
+
+        await register({
+            username: name.value.trim(),
+            email: email.value.trim(),
+            password: password.value
+        });
+
+        await router.push('/login');
+    } catch (error) {
+        errorMessage.value =
+            error.message ||
+            'Não foi possivel realizar o cadastro.'
+    } finally {
+        isLoading.value = false;
     }
 }
 

@@ -27,8 +27,8 @@
   grid-template-columns:
     52% 48%;
 
-  width: min(920px, 100%);
-  height: 610px;
+  width: min(1000px, 100%);
+  height: 680px;
 
   overflow: hidden;
 
@@ -222,7 +222,7 @@
 
   color: #73827d;
 
-  font-size: 11px;
+  font-size: 14px;
 
   line-height: 1.5;
 }
@@ -252,7 +252,7 @@
 .login-field label {
   color: #273d36;
 
-  font-size: 10px;
+  font-size: 15px;
   font-weight: 700;
 }
 
@@ -309,7 +309,7 @@
   color: #233a33;
 
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
@@ -368,7 +368,7 @@
 
   color: #41564f;
 
-  font-size: 9px;
+  font-size: 12px;
 
   cursor: pointer;
 }
@@ -396,7 +396,7 @@
   color: #39705e;
 
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 
   cursor: pointer;
@@ -414,7 +414,7 @@
 
   color: #b64343;
 
-  font-size: 9px;
+  font-size: 15px;
 
   line-height: 1.4;
 }
@@ -438,7 +438,7 @@
   color: #ffffff;
 
   font-family: inherit;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 600;
 
   cursor: pointer;
@@ -454,7 +454,7 @@
 
 
 .login-submit:hover:not(:disabled) {
-  background-color: #205743;
+  background-color: #184233;
 }
 
 
@@ -496,7 +496,7 @@
 .login-divider small {
   color: #87938f;
 
-  font-size: 8px;
+  font-size: 12px;
 }
 
 /*BOTÃO CADASTRAR-SE*/
@@ -521,7 +521,7 @@
   color: #32483f;
 
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
 
   cursor: pointer;
