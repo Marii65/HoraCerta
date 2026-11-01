@@ -9,29 +9,6 @@
 
 /*CABEÇALHO*/
 
-.equipment-page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 24px;
-}
-
-.equipment-page-header h1 {
-  margin-bottom: 5px;
-
-  color: var(--color-text-primary);
-
-  font-size: 25px;
-  font-weight: 700;
-}
-
-.equipment-page-header p {
-  color: var(--color-text-secondary);
-
-  font-size: 13px;
-}
-
 .new-equipment-button {
   display: inline-flex;
   align-items: center;
@@ -84,31 +61,47 @@
 .equipment-search {
   display: flex;
   align-items: center;
-
   gap: 10px;
 
   width: min(430px, 45%);
-
+  height: 40px;
   padding: 0 13px;
 
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 
+  background-color: var(--color-surface);
   color: var(--color-text-muted);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.equipment-search:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
 }
 
 .equipment-search input {
   width: 100%;
-  height: 39px;
+  height: 100%;
 
   border: none;
   outline: none;
+  box-shadow: none;
 
   background: transparent;
 
   color: var(--color-text-primary);
-
   font-size: 12px;
+}
+
+.equipment-search input:focus,
+.equipment-search input:focus-visible {
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 
 .equipment-search input::placeholder {
@@ -123,21 +116,27 @@
 }
 
 .filter-actions select {
-  height: 39px;
+  height: 40px;
 
   padding: 0 32px 0 12px;
 
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-
   outline: none;
 
   background-color: var(--color-surface);
-
   color: var(--color-text-secondary);
 
   font-size: 11px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
+
+
 
 .filter-button {
   display: flex;
@@ -181,78 +180,58 @@
   }
 }
 
-
-@media (max-width: 600px) {
-
-  .equipment-page-header {
-    align-items: flex-start;
-
-    flex-direction: column;
-  }
-
-}
-
 /*TABELA*/
 
 .equipment-card {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-
-  background-color: var(--color-surface);
-
-  box-shadow: var(--shadow-sm);
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .equipment-table-wrapper {
   width: 100%;
-
   overflow-x: auto;
-}
-
-.equipment-table {
-  width: 100%;
-
-  border-collapse: collapse;
-}
-
-.equipment-table thead {
-  background-color: var(--color-surface-secondary);
-}
-
-.equipment-table th {
-  padding: 13px 18px;
-
-  color: var(--color-text-muted);
-
-  font-size: 10px;
-  font-weight: 600;
-
-  text-align: left;
-  text-transform: uppercase;
-
-  letter-spacing: 0.3px;
-}
-
-.equipment-table td {
-  padding: 15px 18px;
 
   border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 
-  color: var(--color-text-secondary);
-
-  font-size: 12px;
-
-  vertical-align: middle;
+  border-radius: 0;
 }
 
-.equipment-table tbody tr {
-  transition: background-color 0.2s ease;
+.equipment-table td:first-child {
+  padding-left: 24px;
 }
 
-.equipment-table tbody tr:hover {
-  background-color: var(--color-surface-secondary);
+.equipment-table tbody tr:last-child td {
+  border-bottom: 0;
 }
 
+.equipment-table th:nth-child(1),
+.equipment-table td:nth-child(1) {
+  width: 40%;
+}
+
+.equipment-table th:nth-child(2),
+.equipment-table td:nth-child(2) {
+  width: 20%;
+}
+
+.equipment-table th:nth-child(3),
+.equipment-table td:nth-child(3) {
+  width: 20%;
+}
+
+.equipment-table th:nth-child(4),
+.equipment-table td:nth-child(4) {
+  width: 15%;
+}
+
+.equipment-table th:nth-child(5),
+.equipment-table td:nth-child(5) {
+  width: 5%;
+  text-align: right;
+}
 
 /*EQUIPAMENTO*/
 
@@ -260,27 +239,35 @@
   display: flex;
   align-items: center;
 
-  gap: 13px;
+  gap: 16px;
 
-  min-width: 280px;
+  min-width: 320px;
 }
 
 .equipment-thumbnail {
+  width: 64px;
+  height: 58px;
+
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 58px;
-  height: 54px;
+  padding: 0;
 
-  flex-shrink: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .equipment-thumbnail img {
   display: block;
 
-  width: 54px;
-  height: 50px;
+  max-width: 60px;
+  max-height: 52px;
+
+  width: auto;
+  height: auto;
 
   object-fit: contain;
 }
@@ -295,65 +282,41 @@
 .equipment-info strong {
   color: var(--color-text-primary);
 
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .equipment-info span {
   color: var(--color-text-secondary);
 
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .equipment-info small {
   color: var(--color-text-muted);
 
-  font-size: 10px;
+  font-size: 11px;
 }
-
 
 /* HORÍMETRO*/
 
 .horometer-value {
-  color: var(--color-text-primary);
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-
-/*STATUS*/
-
-.equipment-status {
   display: inline-flex;
-  align-items: center;
-
-  gap: 7px;
-
-  padding: 6px 10px;
-
-  border-radius: 999px;
-
-  font-size: 11px;
-  font-weight: 600;
+  align-items: baseline;
+  gap: 4px;
 }
 
-.status-dot {
-  width: 6px;
-  height: 6px;
-
-  border-radius: 50%;
-
-  background-color: currentColor;
+.horometer-value p {
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 500;
 }
 
-.equipment-status--active {
-  background-color: var(--color-success-light);
-  color: var(--color-success);
-}
-
-.equipment-status--inactive {
-  background-color: #eef1f0;
-  color: var(--color-text-secondary);
+.horometer-value span {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
 }
 
 
@@ -367,27 +330,32 @@
 }
 
 .more-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
 
-  border-radius: 50%;
+  padding: 0;
 
-  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
 
+  background-color: transparent;
   color: var(--color-text-muted);
 
+  cursor: pointer;
+
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .more-button:hover {
-  background-color: var(--color-background);
-
+  border-color: var(--color-border);
+  background-color: var(--color-surface-secondary);
   color: var(--color-primary);
 }
 
@@ -496,23 +464,6 @@
 
 }
 
-/*MODAL*/
-
-.equipment-modal {
-  width: min(680px, 100%);
-  max-height: 90vh;
-
-  overflow-y: auto;
-
-  border-radius: var(--radius-xl);
-
-  background-color: var(--color-surface);
-
-  box-shadow:
-    0 24px 60px rgba(10, 25, 21, 0.18);
-}
-
-
 /*FORMULÁRIO*/
 
 .equipment-form {
@@ -586,10 +537,16 @@
 }
 
 .category-preview-image img {
-  width: 70px;
-  height: 60px;
+  display: block;
+
+  max-width: 70px;
+  max-height: 60px;
+
+  width: auto;
+  height: auto;
 
   object-fit: contain;
+  object-position: center;
 }
 
 .category-preview-info {
@@ -615,20 +572,6 @@
   color: var(--color-text-secondary);
 
   font-size: 10px;
-}
-
-/*RODAPÉ DO MODAL*/
-
-.cancel-button,
-.save-button {
-  min-height: 40px;
-
-  padding: 0 17px;
-
-  border-radius: var(--radius-md);
-
-  font-size: 11px;
-  font-weight: 600;
 }
 
 /*RESPONSIVIDADE DO MODAL*/

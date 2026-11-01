@@ -6,6 +6,7 @@ import {
     X
 } from 'lucide-vue-next';
 
+import BaseModal from '../common/BaseModal.vue';
 
 const props = defineProps({
     equipments: {
@@ -109,169 +110,102 @@ function submitForm() {
 }
 </script>
 
-
 <template>
+    <BaseModal size="md" title="Nova Leitura" description="Registre o horímetro atual do equipamento."
+        @close="$emit('close')">
+        <form id="reading-form" class="reading-form" @submit.prevent="submitForm">
 
-    <div class="modal-overlay" @click.self="$emit('close')">
+            <div class="form-group">
+                <label for="reading-equipment">
+                    Equipamento
+                </label>
 
-        <div class="reading-form-modal">
+                <select id="reading-equipment" v-model="form.equipmentId" required>
+                    <option value="" disabled>
+                        Selecione um equipamento
+                    </option>
 
-            <header class="modal-header">
+                    <option v-for="equipment in equipments" :key="equipment.id" :value="equipment.id"
+                        :disabled="equipment.status !== 'ACTIVE'">
+                        {{ equipment.code }} — {{ equipment.name }}
+                    </option>
+                </select>
+            </div>
+
+            <div v-if="selectedEquipment" class="current-horometer">
+                <div class="current-horometer-icon">
+                    <Gauge :size="21" stroke-width="1.8" />
+                </div>
 
                 <div>
-
-                    <span class="modal-eyebrow">
-                        HORÍMETRO
+                    <span>
+                        Horímetro atual
                     </span>
 
-                    <h2>
-                        Nova Leitura
-                    </h2>
-
-                    <p>
-                        Registre o horímetro atual do equipamento.
-                    </p>
-
+                    <strong>
+                        {{ formatHorometer(selectedEquipment.currentHorometer) }} h
+                    </strong>
                 </div>
 
+                <div class="current-equipment">
+                    <span>
+                        {{ selectedEquipment.code }}
+                    </span>
 
-                <button class="modal-close-button" type="button" title="Fechar" @click="$emit('close')">
-                    <X :size="19" />
-                </button>
+                    <small>
+                        {{ selectedEquipment.name }}
+                    </small>
+                </div>
+            </div>
 
-            </header>
-
-            <form class="reading-form" @submit.prevent="submitForm">
+            <div class="reading-form-grid">
 
                 <div class="form-group">
-
-                    <label for="reading-equipment">
-                        Equipamento
+                    <label for="reading-value">
+                        Nova leitura (h)
                     </label>
 
-                    <select id="reading-equipment" v-model="form.equipmentId" required>
+                    <input id="reading-value" v-model="form.readingValue" type="number" min="0" step="0.1"
+                        placeholder="Ex.: 1500" required />
 
-                        <option value="" disabled>
-                            Selecione um equipamento
-                        </option>
-
-                        <option v-for="equipment in equipments" :key="equipment.id" :value="equipment.id"
-                            :disabled="equipment.status !== 'ACTIVE'">
-                            {{ equipment.code }} —
-                            {{ equipment.name }}
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <div v-if="selectedEquipment" class="current-horometer">
-
-                    <div class="current-horometer-icon">
-
-                        <Gauge :size="21" stroke-width="1.8" />
-
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Horímetro atual
-                        </span>
-
-                        <strong>
-                            {{
-                                formatHorometer(
-                                    selectedEquipment.currentHorometer
-                                )
-                            }}
-                            h
-                        </strong>
-
-                    </div>
-
-
-                    <div class="current-equipment">
-
-                        <span>
-                            {{ selectedEquipment.code }}
-                        </span>
-
-                        <small>
-                            {{ selectedEquipment.name }}
-                        </small>
-
-                    </div>
-
-                </div>
-
-                <div class="reading-form-grid">
-
-                    <div class="form-group">
-
-                        <label for="reading-value">
-                            Nova leitura (h)
-                        </label>
-
-                        <input id="reading-value" v-model="form.readingValue" type="number" min="0" step="0.1"
-                            placeholder="Ex.: 1500" required />
-
-                        <span v-if="errorMessage" class="reading-form-error">
-                            {{ errorMessage }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="reading-date">
-                            Data e hora
-                        </label>
-
-                        <input id="reading-date" v-model="form.readAt" type="datetime-local" required />
-
-                    </div>
-
+                    <span v-if="errorMessage" class="reading-form-error">
+                        {{ errorMessage }}
+                    </span>
                 </div>
 
                 <div class="form-group">
-
-                    <label for="reading-observation">
-                        Observação
-                        <span class="optional-field">
-                            (opcional)
-                        </span>
+                    <label for="reading-date">
+                        Data e hora
                     </label>
 
-                    <textarea id="reading-observation" v-model="form.observation" rows="3"
-                        placeholder="Adicione alguma observação sobre a leitura..."></textarea>
-
+                    <input id="reading-date" v-model="form.readAt" type="datetime-local" required />
                 </div>
 
-                <footer class="reading-form-actions">
+            </div>
 
-                    <button class="secondary-button" type="button" @click="$emit('close')">
-                        Cancelar
-                    </button>
+            <div class="form-group">
+                <label for="reading-observation">
+                    Observação
+                    <span class="optional-field">
+                        (opcional)
+                    </span>
+                </label>
 
-                    <button class="primary-button" type="submit" :disabled="Boolean(errorMessage)">
-                        Registrar leitura
-                    </button>
+                <textarea id="reading-observation" v-model="form.observation" rows="3"
+                    placeholder="Adicione alguma observação sobre a leitura..."></textarea>
+            </div>
 
+        </form>
 
+        <template #footer>
+            <button class="cancel-button" type="button" @click="$emit('close')">
+                Cancelar
+            </button>
 
-                </footer>
+            <button class="save-button" type="submit" form="reading-form" :disabled="Boolean(errorMessage)">
+                Registrar leitura
+            </button>
+        </template>
 
-            </form>
-            <ReadingFormModal v-if="isReadingModalOpen" :equipments="equipmentMocks" @close="closeReadingModal"
-                @save="handleSaveReading" />
-
-
-            <ReadingDetailsModal v-if="selectedReading" :reading="selectedReading" @close="closeReadingDetails" />
-
-        </div>
-
-    </div>
-
+    </BaseModal>
 </template>

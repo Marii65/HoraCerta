@@ -2,8 +2,10 @@
 import { computed, ref } from 'vue';
 import {
   Plus,
-  Gauge
+  Search
 } from 'lucide-vue-next';
+
+import PageHeader from '../components/common/PageHeader.vue';
 
 import { readingMocks } from '../mocks/readings';
 
@@ -164,56 +166,19 @@ function closeReadingDetails() {
 
 <template>
   <div class="readings-page">
-
-
-    <header class="readings-header">
-
-      <div class="readings-header-content">
-
-        <div class="readings-title-icon">
-          <Gauge :size="22" stroke-width="1.8" />
-        </div>
-
-
-        <div>
-          <h1>
-            Leituras de Horímetro
-          </h1>
-
-          <p>
-            Registre e acompanhe as horas de utilização
-            dos equipamentos.
-          </p>
-        </div>
-
-      </div>
-
-
-      <button class="new-reading-button" type="button" @click="openReadingModal">
-        <Plus :size="17" />
-
-        Nova Leitura
-      </button>
-
-    </header>
-
+    <PageHeader title="Leituras de Horímetro"
+      description="Registre e acompanhe as horas de utilização dos equipamentos.">
+      <template #actions>
+        <button class="new-reading-button" type="button" @click="openReadingModal">
+          <Plus :size="17" />
+          Nova Leitura
+        </button>
+      </template>
+    </PageHeader>
 
     <section class="readings-history">
-
-      <div class="readings-history-heading">
-
-        <div>
-          <span class="readings-eyebrow">
-            HISTÓRICO
-          </span>
-
-          <h2>
-            Leituras registradas
-          </h2>
-        </div>
-
-
-        <span class="readings-total">
+      <div class="readings-summary">
+        <span>
           {{ filteredReadings.length }}
           {{
             filteredReadings.length === 1
@@ -221,51 +186,32 @@ function closeReadingDetails() {
               : 'registros'
           }}
         </span>
-
       </div>
 
       <div class="readings-filters">
 
         <label class="readings-search">
+          <Search :size="17" />
 
-          <span>
-            Buscar
-          </span>
-
-          <input v-model="searchTerm" type="text" placeholder="Código ou nome do equipamento..." />
-
+          <input v-model="searchTerm" type="text" placeholder="Buscar por código, nome ou modelo..." />
         </label>
 
+        <select v-model="selectedEquipment" class="readings-equipment-select">
+          <option value="all">
+            Todos os equipamentos
+          </option>
 
-        <label class="readings-equipment-filter">
-
-          <span>
-            Equipamento
-          </span>
-
-          <select v-model="selectedEquipment">
-
-            <option value="all">
-              Todos
-            </option>
-
-            <option v-for="equipment in equipmentOptions" :key="equipment.id" :value="String(equipment.id)">
-              {{ equipment.code }} — {{ equipment.name }}
-            </option>
-
-          </select>
-
-        </label>
+          <option v-for="equipment in equipmentOptions" :key="equipment.id" :value="String(equipment.id)">
+            {{ equipment.code }} — {{ equipment.name }}
+          </option>
+        </select>
 
       </div>
 
-
       <ReadingTable :readings="filteredReadings" @view="openReadingDetails" />
-
     </section>
 
     <ReadingFormModal v-if="isReadingModalOpen" :equipments="equipmentMocks" @close="closeReadingModal"
       @save="handleSaveReading" />
-
   </div>
 </template>

@@ -3,11 +3,12 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import {
+    ArrowLeft,
+    UserPlus,
     Eye,
     EyeOff,
     LockKeyhole,
-    Mail,
-    UserPlus
+    Mail
 } from 'lucide-vue-next';
 
 import { login } from '../services/authService';
@@ -28,6 +29,10 @@ const showPassword = ref(false);
 
 const errorMessage = ref('');
 const isLoading = ref(false);
+
+function goToHome() {
+    router.push('/');
+}
 
 function togglePasswordVisibility() {
     showPassword.value = !showPassword.value;
@@ -89,7 +94,10 @@ function goToRegister() {
 
                 <div class="login-presentation-content">
 
-                    <img :src="horaCertaLogo" alt="HoraCerta" class="login-logo" />
+                    <button class="login-logo-button" type="button" aria-label="Voltar para a página inicial"
+                        @click="goToHome">
+                        <img :src="horaCertaLogo" alt="HoraCerta" class="login-logo" />
+                    </button>
 
                     <div class="login-presentation-text">
 
@@ -122,6 +130,11 @@ function goToRegister() {
                 <div class="login-access-content">
 
                     <header class="login-header">
+
+                        <button class="back-home-button" type="button" @click="goToHome">
+                            <ArrowLeft :size="16" />
+                            Voltar ao início
+                        </button>
 
                         <h2>
                             Bem-vindo(a)

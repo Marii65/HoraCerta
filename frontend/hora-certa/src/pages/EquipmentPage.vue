@@ -9,6 +9,7 @@ import EquipmentFormModal from '../components/equipment/EquipmentFormModal.vue';
 import { equipmentMocks } from '../mocks/equipments';
 
 import '../styles/pages/equipment.css';
+import PageHeader from '../components/common/PageHeader.vue';
 
 // Dados temporários.
 // Futuramente serão carregados pela API.
@@ -167,49 +168,23 @@ function toggleEquipmentStatus(equipment) {
 }
 </script>
 
-
 <template>
   <div class="equipment-page">
+    <PageHeader title="Equipamentos" description="Gerencie os equipamentos cadastrados.">
+      <template #actions>
+        <button class="new-equipment-button" type="button" @click="openCreateModal">
+          <Plus :size="18" />
+          Novo Equipamento
+        </button>
+      </template>
+    </PageHeader>
 
-    <header class="equipment-page-header">
+    <EquipmentFilters v-model:search="searchTerm" v-model:category="selectedCategory" v-model:status="selectedStatus" />
 
-      <div>
-        <h1>
-          Equipamentos
-        </h1>
-      </div>
+    <EquipmentTable :equipments="filteredEquipments" @edit="openEditModal" @toggle-status="toggleEquipmentStatus" />
 
-
-      <button
-        class="new-equipment-button"
-        type="button"
-        @click="openCreateModal"
-      >
-        <Plus :size="18" />
-
-        Novo Equipamento
-      </button>
-
-    </header>
-
-    <EquipmentFilters
-      v-model:search="searchTerm"
-      v-model:category="selectedCategory"
-      v-model:status="selectedStatus"
-    />
-
-    <EquipmentTable
-      :equipments="filteredEquipments"
-      @edit="openEditModal"
-      @toggle-status="toggleEquipmentStatus"
-    />
-
-    <EquipmentFormModal
-      v-if="isEquipmentModalOpen"
-      :equipment="editingEquipment"
-      @close="closeEquipmentModal"
-      @save="handleSaveEquipment"
-    />
+    <EquipmentFormModal v-if="isEquipmentModalOpen" :equipment="editingEquipment" @close="closeEquipmentModal"
+      @save="handleSaveEquipment" />
 
   </div>
 </template>

@@ -9,59 +9,6 @@
 
 /*HEADER*/
 
-.work-orders-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 24px;
-}
-
-
-.work-orders-header-content {
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-}
-
-
-.work-orders-title-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 42px;
-  height: 42px;
-
-  flex-shrink: 0;
-
-  border-radius: 10px;
-
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-}
-
-
-.work-orders-header h1 {
-  margin: 0;
-
-  color: var(--color-text-primary);
-
-  font-size: 24px;
-  font-weight: 750;
-}
-
-
-.work-orders-header p {
-  margin: 4px 0 0;
-
-  color: var(--color-text-muted);
-
-  font-size: 13px;
-}
-
-
 .new-work-order-button {
   display: inline-flex;
   align-items: center;
@@ -157,58 +104,6 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-
-.work-orders-search,
-.work-orders-status-filter {
-  display: flex;
-  flex-direction: column;
-
-  gap: 6px;
-}
-
-
-.work-orders-search {
-  width: min(480px, 100%);
-}
-
-
-.work-orders-status-filter {
-  width: 190px;
-}
-
-
-.work-orders-filters label>span {
-  color: var(--color-text-muted);
-
-  font-size: 11px;
-  font-weight: 600;
-}
-
-
-.work-orders-filters input,
-.work-orders-filters select {
-  height: 38px;
-
-  padding: 0 4px;
-
-  border: none;
-  border-bottom: 1px solid var(--color-border);
-
-  outline: none;
-
-  background-color: transparent;
-
-  color: var(--color-text-primary);
-
-  font-size: 13px;
-}
-
-
-.work-orders-filters input:focus,
-.work-orders-filters select:focus {
-  border-bottom-color: var(--color-primary);
-}
-
 /*TABLE*/
 
 .work-order-table-wrapper {
@@ -222,41 +117,6 @@
   width: 100%;
 
   border-collapse: collapse;
-}
-
-
-.work-order-table th {
-  padding: 11px 16px;
-
-  border-bottom: 1px solid var(--color-border);
-
-  color: var(--color-text-muted);
-
-  font-size: 13px;
-  font-weight: 650;
-
-  text-align: left;
-
-  white-space: nowrap;
-}
-
-
-.work-order-table td {
-  padding: 16px 14px;
-
-  border-bottom: 1px solid var(--color-border);
-
-  vertical-align: middle;
-}
-
-
-.work-order-table tbody tr {
-  transition: background-color 0.15s ease;
-}
-
-
-.work-order-table tbody tr:hover {
-  background-color: #f8fbfa;
 }
 
 /*ORDEM*/
@@ -285,22 +145,24 @@
   align-items: center;
   justify-content: center;
 
-  width: 38px;
-  height: 38px;
+  width: 58px;
+  height: 46px;
 
   flex-shrink: 0;
-
-  border-radius: 9px;
-
-  background-color: var(--color-primary-light);
 }
 
 
 .work-order-equipment-icon img {
-  width: 30px;
-  height: 30px;
+  display: block;
+
+  max-width: 100%;
+  max-height: 100%;
+
+  width: auto;
+  height: auto;
 
   object-fit: contain;
+  object-position: center;
 }
 
 
@@ -391,49 +253,6 @@
   white-space: nowrap;
 }
 
-/*STATUS*/
-
-.work-order-status {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 92px;
-
-  padding: 5px 9px;
-
-  border-radius: 20px;
-
-  font-size: 13px;
-  font-weight: 700;
-
-  white-space: nowrap;
-}
-
-
-.work-order-status--scheduled {
-  background-color: #fff5d9;
-  color: #9a6500;
-}
-
-
-.work-order-status--in_progress {
-  background-color: #e6f1ff;
-  color: #2865a7;
-}
-
-
-.work-order-status--completed {
-  background-color: #e3f4eb;
-  color: #26734d;
-}
-
-
-.work-order-status--canceled {
-  background-color: #f3f3f3;
-  color: #777777;
-}
-
 /*ACTIONS*/
 
 .work-order-table-actions {
@@ -505,7 +324,7 @@
 /*EXPANSÃO DA ORDEM*/
 
 .work-order-row--expanded {
-  background-color: #f8fbfa;
+  background-color: var(--color-surface-hover);
 }
 
 .work-order-expand-button {
@@ -554,8 +373,7 @@
 
 .work-order-details-row td {
   padding: 0 !important;
-
-  background-color: #f8fbfa;
+  background-color: var(--color-surface-hover);
 }
 
 
@@ -630,10 +448,10 @@
 
   padding: 14px 16px;
 
-  border: 1px solid #dce9e4;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 
-  background-color: #f1f7f4;
+  background-color: var(--color-surface-secondary);
 }
 
 
@@ -725,7 +543,7 @@
 /* AÇÃO DE CANCELAMENTO*/
 
 .work-order-action--danger {
-  border: 1px solid #e2b8b8;
+  border: 1px solid var(--color-danger-light);
 
   background-color: transparent;
   color: var(--color-danger);
@@ -733,23 +551,7 @@
 
 
 .work-order-action--danger:hover {
-  background-color: #fff2f2;
-}
-
-/*MODAL - CONCLUIR ORDEM DE SERVIÇO*/
-
-.complete-work-order-modal {
-  width: min(600px, calc(100% - 32px));
-  max-height: 90vh;
-
-  overflow-y: auto;
-
-  border-radius: var(--radius-xl);
-
-  background-color: var(--color-surface);
-
-  box-shadow:
-    0 24px 60px rgba(10, 25, 21, 0.20);
+  background-color: var(--color-danger-light);
 }
 
 /*FORMULÁRIO DE CONCLUSÃO*/
@@ -757,10 +559,7 @@
 .complete-work-order-form {
   display: flex;
   flex-direction: column;
-
   gap: 22px;
-
-  padding: 24px 26px 26px;
 }
 
 .complete-work-order-form input {
@@ -801,7 +600,7 @@
 
   outline: none;
 
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--color-text-primary);
 
   font-family: inherit;
@@ -847,10 +646,10 @@
 
   padding: 15px 16px;
 
-  border: 1px solid #d6e8e0;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 
-  background-color: #f0f7f4;
+  background-color: var(--color-surface-secondary);
 }
 
 
@@ -913,137 +712,11 @@
   font-weight: 400;
 }
 
-/* AÇÕES DO MODAL DE CONCLUSÃO*/
-
-.complete-work-order-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  gap: 10px;
-
-  padding-top: 18px;
-
-  border-top: 1px solid var(--color-border);
-}
-
-
-.complete-work-order-actions .primary-button,
-.complete-work-order-actions .secondary-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 7px;
-
-  min-height: 40px;
-
-  padding: 0 16px;
-
-  border-radius: var(--radius-md);
-
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
-}
-
-/* BOTÃO DE CONCLUSÃO */
-
-.complete-work-order-actions .primary-button {
-  border: 1px solid var(--color-primary);
-
-  background-color: var(--color-primary);
-  color: #ffffff;
-}
-
-
-.complete-work-order-actions .primary-button:hover:not(:disabled) {
-  border-color: var(--color-primary-dark);
-
-  background-color: var(--color-primary-dark);
-}
-
-
-.complete-work-order-actions .primary-button:disabled {
-  cursor: not-allowed;
-
-  opacity: 0.5;
-}
-
-/* BOTÃO DE CANCELAMENTO */
-
-.complete-work-order-actions .secondary-button {
-  border: 1px solid var(--color-border);
-
-  background-color: transparent;
-  color: var(--color-text-secondary);
-}
-
-
-.complete-work-order-actions .secondary-button:hover {
-  background-color: var(--color-background);
-
-  color: var(--color-text-primary);
-}
-
-/*MODAL - NOVA ORDEM DE SERVIÇO*/
-
-.work-order-form-modal {
-  width: min(620px, calc(100% - 32px));
-  max-height: 90vh;
-
-  overflow-y: auto;
-
-  border-radius: var(--radius-xl);
-
-  background-color: var(--color-surface);
-
-  box-shadow:
-    0 24px 60px rgba(10, 25, 21, 0.20);
-}
-
-/* CABEÇALHO DO FORMULÁRIO*/
-
-.work-order-form-heading {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 12px;
-}
-
-
-.work-order-form-heading-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 40px;
-  height: 40px;
-
-  flex-shrink: 0;
-
-  border-radius: 10px;
-
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-}
-
 /*FORMULÁRIO - NOVA ORDEM*/
-
 .work-order-form {
   display: flex;
   flex-direction: column;
-
   gap: 20px;
-
-  padding: 24px 26px 26px;
 }
 
 .work-order-form .form-field {
@@ -1082,7 +755,7 @@
 
   outline: none;
 
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--color-text-primary);
 
   font-family: inherit;
@@ -1149,10 +822,10 @@
 
   padding: 12px 14px;
 
-  border: 1px solid #d6e8e0;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 
-  background-color: #f0f7f4;
+  background-color: var(--color-surface-secondary);
 }
 
 
@@ -1187,100 +860,160 @@
   font-weight: 400;
 }
 
-/*AÇÕES DO FORMULÁRIO*/
+/* FILTROS */
 
-.work-order-form-actions {
+.work-orders-filters {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
 
-  gap: 10px;
+  gap: 18px;
 
-  padding-top: 18px;
+  padding: 14px;
 
-  border-top: 1px solid var(--color-border);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background-color: var(--color-surface);
+
+  box-shadow: var(--shadow-sm);
 }
 
 
-.work-order-form-actions .primary-button,
-.work-order-form-actions .secondary-button {
-  display: inline-flex;
+/* BUSCA */
+
+.work-orders-search {
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
 
-  gap: 7px;
+  gap: 10px;
 
-  min-height: 40px;
+  width: min(430px, 45%);
+  height: 40px;
 
-  padding: 0 16px;
+  padding: 0 13px;
 
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
+  background-color: var(--color-surface);
+
+  color: var(--color-text-muted);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.work-orders-search input {
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  background: transparent;
+
+  color: var(--color-text-primary);
+
+  font-size: 12px;
+}
+
+.work-orders-search input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.work-orders-search:focus-within {
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 2px var(--color-primary-light);
+}
+
+.work-orders-search input:focus,
+.work-orders-search input:focus-visible {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+
+/* STATUS */
+
+.work-orders-status-select {
+  width: 200px;
+  height: 40px;
+
+  padding: 0 36px 0 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  outline: none;
+
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
 
   font-family: inherit;
   font-size: 12px;
-  font-weight: 600;
 
   cursor: pointer;
 
   transition:
-    background-color 0.2s ease,
     border-color 0.2s ease,
-    color 0.2s ease;
+    box-shadow 0.2s ease;
 }
 
+.work-orders-status-select:focus,
+.work-orders-status-select:focus-visible {
+  border-color: var(--color-primary);
+  outline: none;
 
-/* BOTÃO CANCELAR */
-
-.work-order-form-actions .secondary-button {
-  border: 1px solid var(--color-border);
-
-  background-color: transparent;
-  color: var(--color-text-secondary);
+  box-shadow:
+    0 0 0 2px var(--color-primary-light);
 }
 
-
-.work-order-form-actions .secondary-button:hover {
-  background-color: var(--color-background);
-
-  color: var(--color-text-primary);
+.work-order-table th:nth-child(1),
+.work-order-table td:nth-child(1) {
+  width: 9%;
 }
 
-
-/* BOTÃO CRIAR ORDEM */
-
-.work-order-form-actions .primary-button {
-  border: 1px solid var(--color-primary);
-
-  background-color: var(--color-primary);
-  color: #ffffff;
+.work-order-table th:nth-child(2),
+.work-order-table td:nth-child(2) {
+  width: 20%;
 }
 
-
-.work-order-form-actions .primary-button:hover:not(:disabled) {
-  border-color: var(--color-primary-dark);
-
-  background-color: var(--color-primary-dark);
+.work-order-table th:nth-child(3),
+.work-order-table td:nth-child(3) {
+  width: 29%;
 }
 
-
-.work-order-form-actions .primary-button:disabled {
-  cursor: not-allowed;
-
-  opacity: 0.5;
+.work-order-table th:nth-child(4),
+.work-order-table td:nth-child(4) {
+  width: 18%;
 }
+
+.work-order-table th:nth-child(5),
+.work-order-table td:nth-child(5) {
+  width: 18%;
+}
+
+.work-order-table th:nth-child(6),
+.work-order-table td:nth-child(6) {
+  width: 6%;
+  text-align: right;
+}
+
 
 /*RESPONSIVE*/
 
 @media (max-width: 700px) {
 
   /* CABEÇALHO */
-
-  .work-orders-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-
   .new-work-order-button {
     width: 100%;
   }
@@ -1295,12 +1028,10 @@
     gap: 14px;
   }
 
-
   .work-orders-search,
-  .work-orders-status-filter {
+  .work-orders-status-select {
     width: 100%;
   }
-
 
   /* DETALHES DA ORDEM */
 
@@ -1325,33 +1056,9 @@
     width: 100%;
   }
 
-  .complete-work-order-actions {
-    align-items: stretch;
-    flex-direction: column-reverse;
-  }
-
-
-  .complete-work-order-actions .primary-button,
-  .complete-work-order-actions .secondary-button {
-    width: 100%;
-  }
-
   .work-order-form-row {
     grid-template-columns: 1fr;
   }
-
-
-  .work-order-form-actions {
-    align-items: stretch;
-    flex-direction: column-reverse;
-  }
-
-
-  .work-order-form-actions .primary-button,
-  .work-order-form-actions .secondary-button {
-    width: 100%;
-  }
-
 }
 
 
@@ -1360,9 +1067,4 @@
   .work-order-details-grid {
     grid-template-columns: 1fr;
   }
-
-  .complete-work-order-form {
-    padding: 20px;
-  }
-
 }

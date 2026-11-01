@@ -12,6 +12,8 @@ import {
 import { getEquipmentIcon }
   from '../../utils/equipmentIcons';
 
+import StatusBadge from '../common/StatusBadge.vue';
+
 
 defineProps({
   workOrders: {
@@ -96,7 +98,6 @@ function formatHorometer(value) {
 }
 
 function getStatusLabel(status) {
-
   const labels = {
     SCHEDULED: 'Agendada',
     IN_PROGRESS: 'Em andamento',
@@ -105,14 +106,19 @@ function getStatusLabel(status) {
   };
 
   return labels[status] ?? status;
-
 }
 
-function getStatusClass(status) {
+function getStatusVariant(status) {
+  const variants = {
+    SCHEDULED: 'warning',
+    IN_PROGRESS: 'info',
+    COMPLETED: 'success',
+    CANCELED: 'neutral'
+  };
 
-  return `work-order-status--${status.toLowerCase()}`;
-
+  return variants[status] ?? 'neutral';
 }
+
 </script>
 
 
@@ -120,7 +126,7 @@ function getStatusClass(status) {
 
   <div class="work-order-table-wrapper">
 
-    <table class="work-order-table">
+    <table class="system-table work-order-table">
 
       <thead>
 
@@ -245,16 +251,7 @@ function getStatusClass(status) {
 
             <td>
 
-              <span class="work-order-status" :class="getStatusClass(
-                workOrder.status
-              )
-                ">
-                {{
-                  getStatusLabel(
-                    workOrder.status
-                  )
-                }}
-              </span>
+              <StatusBadge :label="getStatusLabel(workOrder.status)" :variant="getStatusVariant(workOrder.status)" />
 
             </td>
 
@@ -264,9 +261,9 @@ function getStatusClass(status) {
                 'work-order-expand-button--active':
                   isExpanded(workOrder.id)
               }" type="button" :title="isExpanded(workOrder.id)
-              ? 'Recolher ordem'
-              : 'Visualizar ordem'
-            " @click="toggleWorkOrder(workOrder.id)">
+                ? 'Recolher ordem'
+                : 'Visualizar ordem'
+                " @click="toggleWorkOrder(workOrder.id)">
 
                 <ChevronDown :size="18" stroke-width="1.8" />
 

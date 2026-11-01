@@ -10,28 +10,28 @@ const actions = [
   {
     id: 'reading',
     label: 'Registrar Leitura',
-    route: '/leituras',
+    route: 'app/leituras',
     icon: Gauge,
     variant: 'green'
   },
   {
     id: 'work-order',
     label: 'Nova O.S.',
-    route: '/ordens-servico',
+    route: 'app/ordens-servico',
     icon: Wrench,
     variant: 'blue'
   },
   {
     id: 'maintenance-plan',
     label: 'Novo Plano',
-    route: '/planos-manutencao',
+    route: 'app/planos-manutencao',
     icon: ClipboardPlus,
     variant: 'yellow'
   },
   {
     id: 'equipment',
     label: 'Novo Equipamento',
-    route: '/equipamentos',
+    route: 'app/equipamentos',
     icon: Truck,
     variant: 'purple'
   }

@@ -1,5 +1,4 @@
 /*MODAL*/
-
 .modal-overlay {
   position: fixed;
   z-index: 1000;
@@ -14,6 +13,22 @@
   background-color: rgba(10, 25, 21, 0.45);
 
   backdrop-filter: blur(2px);
+}
+
+.base-modal {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 48px);
+
+  overflow-y: auto;
+
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+
+  box-shadow: var(--shadow-lg);
+}
+
+.base-modal-content {
+  padding: 24px;
 }
 
 /* CABEÇALHO DO MODAL*/
@@ -165,8 +180,7 @@
 
   gap: 10px;
 
-  margin-top: 24px;
-  padding-top: 18px;
+  padding: 18px 24px;
 
   border-top: 1px solid var(--color-border);
 }
@@ -213,4 +227,92 @@
     padding: 12px;
   }
 
+}
+
+/* STATUS BADGE */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 10px;
+
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-badge--success {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.status-badge--warning {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.status-badge--danger {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.status-badge--info {
+  background-color: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.status-badge--neutral {
+  background-color: var(--color-surface-secondary);
+  color: var(--color-text-secondary);
+}
+
+/* Estrutura padrão das tabelas do sistema */
+.system-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.system-table thead {
+  height: 48px;
+  background-color: var(--color-surface-secondary);
+}
+
+.system-table th {
+  height: 48px;
+  padding: 0 20px;
+
+  border-bottom: 1px solid var(--color-border);
+
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  vertical-align: middle;
+}
+
+.system-table td {
+  height: 94px;
+  padding: 0 20px;
+
+  border-bottom: 1px solid var(--color-border);
+
+  color: var(--color-text-secondary);
+  font-size: 12px;
+
+  vertical-align: middle;
+}
+
+.system-table tbody tr {
+  height: 94px;
+}
+
+.system-table tbody tr:hover {
+  background-color: var(--color-surface-hover);
 }

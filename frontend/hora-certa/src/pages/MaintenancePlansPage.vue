@@ -1,10 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 
-import {
-  Plus,
-  Settings2
-} from 'lucide-vue-next';
+import { Plus } from 'lucide-vue-next';
 
 import MaintenancePlanFilters
   from '../components/maintenance/MaintenancePlanFilters.vue';
@@ -19,6 +16,7 @@ import { maintenancePlanMocks }
   from '../mocks/maintenancePlans';
 
 import '../styles/pages/maintenance-plans.css';
+import PageHeader from '../components/common/PageHeader.vue';
 
 const maintenancePlans = ref([
   ...maintenancePlanMocks
@@ -165,89 +163,21 @@ function togglePlanStatus(plan) {
 <template>
   <div class="maintenance-plans-page">
 
-    <header class="maintenance-plans-banner">
+    <PageHeader title="Planos de Manutenção" description="Organize as rotinas preventivas e os serviços de manutenção.">
+      <template #actions>
+        <button class="new-plan-button" type="button" @click="openCreateModal">
+          <Plus :size="18" />
+          Novo Plano
+        </button>
+      </template>
+    </PageHeader>
 
-      <div class="maintenance-banner-content">
+    <MaintenancePlanFilters v-model:search="searchTerm" v-model:status="selectedStatus" />
 
-        <div class="maintenance-breadcrumb">
+    <MaintenancePlanTable :plans="filteredMaintenancePlans" @edit="openEditModal" @toggle-status="togglePlanStatus" />
 
-          <span>
-            Home
-          </span>
-
-          <span class="breadcrumb-separator">
-            ›
-          </span>
-
-          <strong>
-            Planos de Manutenção
-          </strong>
-
-        </div>
-
-        <div class="maintenance-banner-main">
-
-          <div class="maintenance-banner-text">
-
-            <h1>
-              Planos de Manutenção
-            </h1>
-
-            <p>
-              Organize as rotinas preventivas dos seus equipamentos
-              e mantenha sua frota sempre em dia.
-            </p>
-
-          </div>
-
-
-          <button
-            class="new-plan-button"
-            type="button"
-            @click="openCreateModal"
-          >
-
-            <Plus :size="18" />
-
-            Novo Plano
-
-          </button>
-
-        </div>
-
-      </div>
-
-      <div class="maintenance-banner-decoration">
-
-        <div class="maintenance-banner-circle"></div>
-
-        <Settings2
-          class="maintenance-banner-gear"
-          :size="82"
-          stroke-width="1.2"
-        />
-
-      </div>
-
-    </header>
-
-    <MaintenancePlanFilters
-      v-model:search="searchTerm"
-      v-model:status="selectedStatus"
-    />
-
-    <MaintenancePlanTable
-      :plans="filteredMaintenancePlans"
-      @edit="openEditModal"
-      @toggle-status="togglePlanStatus"
-    />
-
-    <MaintenancePlanFormModal
-      v-if="isPlanModalOpen"
-      :plan="editingPlan"
-      @close="closePlanModal"
-      @save="handleSavePlan"
-    />
+    <MaintenancePlanFormModal v-if="isPlanModalOpen" :plan="editingPlan" @close="closePlanModal"
+      @save="handleSavePlan" />
 
   </div>
 </template>

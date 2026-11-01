@@ -12,6 +12,7 @@ import {
   Wrench
 } from 'lucide-vue-next';
 
+import StatusBadge from '../common/StatusBadge.vue';
 
 defineProps({
   plans: {
@@ -74,24 +75,16 @@ function getBaseInterval(plan) {
 <template>
   <section class="maintenance-plan-list">
 
-    <article
-      v-for="plan in plans"
-      :key="plan.id"
-      class="maintenance-plan-card"
-      :class="{
-        'maintenance-plan-card--inactive': !plan.active
-      }"
-    >
+    <article v-for="plan in plans" :key="plan.id" class="maintenance-plan-card" :class="{
+      'maintenance-plan-card--inactive': !plan.active
+    }">
 
       <div class="plan-card-content">
 
         <div class="plan-card-identity">
 
           <div class="plan-card-icon">
-            <Settings2
-              :size="23"
-              stroke-width="1.8"
-            />
+            <Settings2 :size="23" stroke-width="1.8" />
           </div>
 
 
@@ -104,18 +97,7 @@ function getBaseInterval(plan) {
               </h2>
 
 
-              <span
-                class="plan-status"
-                :class="
-                  plan.active
-                    ? 'plan-status--active'
-                    : 'plan-status--inactive'
-                "
-              >
-                <span class="plan-status-dot"></span>
-
-                {{ plan.active ? 'Ativo' : 'Inativo' }}
-              </span>
+              <StatusBadge :label="plan.active ? 'Ativo' : 'Inativo'" :variant="plan.active ? 'success' : 'neutral'" />
 
             </div>
 
@@ -133,25 +115,14 @@ function getBaseInterval(plan) {
 
         <div class="plan-actions">
 
-          <button
-            class="plan-menu-button"
-            type="button"
-            aria-label="Abrir ações do plano"
-            @click="toggleMenu(plan.id)"
-          >
+          <button class="plan-menu-button" type="button" aria-label="Abrir ações do plano" @click="toggleMenu(plan.id)">
             <MoreVertical :size="19" />
           </button>
 
 
-          <div
-            v-if="openMenuId === plan.id"
-            class="plan-actions-menu"
-          >
+          <div v-if="openMenuId === plan.id" class="plan-actions-menu">
 
-            <button
-              type="button"
-              @click="handleEdit(plan)"
-            >
+            <button type="button" @click="handleEdit(plan)">
               <Pencil :size="15" />
 
               Editar
@@ -161,15 +132,10 @@ function getBaseInterval(plan) {
             <div class="plan-actions-divider"></div>
 
 
-            <button
-              type="button"
-              :class="
-                plan.active
-                  ? 'plan-action-danger'
-                  : 'plan-action-success'
-              "
-              @click="handleToggleStatus(plan)"
-            >
+            <button type="button" :class="plan.active
+                ? 'plan-action-danger'
+                : 'plan-action-success'
+              " @click="handleToggleStatus(plan)">
               <Power :size="15" />
 
               {{ plan.active ? 'Desativar' : 'Ativar' }}
@@ -224,11 +190,7 @@ function getBaseInterval(plan) {
 
       </div>
 
-      <button
-        class="plan-expand-button"
-        type="button"
-        @click="togglePlanDetails(plan.id)"
-      >
+      <button class="plan-expand-button" type="button" @click="togglePlanDetails(plan.id)">
 
         <span>
           {{
@@ -239,22 +201,13 @@ function getBaseInterval(plan) {
         </span>
 
 
-        <ChevronUp
-          v-if="expandedPlanId === plan.id"
-          :size="17"
-        />
+        <ChevronUp v-if="expandedPlanId === plan.id" :size="17" />
 
-        <ChevronDown
-          v-else
-          :size="17"
-        />
+        <ChevronDown v-else :size="17" />
 
       </button>
 
-      <div
-        v-if="expandedPlanId === plan.id"
-        class="plan-services"
-      >
+      <div v-if="expandedPlanId === plan.id" class="plan-services">
 
         <div class="plan-services-header">
 
@@ -281,11 +234,7 @@ function getBaseInterval(plan) {
 
         <div class="plan-services-list">
 
-          <div
-            v-for="(item, index) in plan.items"
-            :key="item.id ?? `${plan.id}-${index}`"
-            class="plan-service-item"
-          >
+          <div v-for="(item, index) in plan.items" :key="item.id ?? `${plan.id}-${index}`" class="plan-service-item">
 
             <div class="plan-service-number">
               {{ String(index + 1).padStart(2, '0') }}
@@ -329,16 +278,10 @@ function getBaseInterval(plan) {
 
     </article>
 
-    <div
-      v-if="plans.length === 0"
-      class="plan-empty-state"
-    >
+    <div v-if="plans.length === 0" class="plan-empty-state">
 
       <div class="plan-empty-icon">
-        <Wrench
-          :size="25"
-          stroke-width="1.7"
-        />
+        <Wrench :size="25" stroke-width="1.7" />
       </div>
 
       <strong>

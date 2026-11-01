@@ -77,7 +77,7 @@ function getReadingDifference(reading) {
 <template>
   <div class="reading-table-wrapper">
 
-    <table class="reading-table">
+    <table class="system-table reading-table">
 
       <thead>
         <tr>

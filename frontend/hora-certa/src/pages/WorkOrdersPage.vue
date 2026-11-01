@@ -1,7 +1,12 @@
 <script setup>
 import { computed, ref } from 'vue';
 
-import { ClipboardList, Plus } from 'lucide-vue-next';
+import {
+  Plus,
+  Search
+} from 'lucide-vue-next';
+
+import PageHeader from '../components/common/PageHeader.vue';
 
 import { workOrderMocks } from '../mocks/workOrders';
 import { equipmentMocks } from '../mocks/equipments';
@@ -265,45 +270,15 @@ function handleSaveWorkOrder(formData) {
 <template>
 
   <div class="work-orders-page">
-
-    <!-- CABEÇALHO -->
-
-    <header class="work-orders-header">
-
-      <div class="work-orders-header-content">
-
-        <div class="work-orders-title-icon">
-
-          <ClipboardList :size="22" stroke-width="1.8" />
-
-        </div>
-
-
-        <div>
-
-          <h1>
-            Ordens de Serviço
-          </h1>
-
-          <p>
-            Acompanhe as manutenções programadas,
-            em andamento e concluídas.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <button class="new-work-order-button" type="button" @click="openWorkOrderModal">
-
-        <Plus :size="17" />
-
-        Nova Ordem
-
-      </button>
-
-    </header>
+    <PageHeader title="Ordens de Serviço"
+      description="Acompanhe as manutenções programadas, em andamento e concluídas.">
+      <template #actions>
+        <button class="new-work-order-button" type="button" @click="openWorkOrderModal">
+          <Plus :size="17" />
+          Nova Ordem
+        </button>
+      </template>
+    </PageHeader>
 
     <section class="work-orders-list">
 
@@ -326,47 +301,32 @@ function handleSaveWorkOrder(formData) {
       <div class="work-orders-filters">
 
         <label class="work-orders-search">
+          <Search :size="17" />
 
-          <span>
-            Buscar
-          </span>
-
-          <input v-model="searchTerm" type="text" placeholder="Número, equipamento ou plano..." />
-
+          <input v-model="searchTerm" type="text" placeholder="Buscar por número, equipamento ou plano..." />
         </label>
 
+        <select v-model="selectedStatus" class="work-orders-status-select">
+          <option value="all">
+            Todos os status
+          </option>
 
-        <label class="work-orders-status-filter">
+          <option value="SCHEDULED">
+            Agendada
+          </option>
 
-          <span>
-            Status
-          </span>
+          <option value="IN_PROGRESS">
+            Em andamento
+          </option>
 
-          <select v-model="selectedStatus">
+          <option value="COMPLETED">
+            Concluída
+          </option>
 
-            <option value="all">
-              Todos
-            </option>
-
-            <option value="SCHEDULED">
-              Agendada
-            </option>
-
-            <option value="IN_PROGRESS">
-              Em andamento
-            </option>
-
-            <option value="COMPLETED">
-              Concluída
-            </option>
-
-            <option value="CANCELED">
-              Cancelada
-            </option>
-
-          </select>
-
-        </label>
+          <option value="CANCELED">
+            Cancelada
+          </option>
+        </select>
 
       </div>
 

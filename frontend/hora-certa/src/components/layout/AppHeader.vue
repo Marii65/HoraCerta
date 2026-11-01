@@ -5,7 +5,10 @@ import { useRouter } from 'vue-router';
 import {
   CalendarDays,
   Bell,
-  ChevronDown
+  ChevronDown,
+  UserRound,
+  Settings,
+  LogOut
 } from 'lucide-vue-next';
 
 import { logout } from '../../services/authService';

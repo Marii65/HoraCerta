@@ -2,9 +2,10 @@
 import { computed, reactive } from 'vue';
 import {
   CheckCircle2,
-  Gauge,
-  X
+  Gauge
 } from 'lucide-vue-next';
+
+import BaseModal from '../common/BaseModal.vue';
 
 
 const props = defineProps({
@@ -93,157 +94,65 @@ function submitForm() {
 }
 </script>
 
-
 <template>
+  <BaseModal size="md" :title="`Concluir ${workOrder.orderNumber}`"
+    :description="`${workOrder.equipmentCode} · ${workOrder.equipmentName}`" @close="$emit('close')">
+    <form id="complete-work-order-form" class="complete-work-order-form" @submit.prevent="submitForm">
+      <div class="complete-work-order-current">
 
-  <div
-    class="modal-overlay"
-    @click.self="$emit('close')"
-  >
-
-    <div class="complete-work-order-modal">
-
-      <header class="modal-header">
+        <div class="complete-work-order-current-icon">
+          <Gauge :size="21" stroke-width="1.8" />
+        </div>
 
         <div>
-
-          <span class="modal-eyebrow">
-            CONCLUIR MANUTENÇÃO
+          <span>
+            Horímetro atual
           </span>
 
-          <h2>
-            {{ workOrder.orderNumber }}
-          </h2>
-
-          <p>
-            {{ workOrder.equipmentCode }}
-            ·
-            {{ workOrder.equipmentName }}
-          </p>
-
+          <strong>
+            {{ formatHorometer(equipment.currentHorometer) }} h
+          </strong>
         </div>
 
+      </div>
 
-        <button
-          class="modal-close-button"
-          type="button"
-          title="Fechar"
-          @click="$emit('close')"
-        >
-          <X :size="19" />
-        </button>
+      <div class="form-field">
+        <label for="completion-horometer">
+          Horímetro na conclusão *
+        </label>
 
-      </header>
+        <input id="completion-horometer" v-model.number="form.completionHorometer" type="number" min="0" step="0.1"
+          required />
 
+        <span v-if="errorMessage" class="reading-form-error">
+          {{ errorMessage }}
+        </span>
+      </div>
 
-      <form
-        class="complete-work-order-form"
-        @submit.prevent="submitForm"
-      >
+      <div class="form-field">
+        <label for="completion-observation">
+          Observação da conclusão
 
-        <div class="complete-work-order-current">
-
-          <div class="complete-work-order-current-icon">
-
-            <Gauge
-              :size="21"
-              stroke-width="1.8"
-            />
-
-          </div>
-
-
-          <div>
-
-            <span>
-              Horímetro atual
-            </span>
-
-            <strong>
-              {{
-                formatHorometer(
-                  equipment.currentHorometer
-                )
-              }}
-              h
-            </strong>
-
-          </div>
-
-        </div>
-
-        <div class="form-field">
-
-          <label for="completion-horometer">
-            Horímetro na conclusão *
-          </label>
-
-          <input
-            id="completion-horometer"
-            v-model.number="form.completionHorometer"
-            type="number"
-            min="0"
-            step="0.1"
-            required
-          />
-
-
-          <span
-            v-if="errorMessage"
-            class="reading-form-error"
-          >
-            {{ errorMessage }}
+          <span class="optional-field">
+            (opcional)
           </span>
+        </label>
 
-        </div>
+        <textarea id="completion-observation" v-model="form.completionObservation" rows="4"
+          placeholder="Descreva observações sobre a manutenção realizada..."></textarea>
+      </div>
+    </form>
 
-        <div class="form-field">
+    <template #footer>
+      <button class="cancel-button" type="button" @click="$emit('close')">
+        Cancelar
+      </button>
 
-          <label for="completion-observation">
-            Observação da conclusão
-            <span class="optional-field">
-              (opcional)
-            </span>
-          </label>
+      <button class="save-button" type="submit" form="complete-work-order-form" :disabled="Boolean(errorMessage)">
+        <CheckCircle2 :size="16" />
+        Concluir OS
+      </button>
+    </template>
 
-          <textarea
-            id="completion-observation"
-            v-model="form.completionObservation"
-            rows="4"
-            placeholder="Descreva observações sobre a manutenção realizada..."
-          />
-
-        </div>
-
-        <div class="complete-work-order-actions">
-
-          <button
-            class="secondary-button"
-            type="button"
-            @click="$emit('close')"
-          >
-            Cancelar
-          </button>
-
-
-          <button
-            class="primary-button"
-            type="submit"
-            :disabled="Boolean(errorMessage)"
-          >
-
-            <CheckCircle2 :size="16" />
-
-            Concluir OS
-
-          </button>
-
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
+  </BaseModal>
 </template>

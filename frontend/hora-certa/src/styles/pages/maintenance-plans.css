@@ -39,262 +39,7 @@
   transform: translateY(-1px);
 }
 
-/* =====================================================
-   BANNER
-   ===================================================== */
-
-.maintenance-plans-banner {
-  position: relative;
-
-  min-height: 170px;
-
-  overflow: hidden;
-
-  border: 1px solid #d9e9e2;
-  border-radius: 20px;
-
-  background:
-    linear-gradient(105deg,
-      #f8fcfa 0%,
-      #edf7f2 52%,
-      #dcefe6 100%);
-
-  box-shadow: 0 5px 18px rgba(24, 77, 59, 0.06);
-}
-
-
-/* CONTEÚDO */
-
-.maintenance-banner-content {
-  position: relative;
-
-  z-index: 3;
-
-  display: flex;
-  flex-direction: column;
-
-  height: 100%;
-
-  padding: 22px 28px 26px;
-}
-
-
-/* BREADCRUMB */
-
-.maintenance-breadcrumb {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  margin-bottom: 24px;
-
-  color: var(--color-text-muted);
-
-  font-size: 11px;
-}
-
-
-.maintenance-breadcrumb strong {
-  color: var(--color-primary-dark);
-
-  font-weight: 600;
-}
-
-
-.breadcrumb-separator {
-  color: #9db4aa;
-
-  font-size: 16px;
-}
-
-
-/* CONTEÚDO PRINCIPAL */
-
-.maintenance-banner-main {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  gap: 30px;
-}
-
-
-.maintenance-banner-text {
-  max-width: 590px;
-}
-
-
-.maintenance-banner-text h1 {
-  margin: 0 0 7px;
-
-  color: #102b25;
-
-  font-size: 28px;
-  font-weight: 750;
-  line-height: 1.15;
-
-  letter-spacing: -0.6px;
-}
-
-
-.maintenance-banner-text p {
-  max-width: 520px;
-
-  margin: 0;
-
-  color: var(--color-text-secondary);
-
-  font-size: 13px;
-  line-height: 1.55;
-}
-
-
-/* =====================================================
-   BOTÃO
-   ===================================================== */
-
-.maintenance-plans-banner .new-plan-button {
-  position: relative;
-
-  z-index: 5;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 8px;
-
-  min-height: 44px;
-
-  padding: 0 19px;
-
-  border-radius: 11px;
-
-  background:
-    linear-gradient(135deg,
-      var(--color-primary),
-      var(--color-primary-dark));
-
-  color: #ffffff;
-
-  font-size: 12px;
-  font-weight: 650;
-
-  box-shadow:
-    0 7px 16px rgba(19, 91, 65, 0.18);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-
-.maintenance-plans-banner .new-plan-button:hover {
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 10px 22px rgba(19, 91, 65, 0.25);
-}
-
-
-/*DECORAÇÃO*/
-
-.maintenance-banner-decoration {
-  position: absolute;
-
-  z-index: 1;
-
-  top: 0;
-  right: 0;
-
-  width: 42%;
-  height: 100%;
-
-  pointer-events: none;
-}
-
-.maintenance-banner-decoration::before {
-  position: absolute;
-
-  top: -70px;
-  right: -40px;
-
-  width: 430px;
-  height: 260px;
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(circle,
-      rgba(71, 151, 113, 0.20),
-      rgba(71, 151, 113, 0.04) 65%,
-      transparent 70%);
-
-  content: "";
-}
-
-.maintenance-banner-decoration::after {
-  position: absolute;
-
-  right: 60px;
-  bottom: -85px;
-
-  width: 330px;
-  height: 180px;
-
-  border: 1px solid rgba(57, 132, 95, 0.13);
-
-  border-radius: 50%;
-
-  transform: rotate(-10deg);
-
-  content: "";
-}
-
-.maintenance-banner-circle {
-  position: absolute;
-
-  top: 22px;
-  left: 25%;
-
-  width: 18px;
-  height: 18px;
-
-  border-radius: 50%;
-
-  background-color: rgba(53, 139, 99, 0.16);
-}
-
-.maintenance-banner-gear {
-  position: absolute;
-
-  right: 155px;
-  bottom: 18px;
-
-  color: rgba(39, 117, 82, 0.12);
-
-  transform: rotate(-12deg);
-}
-
-/*FILTROS*/
-
-.plan-filters {
-  padding: 6px 4px 20px;
-
-  border-bottom: 1px solid var(--color-border);
-}
-
-.plan-filters-header h2 {
-  margin: 0 0 4px;
-
-  color: var(--color-text-primary);
-
-  font-size: 15px;
-  font-weight: 700;
-}
-
-
+/*BOTÃO*/
 .plan-filters-header p {
   margin: 0;
 
@@ -372,6 +117,7 @@
 
   letter-spacing: 0.5px;
 }
+
 /* LARGURA DOS FILTROS */
 
 .plan-search-field {
@@ -1090,26 +836,10 @@
 
 }
 
-/*MODAL DO PLANO*/
-
-.maintenance-plan-modal {
-  width: min(760px, 100%);
-  max-height: 90vh;
-
-  overflow-y: auto;
-
-  border-radius: var(--radius-xl);
-
-  background-color: var(--color-surface);
-
-  box-shadow:
-    0 24px 60px rgba(10, 25, 21, 0.18);
-}
-
 /*FORMULÁRIO*/
 
 .maintenance-plan-form {
-  padding: 22px 24px 24px;
+  width: 100%;
 }
 
 .plan-form-main {
@@ -1276,6 +1006,4 @@
     width: 100%;
     margin-left: 0;
   }
-
-
 }

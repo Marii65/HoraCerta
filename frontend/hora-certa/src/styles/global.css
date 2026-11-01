@@ -4,15 +4,18 @@
   box-sizing: border-box;
 }
 
-html,
-body,
 #app {
-  width: 100%;
-  min-height: 100%;
+    width: 100%;
+    min-height: 100vh;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
   min-width: 320px;
+  min-height: 100vh;
 
   background-color: var(--color-background);
 
@@ -37,6 +40,23 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 button {

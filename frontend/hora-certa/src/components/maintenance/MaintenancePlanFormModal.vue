@@ -6,6 +6,7 @@ import {
   Trash2
 } from 'lucide-vue-next';
 
+import BaseModal from '../common/BaseModal.vue';
 
 const props = defineProps({
   plan: {
@@ -41,11 +42,11 @@ const planForm = ref({
 
   items: props.plan?.items?.length
     ? props.plan.items.map((item) => ({
-        ...item
-      }))
+      ...item
+    }))
     : [
-        createEmptyItem()
-      ]
+      createEmptyItem()
+    ]
 });
 
 function addItem() {
@@ -94,241 +95,130 @@ function handleSubmit() {
 }
 </script>
 
-
 <template>
-  <div
-    class="modal-overlay"
-    @click.self="closeModal"
-  >
+  <BaseModal size="lg" :title="isEditing
+      ? 'Editar Plano de Manutenção'
+      : 'Novo Plano de Manutenção'
+    " :description="isEditing
+        ? 'Atualize o plano e seus serviços.'
+        : 'Defina o plano e os serviços de manutenção.'
+      " @close="closeModal">
 
-    <section class="maintenance-plan-modal">
+    <form id="maintenance-plan-form" class="maintenance-plan-form" @submit.prevent="handleSubmit">
+      <div class="plan-form-main">
 
-      <header class="modal-header">
+        <div class="form-group">
+          <label for="plan-name">
+            Nome *
+          </label>
 
-        <div>
-          <h2>
-            {{
-              isEditing
-                ? 'Editar Plano de Manutenção'
-                : 'Novo Plano de Manutenção'
-            }}
-          </h2>
-
-          <p>
-            {{
-              isEditing
-                ? 'Atualize o plano e seus serviços.'
-                : 'Defina o plano e os serviços de manutenção.'
-            }}
-          </p>
+          <input id="plan-name" v-model="planForm.name" type="text" maxlength="100"
+            placeholder="Ex: Revisão Preventiva 250h" required />
         </div>
 
+        <div class="form-group">
+          <label for="plan-description">
+            Descrição
+          </label>
 
-        <button
-          type="button"
-          class="modal-close"
-          aria-label="Fechar"
-          @click="closeModal"
-        >
-          ×
-        </button>
+          <textarea id="plan-description" v-model="planForm.description" rows="3"
+            placeholder="Descreva o objetivo deste plano..."></textarea>
+        </div>
 
-      </header>
+      </div>
 
-      <form
-        class="maintenance-plan-form"
-        @submit.prevent="handleSubmit"
-      >
+      <div class="plan-items-editor">
 
-        <div class="plan-form-main">
+        <div class="plan-items-editor-header">
 
-          <div class="form-group">
+          <div>
+            <h3>
+              Serviços de manutenção
+            </h3>
 
-            <label for="plan-name">
-              Nome *
-            </label>
-
-            <input
-              id="plan-name"
-              v-model="planForm.name"
-              type="text"
-              maxlength="100"
-              placeholder="Ex: Revisão Preventiva 250h"
-              required
-            />
-
+            <p>
+              Defina os serviços, intervalos e alertas deste plano.
+            </p>
           </div>
 
-
-          <div class="form-group">
-
-            <label for="plan-description">
-              Descrição
-            </label>
-
-            <textarea
-              id="plan-description"
-              v-model="planForm.description"
-              rows="3"
-              placeholder="Descreva o objetivo deste plano..."
-            ></textarea>
-
-          </div>
+          <button type="button" class="add-plan-item-button" @click="addItem">
+            <Plus :size="16" />
+            Adicionar serviço
+          </button>
 
         </div>
 
-        <div class="plan-items-editor">
+        <div v-for="(item, index) in planForm.items" :key="item.id ?? index" class="plan-form-item">
 
-          <div class="plan-items-editor-header">
+          <div class="plan-form-item-header">
 
-            <div>
-              <h3>
-                Serviços de manutenção
-              </h3>
+            <strong>
+              Serviço {{ index + 1 }}
+            </strong>
 
-              <p>
-                Defina os serviços, intervalos e alertas deste plano.
-              </p>
-            </div>
-
-
-            <button
-              type="button"
-              class="add-plan-item-button"
-              @click="addItem"
-            >
-              <Plus :size="16" />
-
-              Adicionar serviço
+            <button type="button" class="remove-plan-item-button" :disabled="planForm.items.length === 1"
+              aria-label="Remover serviço" @click="removeItem(index)">
+              <Trash2 :size="16" />
             </button>
 
           </div>
 
-          <div
-            v-for="(item, index) in planForm.items"
-            :key="item.id ?? index"
-            class="plan-form-item"
-          >
+          <div class="plan-item-form-grid">
 
-            <div class="plan-form-item-header">
+            <div class="form-group service-field">
+              <label>
+                Serviço *
+              </label>
 
-              <strong>
-                Serviço {{ index + 1 }}
-              </strong>
-
-
-              <button
-                type="button"
-                class="remove-plan-item-button"
-                :disabled="planForm.items.length === 1"
-                aria-label="Remover serviço"
-                @click="removeItem(index)"
-              >
-                <Trash2 :size="16" />
-              </button>
-
+              <input v-model="item.serviceDescription" type="text" maxlength="200"
+                placeholder="Ex: Troca de óleo do motor" required />
             </div>
 
-            <div class="plan-item-form-grid">
+            <div class="form-group">
+              <label>
+                Intervalo *
+              </label>
 
-              <div class="form-group service-field">
+              <div class="hours-input">
+                <input v-model.number="item.intervalHours" type="number" min="0.01" step="0.01" placeholder="250"
+                  required />
 
-                <label>
-                  Serviço *
-                </label>
-
-                <input
-                  v-model="item.serviceDescription"
-                  type="text"
-                  maxlength="200"
-                  placeholder="Ex: Troca de óleo do motor"
-                  required
-                />
-
+                <span>h</span>
               </div>
+            </div>
 
-              <div class="form-group">
+            <div class="form-group">
+              <label>
+                Margem de alerta *
+              </label>
 
-                <label>
-                  Intervalo *
-                </label>
+              <div class="hours-input">
+                <input v-model.number="item.alertMarginHours" type="number" min="0" step="0.01" required />
 
-                <div class="hours-input">
-
-                  <input
-                    v-model.number="item.intervalHours"
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    placeholder="250"
-                    required
-                  />
-
-                  <span>
-                    h
-                  </span>
-
-                </div>
-
+                <span>h</span>
               </div>
-
-              <div class="form-group">
-
-                <label>
-                  Margem de alerta *
-                </label>
-
-                <div class="hours-input">
-
-                  <input
-                    v-model.number="item.alertMarginHours"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    required
-                  />
-
-                  <span>
-                    h
-                  </span>
-
-                </div>
-
-              </div>
-
             </div>
 
           </div>
 
         </div>
 
-        <footer class="modal-footer">
+      </div>
+    </form>
 
-          <button
-            type="button"
-            class="cancel-button"
-            @click="closeModal"
-          >
-            Cancelar
-          </button>
+    <template #footer>
+      <button type="button" class="cancel-button" @click="closeModal">
+        Cancelar
+      </button>
 
+      <button type="submit" form="maintenance-plan-form" class="save-button">
+        {{
+          isEditing
+            ? 'Salvar Alterações'
+            : 'Cadastrar Plano'
+        }}
+      </button>
+    </template>
 
-          <button
-            type="submit"
-            class="save-button"
-          >
-            {{
-              isEditing
-                ? 'Salvar Alterações'
-                : 'Cadastrar Plano'
-            }}
-          </button>
-
-        </footer>
-
-      </form>
-
-    </section>
-
-  </div>
+  </BaseModal>
 </template>

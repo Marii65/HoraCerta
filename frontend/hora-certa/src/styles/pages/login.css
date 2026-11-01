@@ -90,14 +90,54 @@
 
 
 /* LOGO*/
+.login-logo-button {
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+}
+
+.back-home-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    margin-bottom: 18px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #668078;
+
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.back-home-button:hover {
+    color: #1f5b49;
+    transform: translateX(-2px);
+}
 
 .login-logo {
-  display: block;
+    position: relative;
+    z-index: 3;
 
-  width: 165px;
-  height: auto;
+    display: block;
 
-  object-fit: contain;
+    width: 150px;
+    height: auto;
+
+    object-fit: contain;
 }
 
 /* TEXTO DO PAINEL ESQUERDO*/

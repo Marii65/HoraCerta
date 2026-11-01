@@ -9,6 +9,7 @@ import {
 } from 'lucide-vue-next';
 
 import { getEquipmentIcon } from '../../utils/equipmentIcons';
+import StatusBadge from '../common/StatusBadge.vue';
 
 
 defineProps({
@@ -46,12 +47,6 @@ function handleToggleStatus(equipment) {
   emit('toggle-status', equipment);
 }
 
-
-function getStatusLabel(status) {
-  return status === 'ACTIVE'
-    ? 'Ativo'
-    : 'Inativo';
-}
 </script>
 
 
@@ -60,7 +55,7 @@ function getStatusLabel(status) {
 
     <div class="equipment-table-wrapper">
 
-      <table class="equipment-table">
+      <table class="system-table equipment-table">
 
         <thead>
           <tr>
@@ -75,19 +70,13 @@ function getStatusLabel(status) {
 
         <tbody>
 
-          <tr
-            v-for="equipment in equipments"
-            :key="equipment.id"
-          >
+          <tr v-for="equipment in equipments" :key="equipment.id">
 
             <td>
               <div class="equipment-cell">
 
                 <div class="equipment-thumbnail">
-                  <img
-                    :src="getEquipmentIcon(equipment.category)"
-                    :alt="equipment.category"
-                  />
+                  <img :src="getEquipmentIcon(equipment.category)" :alt="equipment.category" />
                 </div>
 
 
@@ -115,50 +104,28 @@ function getStatusLabel(status) {
             </td>
 
             <td>
-              <strong class="horometer-value">
-                {{ equipment.currentHorometer }} h
-              </strong>
+              <div class="horometer-value">
+                <p>{{ equipment.currentHorometer }}</p>
+                <span>h</span>
+              </div>
             </td>
 
             <td>
-              <span
-                class="equipment-status"
-                :class="{
-                  'equipment-status--active':
-                    equipment.status === 'ACTIVE',
-
-                  'equipment-status--inactive':
-                    equipment.status === 'INACTIVE'
-                }"
-              >
-                <span class="status-dot"></span>
-
-                {{ getStatusLabel(equipment.status) }}
-              </span>
+              <StatusBadge :label="equipment.status === 'ACTIVE' ? 'Ativo' : 'Inativo'"
+                :variant="equipment.status === 'ACTIVE' ? 'success' : 'neutral'" />
             </td>
 
             <td>
               <div class="equipment-actions">
 
-                <button
-                  class="more-button"
-                  type="button"
-                  aria-label="Opções do equipamento"
-                  @click="toggleMenu(equipment.id)"
-                >
+                <button type="button" aria-label="Opções do equipamento" @click="toggleMenu(equipment.id)">
                   <MoreVertical :size="18" />
                 </button>
 
 
-                <div
-                  v-if="openMenuId === equipment.id"
-                  class="actions-menu"
-                >
+                <div v-if="openMenuId === equipment.id" class="actions-menu">
 
-                  <button
-                    type="button"
-                    @click="handleEdit(equipment)"
-                  >
+                  <button type="button" @click="handleEdit(equipment)">
                     <Pencil :size="15" />
 
                     Editar
@@ -168,17 +135,13 @@ function getStatusLabel(status) {
                   <div class="actions-divider"></div>
 
 
-                  <button
-                    type="button"
-                    :class="{
-                      'action-danger':
-                        equipment.status === 'ACTIVE',
+                  <button type="button" :class="{
+                    'action-danger':
+                      equipment.status === 'ACTIVE',
 
-                      'action-success':
-                        equipment.status === 'INACTIVE'
-                    }"
-                    @click="handleToggleStatus(equipment)"
-                  >
+                    'action-success':
+                      equipment.status === 'INACTIVE'
+                  }" @click="handleToggleStatus(equipment)">
                     <Power :size="15" />
 
                     {{
@@ -197,10 +160,7 @@ function getStatusLabel(status) {
 
           <tr v-if="equipments.length === 0">
 
-            <td
-              colspan="5"
-              class="empty-state"
-            >
+            <td colspan="5" class="empty-state">
               <Search :size="26" />
 
               <strong>

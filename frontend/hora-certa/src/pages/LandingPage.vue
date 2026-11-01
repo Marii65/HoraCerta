@@ -1,7 +1,7 @@
 <script setup>
 import LandingHeader from '../components/landing/LandingHeader.vue';
 import HeroSection from '../components/landing/HeroSection.vue';
-
+import FeatureStrip from '../components/landing/FeatureStrip.vue';
 
 import '../styles/pages/landing.css';
 </script>

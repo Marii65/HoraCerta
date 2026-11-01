@@ -1,6 +1,13 @@
 <script setup>
 import { Plus } from 'lucide-vue-next';
 import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function goToWorkOrders() {
+  router.push('/app/ordens-servico');
+}
 </script>
 
 <template>
@@ -22,23 +29,16 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
         preventivas em um só lugar.
       </p>
 
-      <button
-        class="welcome-action"
-        type="button"
-      >
+      <button class="welcome-action" type="button" @click="goToWorkOrders">
         <Plus :size="18" />
-
         Nova Ordem de Serviço
       </button>
 
     </div>
 
     <!-- Elemento visual do banner -->
-   <div class="welcome-visual">
-      <img
-        :src="dashboardMaintenance"
-        alt="Escavadeira representando os equipamentos monitorados"
-      />
+    <div class="welcome-visual">
+      <img :src="dashboardMaintenance" alt="Escavadeira representando os equipamentos monitorados" />
     </div>
 
   </section>
@@ -174,11 +174,9 @@ import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png'
 
   width: 120px;
 
-  background: linear-gradient(
-    90deg,
-    var(--color-surface) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      var(--color-surface) 0%,
+      rgba(255, 255, 255, 0) 100%);
 
   content: "";
   pointer-events: none;

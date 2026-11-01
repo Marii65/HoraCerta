@@ -3,10 +3,10 @@ import {
   CalendarDays,
   Gauge,
   Image,
-  UserRound,
-  X
+  UserRound
 } from 'lucide-vue-next';
 
+import BaseModal from '../common/BaseModal.vue';
 
 defineProps({
   reading: {
@@ -64,208 +64,116 @@ function getDifference(reading) {
 }
 </script>
 
-
 <template>
+  <BaseModal size="md" :title="reading.equipmentCode" :description="reading.equipmentName" @close="$emit('close')">
+    <div class="reading-details-content">
 
-  <div
-    class="modal-overlay"
-    @click.self="$emit('close')"
-  >
+      <section class="reading-details-highlight">
 
-    <div class="reading-details-modal">
-
-      <header class="modal-header">
-
-        <div>
-
-          <span class="modal-eyebrow">
-            DETALHES DA LEITURA
-          </span>
-
-          <h2>
-            {{ reading.equipmentCode }}
-          </h2>
-
-          <p>
-            {{ reading.equipmentName }}
-          </p>
-
+        <div class="reading-details-gauge">
+          <Gauge :size="25" stroke-width="1.7" />
         </div>
 
-        <button
-          class="modal-close-button"
-          type="button"
-          title="Fechar"
-          @click="$emit('close')"
-        >
-          <X :size="19" />
-        </button>
+        <div>
+          <span>
+            Horímetro registrado
+          </span>
 
-      </header>
+          <strong>
+            {{ formatHorometer(reading.readingValue) }}
+            <small>h</small>
+          </strong>
 
-      <div class="reading-details-content">
+          <p v-if="getDifference(reading) !== null">
+            +{{ formatHorometer(getDifference(reading)) }}h
+            desde a leitura anterior
+          </p>
+        </div>
 
-        <section class="reading-details-highlight">
+      </section>
 
-          <div class="reading-details-gauge">
+      <section class="reading-details-grid">
 
-            <Gauge
-              :size="25"
-              stroke-width="1.7"
-            />
+        <div class="reading-detail-item">
 
-          </div>
-
+          <CalendarDays :size="18" stroke-width="1.7" />
 
           <div>
-
             <span>
-              Horímetro registrado
+              Data e hora
             </span>
 
             <strong>
-              {{ formatHorometer(reading.readingValue) }}
-              <small>h</small>
+              {{ formatDateTime(reading.readAt) }}
             </strong>
-
-
-            <p
-              v-if="getDifference(reading) !== null"
-            >
-              +{{ formatHorometer(getDifference(reading)) }}h
-              desde a leitura anterior
-            </p>
-
           </div>
 
-        </section>
+        </div>
 
-        <section class="reading-details-grid">
+        <div class="reading-detail-item">
 
-          <div class="reading-detail-item">
+          <UserRound :size="18" stroke-width="1.7" />
 
-            <CalendarDays
-              :size="18"
-              stroke-width="1.7"
-            />
-
-            <div>
-
-              <span>
-                Data e hora
-              </span>
-
-              <strong>
-                {{ formatDateTime(reading.readAt) }}
-              </strong>
-
-            </div>
-
-          </div>
-
-
-          <div class="reading-detail-item">
-
-            <UserRound
-              :size="18"
-              stroke-width="1.7"
-            />
-
-            <div>
-
-              <span>
-                Responsável
-              </span>
-
-              <strong>
-                {{ reading.responsibleName }}
-              </strong>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        <section class="reading-details-section">
-
-          <span class="reading-details-label">
-            Observação
-          </span>
-
-
-          <p v-if="reading.observation">
-            {{ reading.observation }}
-          </p>
-
-
-          <p
-            v-else
-            class="reading-details-empty"
-          >
-            Nenhuma observação registrada.
-          </p>
-
-        </section>
-
-        <section class="reading-details-section">
-
-          <span class="reading-details-label">
-            Evidência
-          </span>
-
-
-          <div
-            v-if="reading.evidence"
-            class="reading-details-evidence"
-          >
-
-            <Image
-              :size="18"
-              stroke-width="1.7"
-            />
-
+          <div>
             <span>
-              Evidência anexada
+              Responsável
             </span>
 
+            <strong>
+              {{ reading.responsibleName }}
+            </strong>
           </div>
 
+        </div>
 
-          <div
-            v-else
-            class="reading-details-evidence reading-details-empty"
-          >
+      </section>
 
-            <Image
-              :size="18"
-              stroke-width="1.7"
-            />
+      <section class="reading-details-section">
 
-            <span>
-              Nenhuma evidência anexada.
-            </span>
+        <span class="reading-details-label">
+          Observação
+        </span>
 
-          </div>
+        <p v-if="reading.observation">
+          {{ reading.observation }}
+        </p>
 
-        </section>
+        <p v-else class="reading-details-empty">
+          Nenhuma observação registrada.
+        </p>
 
-      </div>
+      </section>
 
-      <footer class="reading-details-footer">
+      <section class="reading-details-section">
 
-        <button
-          class="primary-button"
-          type="button"
-          @click="$emit('close')"
-        >
-          Fechar
-        </button>
+        <span class="reading-details-label">
+          Evidência
+        </span>
 
-      </footer>
+        <div v-if="reading.evidence" class="reading-details-evidence">
+          <Image :size="18" stroke-width="1.7" />
+
+          <span>
+            Evidência anexada
+          </span>
+        </div>
+
+        <div v-else class="reading-details-evidence reading-details-empty">
+          <Image :size="18" stroke-width="1.7" />
+
+          <span>
+            Nenhuma evidência anexada.
+          </span>
+        </div>
+
+      </section>
 
     </div>
 
-  </div>
-
+    <template #footer>
+      <button class="save-button" type="button" @click="$emit('close')">
+        Fechar
+      </button>
+    </template>
+  </BaseModal>
 </template>

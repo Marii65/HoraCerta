@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import {
+    ArrowLeft,
     Eye,
     EyeOff,
     LockKeyhole,
@@ -31,6 +32,9 @@ const showConfirmPassword = ref(false);
 const errorMessage = ref('');
 const isLoading = ref(false);
 
+function goToHome() {
+    router.push('/');
+}
 
 function togglePasswordVisibility() {
     showPassword.value = !showPassword.value;
@@ -104,7 +108,10 @@ async function handleRegister() {
                 <img :src="fundoLogin" alt="" class="login-background-image" />
 
                 <div class="login-presentation-content">
-                    <img :src="horaCertaLogo" alt="HoraCerta" class="login-logo" />
+                    <button class="login-logo-button" type="button" aria-label="Voltar para a página inicial"
+                        @click="goToHome">
+                        <img :src="horaCertaLogo" alt="HoraCerta" class="login-logo" />
+                    </button>
 
                     <div class="login-presentation-text">
                         <h1>
@@ -131,6 +138,11 @@ async function handleRegister() {
             <div class="login-access register-access">
                 <div class="login-access-content">
                     <header class="login-header">
+
+                        <button class="back-home-button" type="button" @click="goToHome">
+                            <ArrowLeft :size="16" />
+                            Voltar ao início
+                        </button>
 
                         <h2>
                             Cadastre-se

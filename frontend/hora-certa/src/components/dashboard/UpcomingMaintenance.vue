@@ -37,7 +37,7 @@ function getStatusLabel(status) {
 
 
       <RouterLink
-        to="/ordens-servico"
+        to="app/ordens-servico"
         class="view-all"
       >
         Ver todas

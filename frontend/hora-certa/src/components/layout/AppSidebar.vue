@@ -13,7 +13,7 @@ import horaCertaLogo from '../../assets/images/logo/horacerta-logo.png';
 const menuItems = [
   {
     label: 'Dashboard',
-    route: '/',
+    route: '/app',
     icon: LayoutDashboard
   },
   {
@@ -28,12 +28,12 @@ const menuItems = [
   },
   {
     label: 'Leituras de Horímetro',
-    route: 'app//leituras',
+    route: '/app/leituras',
     icon: Gauge
   },
   {
     label: 'Ordens de Serviço',
-    route: 'app//ordens-servico',
+    route: '/app/ordens-servico',
     icon: Settings
   }
 ];
