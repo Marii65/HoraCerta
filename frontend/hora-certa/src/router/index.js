@@ -10,6 +10,7 @@ import ReadingsPage from '../pages/ReadingsPage.vue';
 import WorkOrdersPage from '../pages/WorkOrdersPage.vue';
 import LoginPage from '../pages/LoginPage.vue';
 import RegisterPage from '../pages/RegisterPage.vue';
+import LandingPage from '../pages/LandingPage.vue';
 
 import { isAuthenticated } from '../services/authService';
 
@@ -17,7 +18,9 @@ const routes = [
 
   {
     path: '/',
-    redirect: '/login'
+    name: 'home',
+    component: LandingPage
+
   },
 
   // Rotas públicas
