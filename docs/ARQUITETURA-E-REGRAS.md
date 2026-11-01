@@ -152,7 +152,7 @@ Regras documentadas no planejamento:
 
 ##### 4\. Segurança e autenticação
 
-O planejamento descreve os seguintes componentes de segurança. 
+O planejamento descreve os seguintes componentes de segurança.
 
 ###### `JwtService`
 
