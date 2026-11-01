@@ -186,6 +186,28 @@ public class UserService {
                         )
                 );
     }
+
+    /**
+     * Busca um usuário pelo e-mail.
+     *
+     * @param email e-mail do usuário
+     * @return dados do usuário encontrado
+     * @throws ResourceNotFoundException se o usuário não existir
+     */
+    @Transactional(readOnly = true)
+    public UserResponseDTO findByEmail(String email) {
+
+        User user = userRepository.findByEmail(
+                normalizeEmail(email)
+        ).orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "User not found with email: " + email
+                )
+        );
+
+        return toResponseDTO(user);
+    }
+
     private String normalizeEmail(String email) {
         return email.trim().toLowerCase(Locale.ROOT);
     }
