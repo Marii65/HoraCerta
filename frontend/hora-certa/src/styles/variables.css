@@ -82,4 +82,76 @@
 
   --transition-fast: 150ms ease;
   --transition-base: 200ms ease;
+
+  /*LANDING PAGE*/
+
+  /* Cores principais */
+  --landing-green-950: #153f33;
+  --landing-green-900: #173f35;
+  --landing-green-850: #183f34;
+  --landing-green-800: #18392f;
+  --landing-green-750: #1b4939;
+  --landing-green-700: #1d5548;
+  --landing-green-650: #1f5b49;
+  --landing-green-600: #245b48;
+  --landing-green-550: #286a57;
+  --landing-green-500: #31594c;
+  --landing-green-450: #35594b;
+  --landing-green-400: #4f866d;
+  --landing-green-350: #5d9d7c;
+  --landing-green-300: #659a80;
+  --landing-green-250: #89ae9e;
+  --landing-green-675: #287363;
+
+  /* Textos */
+  --landing-text-primary: #18392f;
+  --landing-text-heading: #294d40;
+  --landing-text-secondary: #61756d;
+  --landing-text-soft: #70837b;
+  --landing-text-muted: #819089;
+  --landing-text-light: #899991;
+
+  /* Fundos */
+  --landing-white: #ffffff;
+  --landing-background: #ffffff;
+  --landing-background-soft: #f7faf8;
+  --landing-background-muted: #f6f9f7;
+  --landing-background-green-soft: #edf6f1;
+  --landing-background-green-lighter: #edf7f2;
+
+  /* Bordas */
+  --landing-border: #e5eee9;
+  --landing-border-light: #edf2ef;
+  --landing-border-medium: #dce9e3;
+  --landing-border-strong: #c8ddd3;
+
+  /* Verde de sucesso */
+  --landing-success: #4c866b;
+  --landing-success-soft: #e8f5ed;
+
+  /* Avisos */
+  --landing-warning: #c78b28;
+  --landing-warning-secondary: #d5a34b;
+  --landing-warning-background: #fffaf0;
+  --landing-warning-background-strong: #fff0cd;
+  --landing-warning-border: #f0dfba;
+
+  /* CTA */
+  --landing-cta-start: rgba(19, 67, 54, 0.96);
+  --landing-cta-middle: rgba(28, 88, 72, 0.95);
+  --landing-cta-end: rgba(42, 112, 92, 0.94);
+
+  --landing-cta-text: #ffffff;
+  --landing-cta-text-soft: #c6d9d1;
+  --landing-cta-accent: #a8d0bd;
+  --landing-cta-benefit: #d7e7e0;
+  --landing-cta-icon: #91c4aa;
+  --landing-cta-caption: #a9c5b9;
+
+  /* Transparências */
+  --landing-white-97: rgba(255, 255, 255, 0.97);
+  --landing-white-75: rgba(255, 255, 255, 0.75);
+  --landing-white-65: rgba(255, 255, 255, 0.65);
+  --landing-white-10: rgba(255, 255, 255, 0.1);
+  --landing-white-08: rgba(255, 255, 255, 0.08);
 }
