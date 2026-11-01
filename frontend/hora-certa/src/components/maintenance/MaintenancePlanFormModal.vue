@@ -8,6 +8,15 @@ import {
 
 import BaseModal from '../common/BaseModal.vue';
 
+const planColors = [
+  { value: 'green', label: 'Verde' },
+  { value: 'blue', label: 'Azul' },
+  { value: 'yellow', label: 'Amarelo' },
+  { value: 'orange', label: 'Laranja' },
+  { value: 'red', label: 'Vermelho' },
+  { value: 'purple', label: 'Roxo' }
+];
+
 const props = defineProps({
   plan: {
     type: Object,
@@ -39,6 +48,8 @@ const planForm = ref({
   name: props.plan?.name ?? '',
 
   description: props.plan?.description ?? '',
+
+  color: props.plan?.color ?? 'green',
 
   items: props.plan?.items?.length
     ? props.plan.items.map((item) => ({
@@ -76,6 +87,8 @@ function handleSubmit() {
     description:
       planForm.value.description.trim(),
 
+    color: planForm.value.color,
+
     items: planForm.value.items.map((item) => ({
       id: item.id,
 
@@ -97,11 +110,11 @@ function handleSubmit() {
 
 <template>
   <BaseModal size="lg" :title="isEditing
-      ? 'Editar Plano de Manutenção'
-      : 'Novo Plano de Manutenção'
+    ? 'Editar Plano de Manutenção'
+    : 'Novo Plano de Manutenção'
     " :description="isEditing
-        ? 'Atualize o plano e seus serviços.'
-        : 'Defina o plano e os serviços de manutenção.'
+      ? 'Atualize o plano e seus serviços.'
+      : 'Defina o plano e os serviços de manutenção.'
       " @close="closeModal">
 
     <form id="maintenance-plan-form" class="maintenance-plan-form" @submit.prevent="handleSubmit">
@@ -123,6 +136,28 @@ function handleSubmit() {
 
           <textarea id="plan-description" v-model="planForm.description" rows="3"
             placeholder="Descreva o objetivo deste plano..."></textarea>
+        </div>
+
+        <div class="plan-color-field">
+          <div class="plan-color-heading">
+            <label>Cor de identificação</label>
+
+            <span>
+              Escolha uma cor para identificar este plano.
+            </span>
+          </div>
+
+          <div class="plan-color-options">
+            <button v-for="color in planColors" :key="color.value" type="button" class="plan-color-option" :class="[
+              `plan-color-option--${color.value}`,
+              {
+                'plan-color-option--selected':
+                  planForm.color === color.value
+              }
+            ]" :title="color.label" @click="planForm.color = color.value">
+              <span class="plan-color-circle"></span>
+            </button>
+          </div>
         </div>
 
       </div>

@@ -3,6 +3,8 @@ export const maintenancePlanMocks = [
     id: 1,
     name: 'Revisão Preventiva 250h',
     description: 'Manutenção preventiva realizada a cada 250 horas de operação.',
+    color: 'green',
+
     active: true,
 
     items: [
@@ -31,6 +33,7 @@ export const maintenancePlanMocks = [
     id: 2,
     name: 'Revisão Preventiva 500h',
     description: 'Revisão intermediária dos principais sistemas do equipamento.',
+    color: 'purple',
     active: true,
 
     items: [
@@ -59,6 +62,7 @@ export const maintenancePlanMocks = [
     id: 3,
     name: 'Revisão Geral 1000h',
     description: 'Revisão completa para equipamentos com alto tempo de operação.',
+    color: 'blue',
     active: false,
 
     items: [

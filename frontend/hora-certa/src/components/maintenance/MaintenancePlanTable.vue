@@ -4,11 +4,9 @@ import { ref } from 'vue';
 import {
   ChevronDown,
   ChevronUp,
-  Clock3,
   MoreVertical,
   Pencil,
   Power,
-  Settings2,
   Wrench
 } from 'lucide-vue-next';
 
@@ -58,135 +56,66 @@ function handleToggleStatus(plan) {
 }
 
 
-function getBaseInterval(plan) {
-  if (!plan.items?.length) {
-    return 0;
-  }
-
-  return Math.min(
-    ...plan.items.map(
-      (item) => Number(item.intervalHours)
-    )
-  );
-}
 </script>
-
 
 <template>
   <section class="maintenance-plan-list">
-
-    <article v-for="plan in plans" :key="plan.id" class="maintenance-plan-card" :class="{
-      'maintenance-plan-card--inactive': !plan.active
-    }">
+    <article v-for="plan in plans" :key="plan.id" class="maintenance-plan-card" :class="[
+      `maintenance-plan-card--${plan.color ?? 'green'}`,
+      {
+        'maintenance-plan-card--inactive': !plan.active,
+        'maintenance-plan-card--expanded': expandedPlanId === plan.id
+      }
+    ]">
 
       <div class="plan-card-content">
-
-        <div class="plan-card-identity">
-
-          <div class="plan-card-icon">
-            <Settings2 :size="23" stroke-width="1.8" />
+        <div class="plan-card-info">
+          <div class="plan-card-title-row">
+            <h2>
+              {{ plan.name }}
+            </h2>
+            <StatusBadge :label="plan.active ? 'Ativo' : 'Inativo'" :variant="plan.active ? 'success' : 'neutral'" />
           </div>
 
-
-          <div class="plan-card-info">
-
-            <div class="plan-card-title-row">
-
-              <h2>
-                {{ plan.name }}
-              </h2>
-
-
-              <StatusBadge :label="plan.active ? 'Ativo' : 'Inativo'" :variant="plan.active ? 'success' : 'neutral'" />
-
-            </div>
-
-
-            <p>
-              {{
-                plan.description ||
-                'Nenhuma descrição informada para este plano.'
-              }}
-            </p>
-
-          </div>
-
+          <p>
+            {{
+              plan.description ||
+              'Nenhuma descrição informada para este plano.'
+            }}
+          </p>
         </div>
 
         <div class="plan-actions">
-
           <button class="plan-menu-button" type="button" aria-label="Abrir ações do plano" @click="toggleMenu(plan.id)">
-            <MoreVertical :size="19" />
+            <MoreVertical :size="18" />
           </button>
 
-
           <div v-if="openMenuId === plan.id" class="plan-actions-menu">
-
             <button type="button" @click="handleEdit(plan)">
               <Pencil :size="15" />
-
               Editar
             </button>
 
-
             <div class="plan-actions-divider"></div>
 
-
             <button type="button" :class="plan.active
-                ? 'plan-action-danger'
-                : 'plan-action-success'
+              ? 'plan-action-danger'
+              : 'plan-action-success'
               " @click="handleToggleStatus(plan)">
               <Power :size="15" />
 
               {{ plan.active ? 'Desativar' : 'Ativar' }}
             </button>
-
           </div>
-
         </div>
-
       </div>
 
-      <div class="plan-card-summary">
+      <div class="plan-card-meta">
 
-        <div class="plan-summary-item">
-
-          <div class="plan-summary-icon">
-            <Wrench :size="17" />
-          </div>
-
-
-          <div>
-            <span>Serviços</span>
-
-            <strong>
-              {{ plan.items.length }}
-              {{ plan.items.length === 1 ? 'serviço' : 'serviços' }}
-            </strong>
-          </div>
-
-        </div>
-
-
-        <div class="plan-summary-divider"></div>
-
-
-        <div class="plan-summary-item">
-
-          <div class="plan-summary-icon">
-            <Clock3 :size="17" />
-          </div>
-
-
-          <div>
-            <span>Intervalo base</span>
-
-            <strong>
-              {{ getBaseInterval(plan) }}h
-            </strong>
-          </div>
-
-        </div>
+        <span>
+          {{ plan.items.length }}
+          {{ plan.items.length === 1 ? 'serviço' : 'serviços' }}
+        </span>
 
       </div>
 
@@ -196,79 +125,35 @@ function getBaseInterval(plan) {
           {{
             expandedPlanId === plan.id
               ? 'Ocultar serviços'
-              : 'Ver serviços do plano'
+              : 'Ver serviços'
           }}
         </span>
 
+        <ChevronUp v-if="expandedPlanId === plan.id" :size="16" />
 
-        <ChevronUp v-if="expandedPlanId === plan.id" :size="17" />
-
-        <ChevronDown v-else :size="17" />
+        <ChevronDown v-else :size="16" />
 
       </button>
 
       <div v-if="expandedPlanId === plan.id" class="plan-services">
 
-        <div class="plan-services-header">
+        <div v-for="(item, index) in plan.items" :key="item.id ?? `${plan.id}-${index}`" class="plan-service-item">
 
-          <div>
+          <strong>
+            {{ item.serviceDescription }}
+          </strong>
 
-            <span class="plan-services-label">
-              SERVIÇOS DE MANUTENÇÃO
+          <div class="plan-service-details">
+
+            <span>
+              A cada
+              <strong>{{ item.intervalHours }}h</strong>
             </span>
 
-            <h3>
-              Rotina preventiva
-            </h3>
-
-          </div>
-
-
-          <span class="plan-services-count">
-            {{ plan.items.length }}
-            {{ plan.items.length === 1 ? 'item' : 'itens' }}
-          </span>
-
-        </div>
-
-
-        <div class="plan-services-list">
-
-          <div v-for="(item, index) in plan.items" :key="item.id ?? `${plan.id}-${index}`" class="plan-service-item">
-
-            <div class="plan-service-number">
-              {{ String(index + 1).padStart(2, '0') }}
-            </div>
-
-            <div class="plan-service-description">
-
-              <span>Serviço</span>
-
-              <strong>
-                {{ item.serviceDescription }}
-              </strong>
-
-            </div>
-
-            <div class="plan-service-data">
-
-              <span>Intervalo</span>
-
-              <strong>
-                {{ item.intervalHours }}h
-              </strong>
-
-            </div>
-
-            <div class="plan-service-data plan-service-alert">
-
-              <span>Alerta preventivo</span>
-
-              <strong>
-                {{ item.alertMarginHours }}h antes
-              </strong>
-
-            </div>
+            <span>
+              Alerta
+              <strong>{{ item.alertMarginHours }}h antes</strong>
+            </span>
 
           </div>
 
