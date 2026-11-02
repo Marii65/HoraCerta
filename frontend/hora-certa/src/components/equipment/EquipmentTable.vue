@@ -76,7 +76,7 @@ function handleToggleStatus(equipment) {
               <div class="equipment-cell">
 
                 <div class="equipment-thumbnail">
-                  <img :src="getEquipmentIcon(equipment.category)" :alt="equipment.category" />
+                  <img :src="getEquipmentIcon(equipment.category)" :alt="equipment.category || 'Equipamento'" />
                 </div>
 
 
@@ -123,7 +123,10 @@ function handleToggleStatus(equipment) {
                 </button>
 
 
-                <div v-if="openMenuId === equipment.id" class="actions-menu">
+                <div v-if="openMenuId === equipment.id" class="actions-menu" :class="{
+                  'actions-menu-up':
+                    equipment.id === equipments[equipments.length - 1]?.id
+                }">
 
                   <button type="button" @click="handleEdit(equipment)">
                     <Pencil :size="15" />

@@ -50,7 +50,6 @@ const maintenances = upcomingMaintenancesMock;
 
       </div>
 
-
       <aside class="dashboard-side">
 
         <FleetDistribution

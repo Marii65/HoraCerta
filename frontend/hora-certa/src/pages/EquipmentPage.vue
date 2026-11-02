@@ -1,24 +1,43 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+
 import { Plus } from 'lucide-vue-next';
 
 import EquipmentFilters from '../components/equipment/EquipmentFilters.vue';
 import EquipmentTable from '../components/equipment/EquipmentTable.vue';
 import EquipmentFormModal from '../components/equipment/EquipmentFormModal.vue';
-
-import { equipmentMocks } from '../mocks/equipments';
-
-import '../styles/pages/equipment.css';
 import PageHeader from '../components/common/PageHeader.vue';
 
-// Dados temporários.
-// Futuramente serão carregados pela API.
-const equipments = ref([...equipmentMocks]);
+import { getEquipments, createEquipment, updateEquipment } from '../services/equipmentService';
+
+import '../styles/pages/equipment.css';
+
+const equipments = ref([]);
+
+const isLoading = ref(false);
+const errorMessage = ref('');
 
 const searchTerm = ref('');
 const selectedCategory = ref('');
 const selectedStatus = ref('');
 
+const isEquipmentModalOpen = ref(false);
+const editingEquipment = ref(null);
+
+async function loadEquipments() {
+  isLoading.value = true;
+  errorMessage.value = '';
+
+  try {
+    equipments.value = await getEquipments();
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível carregar os equipamentos.';
+  } finally {
+    isLoading.value = false;
+  }
+}
 
 const filteredEquipments = computed(() => {
   const search = searchTerm.value
@@ -26,11 +45,14 @@ const filteredEquipments = computed(() => {
     .toLowerCase();
 
   return equipments.value.filter((equipment) => {
-
     const matchesSearch =
       !search ||
-      equipment.code.toLowerCase().includes(search) ||
-      equipment.name.toLowerCase().includes(search) ||
+      equipment.code
+        ?.toLowerCase()
+        .includes(search) ||
+      equipment.name
+        ?.toLowerCase()
+        .includes(search) ||
       (equipment.model ?? '')
         .toLowerCase()
         .includes(search);
@@ -51,121 +73,120 @@ const filteredEquipments = computed(() => {
   });
 });
 
-
-const isEquipmentModalOpen = ref(false);
-
-const editingEquipment = ref(null);
-
 function openCreateModal() {
   editingEquipment.value = null;
-
   isEquipmentModalOpen.value = true;
 }
 
 function openEditModal(equipment) {
   editingEquipment.value = equipment;
-
   isEquipmentModalOpen.value = true;
 }
 
 function closeEquipmentModal() {
   isEquipmentModalOpen.value = false;
-
   editingEquipment.value = null;
 }
 
-/*
- * Recebe os dados enviados pelo formulário.
- *
- * Enquanto não conectamos a API, adicionamos
- * ou atualizamos o equipamento localmente.
- */
-function handleSaveEquipment(formData) {
+async function handleSaveEquipment(formData) {
+  errorMessage.value = '';
 
-  if (editingEquipment.value) {
-    updateEquipment(formData);
-    return;
+  try {
+    if (editingEquipment.value) {
+      await handleUpdateEquipment(formData);
+      return;
+    }
+    await handleCreateEquipment(formData);
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível salvar o equipamento.';
   }
-
-  createEquipment(formData);
 }
 
-
-/*
- * Cadastra temporariamente um equipamento.
- *
- * Depois esta função será substituída
- * por uma chamada POST para a API.
- */
-function createEquipment(formData) {
-
-  const newEquipment = {
-    id: Date.now(),
-
-    ...formData,
-
-    status: 'ACTIVE'
+async function handleCreateEquipment(formData) {
+  const payload = {
+    code: formData.code,
+    name: formData.name,
+    model: formData.model || null,
+    category: formData.category || null,
+    serialNumber: formData.serialNumber || null
   };
-
-  equipments.value.unshift(newEquipment);
-
+  const createdEquipment =
+    await createEquipment(payload);
+  equipments.value.unshift(createdEquipment);
   closeEquipmentModal();
 }
 
-
-/*
- * Atualiza temporariamente um equipamento.
- *
- * Depois esta função será substituída
- * por uma chamada PUT/PATCH para a API.
- */
-function updateEquipment(formData) {
-
+async function handleUpdateEquipment(formData) {
+  const payload = {
+    code: formData.code,
+    name: formData.name,
+    category: formData.category || null,
+    model: formData.model || null,
+    serialNumber: formData.serialNumber || null,
+    status:
+      formData.status ||
+      editingEquipment.value.status
+  };
+  const updatedEquipment =
+    await updateEquipment(
+      editingEquipment.value.id,
+      payload
+    );
   const index = equipments.value.findIndex(
     (equipment) =>
-      equipment.id === editingEquipment.value.id
+      equipment.id === updatedEquipment.id
   );
-
-  if (index === -1) {
-    return;
+  if (index !== -1) {
+    equipments.value[index] =
+      updatedEquipment;
   }
-
-  equipments.value[index] = {
-    ...equipments.value[index],
-    ...formData
-  };
-
   closeEquipmentModal();
 }
 
-/*
- * Alterna entre equipamento ativo e inativo.
- *
- * Futuramente essa ação será enviada
- * para o backend.
- */
-function toggleEquipmentStatus(equipment) {
+async function toggleEquipmentStatus(equipment) {
+  errorMessage.value = '';
 
-  const index = equipments.value.findIndex(
-    (item) => item.id === equipment.id
-  );
+  const newStatus =
+    equipment.status === 'ACTIVE'
+      ? 'INACTIVE'
+      : 'ACTIVE';
 
-  if (index === -1) {
-    return;
-  }
-
-  const currentEquipment =
-    equipments.value[index];
-
-  equipments.value[index] = {
-    ...currentEquipment,
-
-    status:
-      currentEquipment.status === 'ACTIVE'
-        ? 'INACTIVE'
-        : 'ACTIVE'
+  const payload = {
+    code: equipment.code,
+    name: equipment.name,
+    category: equipment.category || null,
+    model: equipment.model || null,
+    serialNumber: equipment.serialNumber || null,
+    status: newStatus
   };
+
+  try {
+    const updatedEquipment =
+      await updateEquipment(
+        equipment.id,
+        payload
+      );
+
+    const index = equipments.value.findIndex(
+      (item) => item.id === equipment.id
+    );
+
+    if (index !== -1) {
+      equipments.value[index] =
+        updatedEquipment;
+    }
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível alterar o status do equipamento.';
+  }
 }
+
+onMounted(() => {
+  loadEquipments();
+});
 </script>
 
 <template>
@@ -180,11 +201,17 @@ function toggleEquipmentStatus(equipment) {
     </PageHeader>
 
     <EquipmentFilters v-model:search="searchTerm" v-model:category="selectedCategory" v-model:status="selectedStatus" />
+    <p v-if="errorMessage" class="equipment-error">
+      {{ errorMessage }}
+    </p>
 
-    <EquipmentTable :equipments="filteredEquipments" @edit="openEditModal" @toggle-status="toggleEquipmentStatus" />
+    <p v-if="isLoading" class="equipment-loading">
+      Carregando equipamentos...
+    </p>
 
+    <EquipmentTable v-else :equipments="filteredEquipments" @edit="openEditModal"
+      @toggle-status="toggleEquipmentStatus" />
     <EquipmentFormModal v-if="isEquipmentModalOpen" :equipment="editingEquipment" @close="closeEquipmentModal"
       @save="handleSaveEquipment" />
-
   </div>
 </template>

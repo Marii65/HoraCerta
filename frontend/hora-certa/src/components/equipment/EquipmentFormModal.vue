@@ -27,8 +27,7 @@ const equipmentForm = ref({
   name: props.equipment?.name ?? '',
   model: props.equipment?.model ?? '',
   serialNumber: props.equipment?.serialNumber ?? '',
-  category: props.equipment?.category ?? '',
-  currentHorometer: props.equipment?.currentHorometer ?? 0
+  category: props.equipment?.category ?? ''
 });
 
 function closeModal() {
@@ -37,16 +36,13 @@ function closeModal() {
 
 
 function handleSubmit() {
-
   const formData = {
     code: equipmentForm.value.code.trim(),
     name: equipmentForm.value.name.trim(),
     model: equipmentForm.value.model.trim(),
-    serialNumber: equipmentForm.value.serialNumber.trim(),
-    category: equipmentForm.value.category,
-
-    currentHorometer:
-      Number(equipmentForm.value.currentHorometer)
+    serialNumber:
+      equipmentForm.value.serialNumber.trim(),
+    category: equipmentForm.value.category
   };
 
   emit('save', formData);
@@ -112,20 +108,6 @@ function handleSubmit() {
             </option>
           </select>
         </div>
-
-        <div class="form-group">
-          <label for="equipment-horometer">
-            Horímetro atual *
-          </label>
-
-          <div class="horometer-input">
-            <input id="equipment-horometer" v-model.number="equipmentForm.currentHorometer" type="number" min="0"
-              step="0.01" required />
-
-            <span>h</span>
-          </div>
-        </div>
-
       </div>
 
       <div v-if="equipmentForm.category" class="category-preview">

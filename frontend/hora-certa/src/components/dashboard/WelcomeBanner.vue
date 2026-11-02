@@ -1,6 +1,6 @@
 <script setup>
 import { Plus } from 'lucide-vue-next';
-import dashboardMaintenance from '../../assets/images/dashboard-maintenance.png';
+import dashboardMaintenance from '../../assets/images/escavadeira-dashboard.png';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -12,8 +12,6 @@ function goToWorkOrders() {
 
 <template>
   <section class="welcome-banner">
-
-    <!-- Conteúdo principal -->
     <div class="welcome-content">
 
       <span class="welcome-label">
@@ -33,33 +31,24 @@ function goToWorkOrders() {
         <Plus :size="18" />
         Nova Ordem de Serviço
       </button>
-
     </div>
 
-    <!-- Elemento visual do banner -->
     <div class="welcome-visual">
       <img :src="dashboardMaintenance" alt="Escavadeira representando os equipamentos monitorados" />
     </div>
-
   </section>
 </template>
 
 <style scoped>
 .welcome-banner {
   position: relative;
-
   display: flex;
   align-items: stretch;
-
   min-height: 210px;
-
   overflow: hidden;
-
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-
   background-color: var(--color-surface);
-
   box-shadow: var(--shadow-sm);
 }
 
