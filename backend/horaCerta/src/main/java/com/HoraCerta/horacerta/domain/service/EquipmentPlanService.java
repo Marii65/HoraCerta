@@ -145,17 +145,35 @@ public class EquipmentPlanService {
     /**
      * Alterna o estado de ativação de um vínculo existente.
      *
+     * Ao reativar um vínculo, o início do monitoramento é
+     * atualizado para o horímetro atual do equipamento.
+     *
      * @param id identificador do vínculo
      * @return dados atualizados do vínculo
      * @throws ResourceNotFoundException se o vínculo não existir
      */
     @Transactional
     public EquipmentPlanResponseDTO toggleStatus(Long id) {
-        EquipmentPlan equipmentPlan = getEquipmentPlanOrThrow(id);
+        EquipmentPlan equipmentPlan =
+                getEquipmentPlanOrThrow(id);
 
-        equipmentPlan.setActive(!Boolean.TRUE.equals(equipmentPlan.getActive()));
+        boolean activating =
+                !Boolean.TRUE.equals(
+                        equipmentPlan.getActive()
+                );
 
-        EquipmentPlan updatedPlan = equipmentPlanRepository.save(equipmentPlan);
+        equipmentPlan.setActive(activating);
+        if (activating) {
+            equipmentPlan.setStartHourMeter(
+                    equipmentPlan
+                            .getEquipment()
+                            .getCurrentHorometer()
+            );
+        }
+        EquipmentPlan updatedPlan =
+                equipmentPlanRepository.save(
+                        equipmentPlan
+                );
         return toResponseDTO(updatedPlan);
     }
 

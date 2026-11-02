@@ -7,10 +7,13 @@ import EquipmentFilters from '../components/equipment/EquipmentFilters.vue';
 import EquipmentTable from '../components/equipment/EquipmentTable.vue';
 import EquipmentFormModal from '../components/equipment/EquipmentFormModal.vue';
 import PageHeader from '../components/common/PageHeader.vue';
+import EquipmentPlansModal from '../components/equipment/EquipmentPlansModal.vue';
 
 import { getEquipments, createEquipment, updateEquipment } from '../services/equipmentService';
 
 import '../styles/pages/equipment.css';
+
+
 
 const equipments = ref([]);
 
@@ -23,6 +26,8 @@ const selectedStatus = ref('');
 
 const isEquipmentModalOpen = ref(false);
 const editingEquipment = ref(null);
+
+const selectedEquipmentForPlans = ref(null);
 
 async function loadEquipments() {
   isLoading.value = true;
@@ -184,6 +189,16 @@ async function toggleEquipmentStatus(equipment) {
   }
 }
 
+function openEquipmentPlans(equipment) {
+  selectedEquipmentForPlans.value =
+    equipment;
+}
+
+function closeEquipmentPlans() {
+  selectedEquipmentForPlans.value =
+    null;
+}
+
 onMounted(() => {
   loadEquipments();
 });
@@ -209,9 +224,13 @@ onMounted(() => {
       Carregando equipamentos...
     </p>
 
-    <EquipmentTable v-else :equipments="filteredEquipments" @edit="openEditModal"
-      @toggle-status="toggleEquipmentStatus" />
+    <EquipmentTable v-else :equipments="filteredEquipments" @edit="openEditModal" @toggle-status="toggleEquipmentStatus"
+      @manage-plans="openEquipmentPlans" />
+
     <EquipmentFormModal v-if="isEquipmentModalOpen" :equipment="editingEquipment" @close="closeEquipmentModal"
       @save="handleSaveEquipment" />
+
+    <EquipmentPlansModal v-if="selectedEquipmentForPlans" :equipment="selectedEquipmentForPlans"
+      @close="closeEquipmentPlans" />
   </div>
 </template>

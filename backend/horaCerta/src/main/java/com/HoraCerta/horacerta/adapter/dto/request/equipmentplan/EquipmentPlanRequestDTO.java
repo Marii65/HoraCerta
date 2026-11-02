@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public record EquipmentPlanRequestDTO(
 
-        @Positive(message = "Equipment Plan ID must be positive")
+        @Positive(message = "Equipment ID must be positive")
         @NotNull(message = "Equipment ID is mandatory")
         Long equipmentId,
 
@@ -16,7 +16,6 @@ public record EquipmentPlanRequestDTO(
         @NotNull(message = "Maintenance ID plan is mandatory")
         Long maintenancePlanId,
 
-        @NotNull(message = "Start hour meter is mandatory")
         @PositiveOrZero(message = "Start hour meter must be positive or zero")
         BigDecimal startHourMeter
 ) {
