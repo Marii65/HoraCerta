@@ -153,6 +153,5 @@ function submitForm() {
         Concluir OS
       </button>
     </template>
-
   </BaseModal>
 </template>

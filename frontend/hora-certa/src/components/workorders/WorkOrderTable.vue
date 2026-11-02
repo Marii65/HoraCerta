@@ -102,9 +102,8 @@ function getStatusLabel(status) {
     SCHEDULED: 'Agendada',
     IN_PROGRESS: 'Em andamento',
     COMPLETED: 'Concluída',
-    CANCELED: 'Cancelada'
+    CANCELLED: 'Cancelada'
   };
-
   return labels[status] ?? status;
 }
 
@@ -113,7 +112,7 @@ function getStatusVariant(status) {
     SCHEDULED: 'warning',
     IN_PROGRESS: 'info',
     COMPLETED: 'success',
-    CANCELED: 'neutral'
+    CANCELLED: 'neutral'
   };
 
   return variants[status] ?? 'neutral';
@@ -123,100 +122,64 @@ function getStatusVariant(status) {
 
 
 <template>
-
   <div class="work-order-table-wrapper">
-
     <table class="system-table work-order-table">
-
       <thead>
-
         <tr>
-
           <th>Ordem</th>
-
           <th>Equipamento</th>
-
           <th>Manutenção</th>
-
           <th>Agendamento</th>
-
           <th>Status</th>
-
           <th class="work-order-table-actions">
             Ações
           </th>
-
         </tr>
-
       </thead>
 
-
       <tbody>
-
         <template v-for="workOrder in workOrders" :key="workOrder.id">
-
           <tr class="work-order-row" :class="{
             'work-order-row--expanded':
               isExpanded(workOrder.id)
           }">
-
             <td>
-
               <strong class="work-order-number">
                 {{ workOrder.orderNumber }}
               </strong>
-
             </td>
 
             <td>
-
               <div class="work-order-equipment">
-
                 <div class="work-order-equipment-icon">
-
                   <img :src="getEquipmentIcon(
                     workOrder.equipmentCategory
                   )
                     " :alt="workOrder.equipmentCategory" />
-
                 </div>
 
-
                 <div class="work-order-equipment-info">
-
                   <strong>
                     {{ workOrder.equipmentCode }}
                   </strong>
-
                   <span>
                     {{ workOrder.equipmentName }}
                   </span>
-
                 </div>
-
               </div>
-
             </td>
 
             <td>
-
               <div class="work-order-maintenance">
-
                 <div class="work-order-maintenance-title">
-
                   <Wrench :size="14" stroke-width="1.8" />
-
                   <strong>
                     {{ workOrder.maintenancePlanName }}
                   </strong>
-
                 </div>
 
-
                 <div v-if="workOrder.scheduledHorometer" class="work-order-horometer">
-
                   <Gauge :size="13" stroke-width="1.8" />
-
                   <span>
                     {{
                       formatHorometer(
@@ -224,19 +187,13 @@ function getStatusVariant(status) {
                       )
                     }} h
                   </span>
-
                 </div>
-
               </div>
-
             </td>
 
             <td>
-
               <div class="work-order-date">
-
                 <CalendarDays :size="14" stroke-width="1.8" />
-
                 <span>
                   {{
                     formatDate(
@@ -244,19 +201,14 @@ function getStatusVariant(status) {
                     )
                   }}
                 </span>
-
               </div>
-
             </td>
 
             <td>
-
               <StatusBadge :label="getStatusLabel(workOrder.status)" :variant="getStatusVariant(workOrder.status)" />
-
             </td>
 
             <td class="work-order-table-actions">
-
               <button class="work-order-expand-button" :class="{
                 'work-order-expand-button--active':
                   isExpanded(workOrder.id)
@@ -268,19 +220,13 @@ function getStatusVariant(status) {
                 <ChevronDown :size="18" stroke-width="1.8" />
 
               </button>
-
             </td>
-
           </tr>
 
           <tr v-if="isExpanded(workOrder.id)" class="work-order-details-row">
-
             <td colspan="6">
-
               <div class="work-order-details">
-
                 <div class="work-order-details-grid">
-
                   <div class="work-order-detail">
 
                     <span>
@@ -294,12 +240,9 @@ function getStatusVariant(status) {
                     <small>
                       {{ workOrder.equipmentName }}
                     </small>
-
                   </div>
 
-
                   <div class="work-order-detail">
-
                     <span>
                       Plano de manutenção
                     </span>
@@ -307,12 +250,9 @@ function getStatusVariant(status) {
                     <strong>
                       {{ workOrder.maintenancePlanName }}
                     </strong>
-
                   </div>
 
-
                   <div class="work-order-detail">
-
                     <span>
                       Horímetro previsto
                     </span>
@@ -324,12 +264,9 @@ function getStatusVariant(status) {
                         )
                       }} h
                     </strong>
-
                   </div>
 
-
                   <div class="work-order-detail">
-
                     <span>
                       Data agendada
                     </span>
@@ -341,37 +278,11 @@ function getStatusVariant(status) {
                         )
                       }}
                     </strong>
-
                   </div>
-
                 </div>
 
-                <div v-if="
-                  workOrder.status === 'IN_PROGRESS' ||
-                  workOrder.status === 'COMPLETED'
-                " class="work-order-execution">
-
+                <div v-if="workOrder.status === 'COMPLETED'" class="work-order-execution">
                   <div>
-
-                    <span>
-                      Iniciada em
-                    </span>
-
-                    <strong>
-                      {{
-                        formatDateTime(
-                          workOrder.startedAt
-                        )
-                      }}
-                    </strong>
-
-                  </div>
-
-
-                  <div v-if="
-                    workOrder.status === 'COMPLETED'
-                  ">
-
                     <span>
                       Concluída em
                     </span>
@@ -383,14 +294,9 @@ function getStatusVariant(status) {
                         )
                       }}
                     </strong>
-
                   </div>
 
-
-                  <div v-if="
-                    workOrder.status === 'COMPLETED'
-                  ">
-
+                  <div>
                     <span>
                       Horímetro na conclusão
                     </span>
@@ -402,13 +308,10 @@ function getStatusVariant(status) {
                         )
                       }} h
                     </strong>
-
                   </div>
-
                 </div>
 
                 <div class="work-order-observation">
-
                   <span>
                     Observação
                   </span>
@@ -419,29 +322,24 @@ function getStatusVariant(status) {
                       'Nenhuma observação registrada.'
                     }}
                   </p>
-
                 </div>
 
                 <div v-if="
                   workOrder.status === 'SCHEDULED' ||
                   workOrder.status === 'IN_PROGRESS'
                 " class="work-order-details-actions">
-
                   <template v-if="
                     workOrder.status === 'SCHEDULED'
                   ">
-
                     <button class="work-order-action work-order-action--danger" type="button"
                       @click="emit('cancel', workOrder)">
                       Cancelar OS
                     </button>
 
-
                     <button class="work-order-action work-order-action--primary" type="button"
                       @click="emit('start', workOrder)">
                       Iniciar OS
                     </button>
-
                   </template>
 
                   <button v-if="
@@ -450,21 +348,14 @@ function getStatusVariant(status) {
                     @click="emit('complete', workOrder)">
                     Concluir OS
                   </button>
-
                 </div>
-
               </div>
-
             </td>
-
           </tr>
-
         </template>
 
         <tr v-if="workOrders.length === 0">
-
           <td colspan="6" class="work-orders-empty">
-
             <div class="work-orders-empty-content">
 
               <ClipboardList :size="28" stroke-width="1.6" />
@@ -476,17 +367,10 @@ function getStatusVariant(status) {
               <span>
                 Tente alterar os filtros utilizados.
               </span>
-
             </div>
-
           </td>
-
         </tr>
-
       </tbody>
-
     </table>
-
   </div>
-
 </template>

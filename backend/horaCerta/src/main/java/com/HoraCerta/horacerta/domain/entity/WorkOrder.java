@@ -77,5 +77,4 @@ public class WorkOrder {
             this.status = WorkOrderStatus.SCHEDULED;
         }
     }
-
 }

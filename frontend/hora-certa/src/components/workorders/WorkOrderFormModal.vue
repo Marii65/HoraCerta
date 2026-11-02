@@ -1,17 +1,15 @@
 <script setup>
-import { computed, reactive } from "vue";
-
+import { computed, reactive, ref, watch } from 'vue';
 import { ClipboardPlus } from 'lucide-vue-next';
 
 import BaseModal from '../common/BaseModal.vue';
 
+import {
+    getEquipmentPlans
+} from '../../services/equipmentPlanService';
+
 const props = defineProps({
     equipments: {
-        type: Array,
-        required: true
-    },
-
-    maintenancePlans: {
         type: Array,
         required: true
     }
@@ -24,11 +22,17 @@ const emit = defineEmits([
 
 const form = reactive({
     equipmentId: '',
-    maintenancePlanId: '',
+    equipmentPlanId: '',
+    maintenanceType: 'PREVENTIVE',
     scheduledDate: '',
     scheduledHorometer: '',
-    observation: ''
+    responsibleTechnician: '',
+    notes: ''
 });
+
+const equipmentPlans = ref([]);
+const isLoadingPlans = ref(false);
+const planError = ref('');
 
 const activeEquipments = computed(() => {
     return props.equipments.filter(
@@ -37,19 +41,18 @@ const activeEquipments = computed(() => {
     );
 });
 
-const activeMaintenancePlans = computed(() => {
-    return props.maintenancePlans.filter(
-        (plan) =>
-            plan.active
-    );
-});
-
 const selectedEquipment = computed(() => {
     return props.equipments.find(
         (equipment) =>
             equipment.id === Number(form.equipmentId)
+    ) ?? null;
+});
+
+const activeEquipmentPlans = computed(() => {
+    return equipmentPlans.value.filter(
+        (link) => link.active
     );
-}) ?? null;
+});
 
 const horometerError = computed(() => {
     if (
@@ -63,22 +66,53 @@ const horometerError = computed(() => {
         Number(form.scheduledHorometer);
 
     const currentHorometer =
-        Number(selectedEquipment.value.currentHorometer);
+        Number(
+            selectedEquipment.value.currentHorometer
+        );
 
     if (scheduledHorometer < currentHorometer) {
         return `O horímetro previsto não pode ser menor que ${currentHorometer.toLocaleString(
             'pt-BR'
         )} h.`;
-
     }
+
     return '';
 });
 
+watch(
+    () => form.equipmentId,
+
+    async (equipmentId) => {
+        form.equipmentPlanId = '';
+        equipmentPlans.value = [];
+        planError.value = '';
+
+        if (!equipmentId) {
+            return;
+        }
+
+        isLoadingPlans.value = true;
+
+        try {
+            equipmentPlans.value =
+                await getEquipmentPlans(
+                    Number(equipmentId)
+                );
+        } catch (error) {
+            planError.value =
+                error.message ||
+                'Não foi possível carregar os planos do equipamento.';
+        } finally {
+            isLoadingPlans.value = false;
+        }
+    }
+);
 
 function submitForm() {
     if (
         !form.equipmentId ||
-        !form.maintenancePlanId ||
+        !form.equipmentPlanId ||
+        !form.maintenanceType ||
         !form.scheduledDate ||
         form.scheduledHorometer === '' ||
         horometerError.value
@@ -87,11 +121,25 @@ function submitForm() {
     }
 
     emit('save', {
-        equipmentId: Number(form.equipmentId),
-        maintenancePlanId: Number(form.maintenancePlanId),
-        scheduledDate: form.scheduledDate,
-        scheduledHorometer: Number(form.scheduledHorometer),
-        observation: form.observation.trim()
+        equipmentPlanId:
+            Number(form.equipmentPlanId),
+
+        maintenancePlanItemId: null,
+
+        maintenanceType:
+            form.maintenanceType,
+
+        scheduledDate:
+            form.scheduledDate,
+
+        scheduledHorometer:
+            Number(form.scheduledHorometer),
+
+        responsibleTechnician:
+            form.responsibleTechnician.trim() || null,
+
+        notes:
+            form.notes.trim() || null
     });
 }
 </script>
@@ -136,19 +184,53 @@ function submitForm() {
                     Plano de Manutenção *
                 </label>
 
-                <select id="work-order-plan" v-model="form.maintenancePlanId" required>
+                <select id="work-order-plan" v-model="form.equipmentPlanId" :disabled="!form.equipmentId ||
+                    isLoadingPlans
+                    " required>
                     <option value="" disabled>
-                        Selecione um plano
+                        {{
+                            isLoadingPlans
+                                ? 'Carregando planos...'
+                                : 'Selecione um plano'
+                        }}
                     </option>
 
-                    <option v-for="plan in activeMaintenancePlans" :key="plan.id" :value="plan.id">
-                        {{ plan.name }}
+                    <option v-for="link in activeEquipmentPlans" :key="link.id" :value="link.id">
+                        {{ link.maintenancePlanName }}
+                    </option>
+                </select>
+
+                <span v-if="
+                    form.equipmentId &&
+                    !isLoadingPlans &&
+                    activeEquipmentPlans.length === 0 &&
+                    !planError
+                " class="work-order-form-error">
+                    Este equipamento não possui planos ativos vinculados.
+                </span>
+
+                <span v-if="planError" class="work-order-form-error">
+                    {{ planError }}
+                </span>
+            </div>
+
+            <div class="form-field">
+                <label for="work-order-type">
+                    Tipo de manutenção *
+                </label>
+
+                <select id="work-order-type" v-model="form.maintenanceType" required>
+                    <option value="PREVENTIVE">
+                        Preventiva
+                    </option>
+
+                    <option value="CORRECTIVE">
+                        Corretiva
                     </option>
                 </select>
             </div>
 
             <div class="work-order-form-row">
-
                 <div class="form-field">
                     <label for="work-order-date">
                         Data agendada *
@@ -169,11 +251,23 @@ function submitForm() {
                         {{ horometerError }}
                     </span>
                 </div>
-
             </div>
 
             <div class="form-field">
-                <label for="work-order-observation">
+                <label for="work-order-technician">
+                    Técnico responsável
+
+                    <span class="optional-field">
+                        (opcional)
+                    </span>
+                </label>
+
+                <input id="work-order-technician" v-model="form.responsibleTechnician" type="text" maxlength="100"
+                    placeholder="Nome do técnico responsável" />
+            </div>
+
+            <div class="form-field">
+                <label for="work-order-notes">
                     Observação
 
                     <span class="optional-field">
@@ -181,10 +275,9 @@ function submitForm() {
                     </span>
                 </label>
 
-                <textarea id="work-order-observation" v-model="form.observation" rows="4"
+                <textarea id="work-order-notes" v-model="form.notes" rows="4" maxlength="2000"
                     placeholder="Adicione informações importantes sobre a manutenção..."></textarea>
             </div>
-
         </form>
 
         <template #footer>
@@ -192,11 +285,11 @@ function submitForm() {
                 Cancelar
             </button>
 
-            <button class="save-button" type="submit" form="work-order-form" :disabled="Boolean(horometerError)">
+            <button class="save-button" type="submit" form="work-order-form"
+                :disabled="Boolean(horometerError) || isLoadingPlans">
                 <ClipboardPlus :size="16" />
                 Criar Ordem
             </button>
         </template>
-
     </BaseModal>
 </template>

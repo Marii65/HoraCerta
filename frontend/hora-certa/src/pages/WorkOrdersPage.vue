@@ -1,5 +1,9 @@
 <script setup>
-import { computed, ref } from 'vue';
+import {
+  computed,
+  onMounted,
+  ref
+} from 'vue';
 
 import {
   Plus,
@@ -7,88 +11,158 @@ import {
 } from 'lucide-vue-next';
 
 import PageHeader from '../components/common/PageHeader.vue';
-
-import { workOrderMocks } from '../mocks/workOrders';
-import { equipmentMocks } from '../mocks/equipments';
-
 import WorkOrderTable from '../components/workorders/WorkOrderTable.vue';
-
 import CompleteWorkOrderModal from '../components/workorders/CompleteWorkOrderModal.vue';
+import WorkOrderFormModal from '../components/workorders/WorkOrderFormModal.vue';
+
+import { getEquipments } from '../services/equipmentService';
+import { getEquipmentPlans } from '../services/equipmentPlanService';
+import { getWorkOrders, createWorkOrder, startWorkOrder, completeWorkOrder, cancelWorkOrder } from '../services/workOrderService';
 
 import '../styles/pages/work-orders.css';
 
-import WorkOrderFormModal from '../components/workorders/WorkOrderFormModal.vue';
-import { maintenancePlanMocks } from '../mocks/maintenancePlans';
+const workOrders = ref([]);
+const equipments = ref([]);
 
-const workOrders = ref([
-  ...workOrderMocks
-]);
-
+const isLoading = ref(false);
+const errorMessage = ref('');
 
 const searchTerm = ref('');
-
 const selectedStatus = ref('all');
 
 const selectedWorkOrder = ref(null);
 
 const isCompleteModalOpen = ref(false);
-
 const isWorkOrderModalOpen = ref(false);
 
-const filteredWorkOrders = computed(() => {
+async function mapWorkOrders(apiWorkOrders) {
+  const equipmentPlanIds = [
+    ...new Set(
+      apiWorkOrders.map(
+        (workOrder) =>
+          workOrder.equipmentPlanId
+      )
+    )
+  ];
 
-  const search = searchTerm.value
-    .trim()
-    .toLowerCase();
+  const linksById = new Map();
+  await Promise.all(
+    equipments.value.map(
+      async (equipment) => {
+        const links =
+          await getEquipmentPlans(equipment.id);
 
+        links.forEach((link) => {
+          linksById.set(link.id, link);
+        });
+      }
+    )
+  );
 
-  return workOrders.value.filter((workOrder) => {
-
-    const matchesSearch =
-      !search ||
-
-      workOrder.orderNumber
-        .toLowerCase()
-        .includes(search) ||
-
-      workOrder.equipmentCode
-        .toLowerCase()
-        .includes(search) ||
-
-      workOrder.equipmentName
-        .toLowerCase()
-        .includes(search) ||
-
-      workOrder.maintenancePlanName
-        .toLowerCase()
-        .includes(search);
-
-
-    const matchesStatus =
-      selectedStatus.value === 'all' ||
-      workOrder.status === selectedStatus.value;
-
-
-    return matchesSearch && matchesStatus;
-
+  return apiWorkOrders.map((workOrder) => {
+    const equipmentPlan =
+      linksById.get(
+        workOrder.equipmentPlanId
+      );
+    const equipment =
+      equipments.value.find(
+        (item) =>
+          item.id ===
+          equipmentPlan?.equipmentId
+      );
+    return {
+      ...workOrder,
+      orderNumber:
+        `OS-${String(workOrder.id).padStart(
+          3,
+          '0'
+        )}`,
+      equipmentId:
+        equipment?.id ?? null,
+      equipmentCode:
+        equipment?.code ?? '—',
+      equipmentName:
+        equipment?.name ??
+        'Equipamento não encontrado',
+      equipmentCategory:
+        equipment?.category ?? '',
+      maintenancePlanId:
+        equipmentPlan?.maintenancePlanId ??
+        null,
+      maintenancePlanName:
+        equipmentPlan?.maintenancePlanName ??
+        'Plano não encontrado',
+      completionHorometer:
+        workOrder.executedHorometer,
+      observation:
+        workOrder.notes
+    };
   });
+}
 
-});
-
-const selectedWorkOrderEquipment = computed(() => {
-
-  if (!selectedWorkOrder.value) {
-    return null;
+async function loadWorkOrdersPage() {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    equipments.value =
+      await getEquipments();
+    const apiWorkOrders =
+      await getWorkOrders();
+    workOrders.value =
+      await mapWorkOrders(apiWorkOrders);
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível carregar as ordens de serviço.';
+  } finally {
+    isLoading.value = false;
   }
+}
 
-
-  return equipmentMocks.find(
-    (equipment) =>
-      equipment.id ===
-      selectedWorkOrder.value.equipmentId
-  ) ?? null;
-
+const filteredWorkOrders = computed(() => {
+  const search =
+    searchTerm.value
+      .trim()
+      .toLowerCase();
+  return workOrders.value.filter(
+    (workOrder) => {
+      const matchesSearch =
+        !search ||
+        workOrder.orderNumber
+          .toLowerCase()
+          .includes(search) ||
+        workOrder.equipmentCode
+          .toLowerCase()
+          .includes(search) ||
+        workOrder.equipmentName
+          .toLowerCase()
+          .includes(search) ||
+        workOrder.maintenancePlanName
+          .toLowerCase()
+          .includes(search);
+      const matchesStatus =
+        selectedStatus.value === 'all' ||
+        workOrder.status ===
+        selectedStatus.value;
+      return (
+        matchesSearch &&
+        matchesStatus
+      );
+    }
+  );
 });
+
+const selectedWorkOrderEquipment =
+  computed(() => {
+    if (!selectedWorkOrder.value) {
+      return null;
+    }
+    return equipments.value.find(
+      (equipment) =>
+        equipment.id ===
+        selectedWorkOrder.value.equipmentId
+    ) ?? null;
+  });
 
 function openWorkOrderModal() {
   isWorkOrderModalOpen.value = true;
@@ -98,172 +172,95 @@ function closeWorkOrderModal() {
   isWorkOrderModalOpen.value = false;
 }
 
-function handleStartWorkOrder(workOrder) {
-  if (workOrder.status !== 'SCHEDULED') {
-    return;
+async function handleSaveWorkOrder(formData) {
+  errorMessage.value = '';
+  try {
+    await createWorkOrder(formData);
+    closeWorkOrderModal();
+    await loadWorkOrdersPage();
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível criar a ordem de serviço.';
   }
-
-
-  workOrder.status = 'IN_PROGRESS';
-
-  workOrder.startedAt =
-    new Date().toISOString();
 }
 
-function handleCancelWorkOrder(workOrder) {
+async function handleStartWorkOrder(workOrder) {
   if (workOrder.status !== 'SCHEDULED') {
     return;
   }
+  errorMessage.value = '';
+  try {
+    await startWorkOrder(workOrder.id);
+    await loadWorkOrdersPage();
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível iniciar a ordem de serviço.';
+  }
+}
 
-
-  const confirmed = window.confirm(
-    `Deseja realmente cancelar a ${workOrder.orderNumber}?`
-  );
-
-
+async function handleCancelWorkOrder(workOrder) {
+  if (workOrder.status !== 'SCHEDULED') {
+    return;
+  }
+  const confirmed =
+    window.confirm(
+      `Deseja realmente cancelar a ${workOrder.orderNumber}?`
+    );
   if (!confirmed) {
     return;
   }
-  workOrder.status = 'CANCELED';
+  errorMessage.value = '';
+  try {
+    await cancelWorkOrder(workOrder.id);
+    await loadWorkOrdersPage();
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível cancelar a ordem de serviço.';
+  }
 }
 
-function openCompleteWorkOrderModal(workOrder) {
-  if (workOrder.status !== 'IN_PROGRESS') {
+function openCompleteWorkOrderModal(
+  workOrder
+) {
+  if (
+    workOrder.status !== 'IN_PROGRESS'
+  ) {
     return;
   }
   selectedWorkOrder.value = workOrder;
-
   isCompleteModalOpen.value = true;
 }
 
 function closeCompleteWorkOrderModal() {
   isCompleteModalOpen.value = false;
-
   selectedWorkOrder.value = null;
 }
 
-function handleCompleteWorkOrder(formData) {
-  if (
-    !selectedWorkOrder.value ||
-    !selectedWorkOrderEquipment.value
-  ) {
+async function handleCompleteWorkOrder(
+  formData
+) {
+  if (!selectedWorkOrder.value) {
     return;
   }
-
-
-  const workOrder =
-    selectedWorkOrder.value;
-
-  const equipment =
-    selectedWorkOrderEquipment.value;
-
-  if (workOrder.status !== 'IN_PROGRESS') {
-    return;
-  }
-
-  workOrder.status = 'COMPLETED';
-
-  workOrder.completedAt =
-    new Date().toISOString();
-
-  workOrder.completionHorometer =
-    formData.completionHorometer;
-
-  equipment.currentHorometer =
-    formData.completionHorometer;
-
-  if (formData.completionObservation) {
-
-    workOrder.observation =
-      formData.completionObservation;
-
-  }
-  closeCompleteWorkOrderModal();
-}
-
-function handleSaveWorkOrder(formData) {
-  const equipment = equipmentMocks.find(
-    (item) =>
-      item.id === formData.equipmentId
-  );
-
-
-  const maintenancePlan =
-    maintenancePlanMocks.find(
-      (item) =>
-        item.id === formData.maintenancePlanId
+  errorMessage.value = '';
+  try {
+    await completeWorkOrder(
+      selectedWorkOrder.value.id,
+      formData.completionHorometer
     );
-
-  if (!equipment || !maintenancePlan) {
-    return;
+    closeCompleteWorkOrderModal();
+    await loadWorkOrdersPage();
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível concluir a ordem de serviço.';
   }
-
-  const nextNumber =
-    Math.max(
-      0,
-      ...workOrders.value.map(
-        (workOrder) =>
-          Number(
-            workOrder.orderNumber
-              .replace('OS-', '')
-          ) || 0
-      )
-    ) + 1;
-
-
-  const newWorkOrder = {
-
-    id: Date.now(),
-
-    orderNumber:
-      `OS-${String(nextNumber).padStart(3, '0')}`,
-
-    equipmentId:
-      equipment.id,
-
-    equipmentCode:
-      equipment.code,
-
-    equipmentName:
-      equipment.name,
-
-    equipmentCategory:
-      equipment.category,
-
-    maintenancePlanId:
-      maintenancePlan.id,
-
-    maintenancePlanName:
-      maintenancePlan.name,
-
-    scheduledDate:
-      formData.scheduledDate,
-
-    scheduledHorometer:
-      formData.scheduledHorometer,
-
-    status: 'SCHEDULED',
-
-    observation:
-      formData.observation,
-
-    startedAt: null,
-
-    completedAt: null,
-
-    completionHorometer: null
-
-  };
-
-  workOrders.value.unshift(
-    newWorkOrder
-  );
-
-
-  closeWorkOrderModal();
-
 }
 
+onMounted(loadWorkOrdersPage);
 </script>
 
 
@@ -279,6 +276,14 @@ function handleSaveWorkOrder(formData) {
         </button>
       </template>
     </PageHeader>
+
+    <p v-if="errorMessage" class="work-orders-error">
+      {{ errorMessage }}
+    </p>
+
+    <p v-if="isLoading" class="work-orders-loading">
+      Carregando ordens de serviço...
+    </p>
 
     <section class="work-orders-list">
 
@@ -323,7 +328,7 @@ function handleSaveWorkOrder(formData) {
             Concluída
           </option>
 
-          <option value="CANCELED">
+          <option value="CANCELLED">
             Cancelada
           </option>
         </select>
@@ -335,8 +340,8 @@ function handleSaveWorkOrder(formData) {
 
     </section>
 
-    <WorkOrderFormModal v-if="isWorkOrderModalOpen" :equipments="equipmentMocks"
-      :maintenance-plans="maintenancePlanMocks" @close="closeWorkOrderModal" @save="handleSaveWorkOrder" />
+    <WorkOrderFormModal v-if="isWorkOrderModalOpen" :equipments="equipments" @close="closeWorkOrderModal"
+      @save="handleSaveWorkOrder" />
 
     <CompleteWorkOrderModal v-if="
       isCompleteModalOpen &&

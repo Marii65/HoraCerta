@@ -231,6 +231,30 @@ public class WorkOrderService {
     }
 
     /**
+     * Inicia a execução de uma ordem de serviço agendada.
+     *
+     * @param id identificador da ordem de serviço
+     * @return ordem de serviço atualizada
+     */
+    @Transactional
+    public WorkOrderResponseDTO start(Long id) {
+        WorkOrder workOrder = getWorkOrderOrThrow(id);
+
+        if (workOrder.getStatus() != WorkOrderStatus.SCHEDULED) {
+            throw new IllegalStateException(
+                    "Only scheduled work orders can be started."
+            );
+        }
+
+        workOrder.setStatus(WorkOrderStatus.IN_PROGRESS);
+
+        WorkOrder updatedWorkOrder =
+                workOrderRepository.save(workOrder);
+
+        return toResponseDTO(updatedWorkOrder);
+    }
+
+    /**
      * Busca uma ordem de serviço ou lança uma exceção caso não exista.
      *
      * @param id identificador da ordem de serviço

@@ -76,6 +76,23 @@ public class WorkOrderController {
     }
 
     /**
+     * Inicia a execução de uma ordem de serviço agendada.
+     *
+     * @param id identificador da ordem de serviço
+     * @return ordem de serviço atualizada
+     */
+    @PatchMapping("/{id}/start")
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
+    public ResponseEntity<WorkOrderResponseDTO> start(
+            @PathVariable Long id
+    ) {
+        WorkOrderResponseDTO response =
+                workOrderService.start(id);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * Consulta ordens de serviço aplicando os filtros informados.
      *
      * <p>Todos os filtros são opcionais e podem ser combinados.</p>

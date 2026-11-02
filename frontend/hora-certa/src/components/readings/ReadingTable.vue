@@ -2,6 +2,7 @@
 import {
   ArrowUp,
   Eye,
+  Image,
   Gauge,
 } from 'lucide-vue-next';
 
