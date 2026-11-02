@@ -3,17 +3,12 @@ import { computed, onMounted, ref } from 'vue';
 
 import { Plus } from 'lucide-vue-next';
 
-import MaintenancePlanFilters
-  from '../components/maintenance/MaintenancePlanFilters.vue';
+import MaintenancePlanFilters from '../components/maintenance/MaintenancePlanFilters.vue';
+import MaintenancePlanTable from '../components/maintenance/MaintenancePlanTable.vue';
+import MaintenancePlanFormModal from '../components/maintenance/MaintenancePlanFormModal.vue';
+import PageHeader from '../components/common/PageHeader.vue';
 
-import MaintenancePlanTable
-  from '../components/maintenance/MaintenancePlanTable.vue';
-
-import MaintenancePlanFormModal
-  from '../components/maintenance/MaintenancePlanFormModal.vue';
-
-import PageHeader
-  from '../components/common/PageHeader.vue';
+import { getCurrentUser } from '../services/userService';
 
 import {
   getMaintenancePlans,
@@ -30,6 +25,11 @@ import '../styles/pages/maintenance-plans.css';
 
 const maintenancePlans = ref([]);
 
+const currentUser = ref(null);
+
+const currentRole = computed(() => currentUser.value?.role ?? null);
+const canManagePlans = computed(() => ['ADMIN', 'TECHNICIAN'].includes(currentRole.value));
+
 const searchTerm = ref('');
 const selectedStatus = ref('all');
 
@@ -40,6 +40,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const PLAN_COLORS_KEY = 'horacerta-maintenance-plan-colors';
+
 
 function getSavedPlanColors() {
   try {
@@ -304,9 +305,19 @@ async function togglePlanStatus(plan) {
   }
 }
 
-
+async function loadCurrentUser() {
+  try {
+    currentUser.value = await getCurrentUser();
+  } catch (error) {
+    console.error(
+      'Erro ao carregar usuário autenticado:',
+      error
+    );
+  }
+}
 onMounted(() => {
   loadMaintenancePlans();
+  loadCurrentUser();
 });
 </script>
 
@@ -316,16 +327,19 @@ onMounted(() => {
 
     <PageHeader title="Planos de Manutenção" description="Organize as rotinas preventivas e os serviços de manutenção.">
       <template #actions>
-        <button class="new-plan-button" type="button" @click="openCreateModal">
-          <Plus :size="18" />
-          Novo Plano
-        </button>
+        <template v-if="canManagePlans">
+          <button class="new-plan-button" type="button" @click="openCreateModal">
+            <Plus :size="18" />
+            Novo Plano
+          </button>
+        </template>
       </template>
     </PageHeader>
 
     <MaintenancePlanFilters v-model:search="searchTerm" v-model:status="selectedStatus" />
 
-    <MaintenancePlanTable :plans="filteredMaintenancePlans" @edit="openEditModal" @toggle-status="togglePlanStatus" />
+    <MaintenancePlanTable :plans="filteredMaintenancePlans" :can-manage="canManagePlans" @edit="openEditModal"
+      @toggle-status="togglePlanStatus" />
 
     <MaintenancePlanFormModal v-if="isPlanModalOpen" :plan="editingPlan" @close="closePlanModal"
       @save="handleSavePlan" />

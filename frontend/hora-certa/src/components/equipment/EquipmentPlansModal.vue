@@ -12,22 +12,24 @@ import {
 
 import BaseModal from '../common/BaseModal.vue';
 
-import {
-    getEquipmentPlans,
-    createEquipmentPlan,
-    toggleEquipmentPlanStatus
-} from '../../services/equipmentPlanService';
-
-import {
-    getMaintenancePlans
-} from '../../services/maintenancePlanService';
+import { getEquipmentPlans, createEquipmentPlan, toggleEquipmentPlanStatus } from '../../services/equipmentPlanService';
+import { getMaintenancePlans } from '../../services/maintenancePlanService';
 
 const props = defineProps({
     equipment: {
         type: Object,
         required: true
+    },
+
+    role: {
+        type: String,
+        default: null
     }
 });
+
+const canManagePlans = computed(() =>
+    ['ADMIN', 'TECHNICIAN'].includes(props.role)
+);
 
 const emit = defineEmits([
     'close'
@@ -140,7 +142,7 @@ onMounted(() => {
             </p>
 
             <template v-else>
-                <div class="equipment-plan-link-form">
+                <div v-if="canManagePlans" class="equipment-plan-link-form">
                     <div class="form-group">
                         <label for="maintenance-plan">
                             Vincular plano
@@ -189,13 +191,13 @@ onMounted(() => {
                                 {{ link.startHourMeter }} h
                             </span>
                         </div>
-
-                        <button type="button" class="equipment-plan-status-button" @click="handleToggleStatus(link)">
+                        <button v-if="canManagePlans" type="button" class="equipment-plan-status-button"
+                            @click="handleToggleStatus(link)">
                             <Power :size="15" />
                             {{
                                 link.active
                                     ? 'Desativar'
-                                    : 'Ativar'
+                            : 'Ativar'
                             }}
                         </button>
                     </div>

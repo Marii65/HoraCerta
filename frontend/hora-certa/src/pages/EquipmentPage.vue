@@ -10,12 +10,16 @@ import PageHeader from '../components/common/PageHeader.vue';
 import EquipmentPlansModal from '../components/equipment/EquipmentPlansModal.vue';
 
 import { getEquipments, createEquipment, updateEquipment } from '../services/equipmentService';
+import { getCurrentUser } from '../services/userService';
 
 import '../styles/pages/equipment.css';
 
-
-
 const equipments = ref([]);
+
+const currentUser = ref(null);
+const isAdmin = computed(() =>
+  currentUser.value?.role === 'ADMIN'
+);
 
 const isLoading = ref(false);
 const errorMessage = ref('');
@@ -28,6 +32,21 @@ const isEquipmentModalOpen = ref(false);
 const editingEquipment = ref(null);
 
 const selectedEquipmentForPlans = ref(null);
+
+const currentRole = computed(() =>
+  currentUser.value?.role ?? null
+);
+
+async function loadCurrentUser() {
+  try {
+    currentUser.value = await getCurrentUser();
+  } catch (error) {
+    console.error(
+      'Erro ao carregar usuário autenticado:',
+      error
+    );
+  }
+}
 
 async function loadEquipments() {
   isLoading.value = true;
@@ -201,6 +220,7 @@ function closeEquipmentPlans() {
 
 onMounted(() => {
   loadEquipments();
+  loadCurrentUser();
 });
 </script>
 
@@ -208,10 +228,12 @@ onMounted(() => {
   <div class="equipment-page">
     <PageHeader title="Equipamentos" description="Gerencie os equipamentos cadastrados.">
       <template #actions>
-        <button class="new-equipment-button" type="button" @click="openCreateModal">
-          <Plus :size="18" />
-          Novo Equipamento
-        </button>
+        <template v-if="isAdmin">
+          <button class="new-equipment-button" type="button" @click="openCreateModal">
+            <Plus :size="18" />
+            Novo Equipamento
+          </button>
+        </template>
       </template>
     </PageHeader>
 
@@ -224,13 +246,13 @@ onMounted(() => {
       Carregando equipamentos...
     </p>
 
-    <EquipmentTable v-else :equipments="filteredEquipments" @edit="openEditModal" @toggle-status="toggleEquipmentStatus"
-      @manage-plans="openEquipmentPlans" />
+    <EquipmentTable v-else :equipments="filteredEquipments" :role="currentRole" @edit="openEditModal"
+      @toggle-status="toggleEquipmentStatus" @manage-plans="openEquipmentPlans" />
 
     <EquipmentFormModal v-if="isEquipmentModalOpen" :equipment="editingEquipment" @close="closeEquipmentModal"
       @save="handleSaveEquipment" />
 
-    <EquipmentPlansModal v-if="selectedEquipmentForPlans" :equipment="selectedEquipmentForPlans"
+    <EquipmentPlansModal v-if="selectedEquipmentForPlans" :equipment="selectedEquipmentForPlans" :role="currentRole"
       @close="closeEquipmentPlans" />
   </div>
 </template>

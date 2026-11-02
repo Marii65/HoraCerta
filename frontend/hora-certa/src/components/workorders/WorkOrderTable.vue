@@ -14,14 +14,17 @@ import { getEquipmentIcon }
 
 import StatusBadge from '../common/StatusBadge.vue';
 
-
 defineProps({
   workOrders: {
     type: Array,
     required: true
+  },
+
+  canManage: {
+    type: Boolean,
+    default: false
   }
 });
-
 
 const emit = defineEmits([
   'start',
@@ -325,12 +328,12 @@ function getStatusVariant(status) {
                 </div>
 
                 <div v-if="
-                  workOrder.status === 'SCHEDULED' ||
-                  workOrder.status === 'IN_PROGRESS'
-                " class="work-order-details-actions">
-                  <template v-if="
-                    workOrder.status === 'SCHEDULED'
-                  ">
+                  canManage && (
+                    workOrder.status === 'SCHEDULED' ||
+                    workOrder.status === 'IN_PROGRESS'
+                  )" class="work-order-details-actions">
+
+                  <template v-if="workOrder.status === 'SCHEDULED'">
                     <button class="work-order-action work-order-action--danger" type="button"
                       @click="emit('cancel', workOrder)">
                       Cancelar OS

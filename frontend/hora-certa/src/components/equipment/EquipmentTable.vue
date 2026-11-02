@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   Search,
@@ -13,13 +13,17 @@ import { getEquipmentIcon } from '../../utils/equipmentIcons';
 import StatusBadge from '../common/StatusBadge.vue';
 
 
-defineProps({
+const props = defineProps({
   equipments: {
     type: Array,
     required: true
+  },
+
+  role: {
+    type: String,
+    default: null
   }
 });
-
 
 const emit = defineEmits([
   'edit',
@@ -28,6 +32,10 @@ const emit = defineEmits([
 ]);
 
 const openMenuId = ref(null);
+
+const canManageEquipment = computed(() =>
+  props.role === 'ADMIN'
+);
 
 function toggleMenu(equipmentId) {
   openMenuId.value =
@@ -118,7 +126,7 @@ function handleManagePlans(equipment) {
                   'actions-menu-up':
                     equipment.id === equipments[equipments.length - 1]?.id
                 }">
-                  <button type="button" @click="handleEdit(equipment)">
+                  <button v-if="canManageEquipment" type="button" @click="handleEdit(equipment)">
                     <Pencil :size="15" />
                     Editar
                   </button>
@@ -128,16 +136,14 @@ function handleManagePlans(equipment) {
                     Planos de manutenção
                   </button>
 
-                  <div class="actions-divider"></div>
+                  <div v-if="canManageEquipment" class="actions-divider"></div>
 
-                  <button type="button" :class="{
-                    'action-danger':
-                      equipment.status === 'ACTIVE',
-
-                    'action-success':
-                      equipment.status === 'INACTIVE'
+                  <button v-if="canManageEquipment" type="button" :class="{
+                    'action-danger': equipment.status === 'ACTIVE',
+                    'action-success': equipment.status === 'INACTIVE'
                   }" @click="handleToggleStatus(equipment)">
                     <Power :size="15" />
+
                     {{
                       equipment.status === 'ACTIVE'
                         ? 'Desativar'

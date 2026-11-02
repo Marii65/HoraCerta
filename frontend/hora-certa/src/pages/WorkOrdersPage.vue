@@ -19,10 +19,15 @@ import { getEquipments } from '../services/equipmentService';
 import { getEquipmentPlans } from '../services/equipmentPlanService';
 import { getWorkOrders, createWorkOrder, startWorkOrder, completeWorkOrder, cancelWorkOrder } from '../services/workOrderService';
 
+import { getCurrentUser } from '../services/userService';
+
 import '../styles/pages/work-orders.css';
 
 const workOrders = ref([]);
 const equipments = ref([]);
+
+const currentUser = ref(null);
+const canManageWorkOrders = computed(() => ['ADMIN', 'TECHNICIAN'].includes(currentUser.value?.role));
 
 const isLoading = ref(false);
 const errorMessage = ref('');
@@ -34,6 +39,17 @@ const selectedWorkOrder = ref(null);
 
 const isCompleteModalOpen = ref(false);
 const isWorkOrderModalOpen = ref(false);
+
+async function loadCurrentUser() {
+  try {
+    currentUser.value = await getCurrentUser();
+  } catch (error) {
+    console.error(
+      'Erro ao carregar usuário autenticado:',
+      error
+    );
+  }
+}
 
 async function mapWorkOrders(apiWorkOrders) {
   const equipmentPlanIds = [
@@ -260,7 +276,10 @@ async function handleCompleteWorkOrder(
   }
 }
 
-onMounted(loadWorkOrdersPage);
+onMounted(() => {
+  loadWorkOrdersPage();
+  loadCurrentUser();
+});
 </script>
 
 
@@ -270,10 +289,12 @@ onMounted(loadWorkOrdersPage);
     <PageHeader title="Ordens de Serviço"
       description="Acompanhe as manutenções programadas, em andamento e concluídas.">
       <template #actions>
-        <button class="new-work-order-button" type="button" @click="openWorkOrderModal">
-          <Plus :size="17" />
-          Nova Ordem
-        </button>
+        <template v-if="canManageWorkOrders">
+          <button class="new-work-order-button" type="button" @click="openWorkOrderModal">
+            <Plus :size="17" />
+            Nova Ordem
+          </button>
+        </template>
       </template>
     </PageHeader>
 
@@ -335,9 +356,8 @@ onMounted(loadWorkOrdersPage);
 
       </div>
 
-      <WorkOrderTable :work-orders="filteredWorkOrders" @start="handleStartWorkOrder" @cancel="handleCancelWorkOrder"
-        @complete="openCompleteWorkOrderModal" />
-
+      <WorkOrderTable :work-orders="filteredWorkOrders" :can-manage="canManageWorkOrders" @start="handleStartWorkOrder"
+        @cancel="handleCancelWorkOrder" @complete="openCompleteWorkOrderModal" />
     </section>
 
     <WorkOrderFormModal v-if="isWorkOrderModalOpen" :equipments="equipments" @close="closeWorkOrderModal"

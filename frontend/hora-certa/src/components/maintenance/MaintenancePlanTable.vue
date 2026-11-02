@@ -16,6 +16,11 @@ defineProps({
   plans: {
     type: Array,
     required: true
+  },
+
+  canManage: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -85,7 +90,7 @@ function handleToggleStatus(plan) {
           </p>
         </div>
 
-        <div class="plan-actions">
+        <div v-if="canManage" class="plan-actions">
           <button class="plan-menu-button" type="button" aria-label="Abrir ações do plano" @click="toggleMenu(plan.id)">
             <MoreVertical :size="18" />
           </button>
