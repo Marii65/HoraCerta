@@ -2,7 +2,6 @@
 import {
   CalendarDays,
   Gauge,
-  Image,
   UserRound
 } from 'lucide-vue-next';
 
@@ -67,9 +66,7 @@ function getDifference(reading) {
 <template>
   <BaseModal size="md" :title="reading.equipmentCode" :description="reading.equipmentName" @close="$emit('close')">
     <div class="reading-details-content">
-
       <section class="reading-details-highlight">
-
         <div class="reading-details-gauge">
           <Gauge :size="25" stroke-width="1.7" />
         </div>
@@ -89,15 +86,11 @@ function getDifference(reading) {
             desde a leitura anterior
           </p>
         </div>
-
       </section>
 
       <section class="reading-details-grid">
-
         <div class="reading-detail-item">
-
           <CalendarDays :size="18" stroke-width="1.7" />
-
           <div>
             <span>
               Data e hora
@@ -107,13 +100,10 @@ function getDifference(reading) {
               {{ formatDateTime(reading.readAt) }}
             </strong>
           </div>
-
         </div>
 
         <div class="reading-detail-item">
-
           <UserRound :size="18" stroke-width="1.7" />
-
           <div>
             <span>
               Responsável
@@ -123,9 +113,7 @@ function getDifference(reading) {
               {{ reading.responsibleName }}
             </strong>
           </div>
-
         </div>
-
       </section>
 
       <section class="reading-details-section">
@@ -143,31 +131,6 @@ function getDifference(reading) {
         </p>
 
       </section>
-
-      <section class="reading-details-section">
-
-        <span class="reading-details-label">
-          Evidência
-        </span>
-
-        <div v-if="reading.evidence" class="reading-details-evidence">
-          <Image :size="18" stroke-width="1.7" />
-
-          <span>
-            Evidência anexada
-          </span>
-        </div>
-
-        <div v-else class="reading-details-evidence reading-details-empty">
-          <Image :size="18" stroke-width="1.7" />
-
-          <span>
-            Nenhuma evidência anexada.
-          </span>
-        </div>
-
-      </section>
-
     </div>
 
     <template #footer>

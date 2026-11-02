@@ -1,97 +1,133 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import {
   Plus,
   Search
 } from 'lucide-vue-next';
 
 import PageHeader from '../components/common/PageHeader.vue';
-
-import { readingMocks } from '../mocks/readings';
-
-import '../styles/pages/readings.css';
-
-import ReadingTable
-  from '../components/readings/ReadingTable.vue';
-
-import { equipmentMocks } from '../mocks/equipments';
+import ReadingTable from '../components/readings/ReadingTable.vue';
 import ReadingFormModal from '../components/readings/ReadingFormModal.vue';
 import ReadingDetailsModal from '../components/readings/ReadingDetailsModal.vue';
 
-const readings = ref([
-  ...readingMocks
-]);
+import { getEquipments } from '../services/equipmentService';
 
+import {
+  getHorometerReadings,
+  createHorometerReading
+} from '../services/horometerReadingService';
+
+import '../styles/pages/readings.css';
+
+const readings = ref([]);
+const equipments = ref([]);
 
 const searchTerm = ref('');
-
 const selectedEquipment = ref('all');
 
-const equipmentOptions = computed(() => {
+const isReadingModalOpen = ref(false);
+const selectedReading = ref(null);
 
-  const equipments = new Map();
+const isLoading = ref(false);
+const errorMessage = ref('');
 
-
-  readings.value.forEach((reading) => {
-
-    if (!equipments.has(reading.equipmentId)) {
-
-      equipments.set(
+function mapReadings(apiReadings) {
+  const readingsByEquipment = new Map();
+  apiReadings.forEach((reading) => {
+    if (!readingsByEquipment.has(reading.equipmentId)) {
+      readingsByEquipment.set(
         reading.equipmentId,
-        {
-          id: reading.equipmentId,
-          code: reading.equipmentCode,
-          name: reading.equipmentName
-        }
+        []
       );
-
     }
-
+    readingsByEquipment
+      .get(reading.equipmentId)
+      .push(reading);
   });
 
+  const previousValues = new Map();
 
-  return Array.from(equipments.values());
+  readingsByEquipment.forEach(
+    (equipmentReadings) => {
+      const ordered = [...equipmentReadings].sort(
+        (a, b) =>
+          new Date(a.readAt) -
+          new Date(b.readAt)
+      );
+      ordered.forEach((reading, index) => {
+        previousValues.set(
+          reading.id,
+          index === 0
+            ? null
+            : ordered[index - 1].readingValue
+        );
+      });
+    }
+  );
+  return apiReadings.map((reading) => {
+    const equipment = equipments.value.find(
+      (item) =>
+        item.id === reading.equipmentId
+    );
+    return {
+      ...reading,
+      equipmentCategory:
+        equipment?.category ?? '',
+      responsibleName:
+        reading.username,
+      previousReadingValue:
+        previousValues.get(reading.id) ?? null,
+    };
+  });
+}
 
+async function loadReadingsPage() {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    equipments.value =
+      await getEquipments();
+    const apiReadings =
+      await getHorometerReadings();
+    readings.value =
+      mapReadings(apiReadings);
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível carregar as leituras.';
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+const equipmentOptions = computed(() => {
+  return equipments.value;
 });
 
 const filteredReadings = computed(() => {
-
   const search = searchTerm.value
     .trim()
     .toLowerCase();
 
-
   return readings.value.filter((reading) => {
-
     const matchesSearch =
       !search ||
-
       reading.equipmentCode
         .toLowerCase()
         .includes(search) ||
-
       reading.equipmentName
         .toLowerCase()
         .includes(search);
 
-
     const matchesEquipment =
       selectedEquipment.value === 'all' ||
-
       String(reading.equipmentId) ===
       selectedEquipment.value;
 
-
     return matchesSearch && matchesEquipment;
-
   });
-
 });
-
-
-const isReadingModalOpen = ref(false);
-
-const selectedReading = ref(null);
 
 function openReadingModal() {
   isReadingModalOpen.value = true;
@@ -101,66 +137,34 @@ function closeReadingModal() {
   isReadingModalOpen.value = false;
 }
 
-function handleSaveReading(formData) {
-
-  const equipment = equipmentMocks.find(
-    (item) => item.id === formData.equipmentId
-  );
-
-
-  if (!equipment) {
-    return;
+async function handleSaveReading(formData) {
+  try {
+    await createHorometerReading({
+      equipmentId: formData.equipmentId,
+      readingValue: formData.readingValue,
+      observation: formData.observation
+    });
+    await loadReadingsPage();
+    closeReadingModal();
+  } catch (error) {
+    errorMessage.value =
+      error.message ||
+      'Não foi possível registrar a leitura.';
+    console.error(error);
   }
-
-
-  const previousReadingValue =
-    equipment.currentHorometer;
-
-
-  const newReading = {
-    id: Date.now(),
-
-    equipmentId: equipment.id,
-    equipmentCode: equipment.code,
-    equipmentName: equipment.name,
-    equipmentCategory: equipment.category,
-
-    readingValue: formData.readingValue,
-    previousReadingValue,
-
-    readAt: formData.readAt,
-
-    responsibleName: 'Maria Luiza',
-
-    observation: formData.observation,
-
-    evidence: null
-  };
-
-
-  readings.value.unshift(newReading);
-
-
-  equipment.currentHorometer =
-    formData.readingValue;
-
-
-  closeReadingModal();
-
 }
 
 function openReadingDetails(reading) {
-
   selectedReading.value = reading;
-
 }
 
 function closeReadingDetails() {
-
   selectedReading.value = null;
-
 }
 
+onMounted(() => {
+  loadReadingsPage();
+});
 </script>
 
 
@@ -211,7 +215,9 @@ function closeReadingDetails() {
       <ReadingTable :readings="filteredReadings" @view="openReadingDetails" />
     </section>
 
-    <ReadingFormModal v-if="isReadingModalOpen" :equipments="equipmentMocks" @close="closeReadingModal"
+    <ReadingFormModal v-if="isReadingModalOpen" :equipments="equipments" @close="closeReadingModal"
       @save="handleSaveReading" />
+
+    <ReadingDetailsModal v-if="selectedReading" :reading="selectedReading" @close="closeReadingDetails" />
   </div>
 </template>

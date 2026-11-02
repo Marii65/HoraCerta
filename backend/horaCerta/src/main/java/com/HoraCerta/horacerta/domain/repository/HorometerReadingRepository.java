@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface HorometerReadingRepository extends JpaRepository<HorometerReading, Long> {
 
+    List<HorometerReading> findAllByOrderByReadAtDesc();
+
     List<HorometerReading> findByEquipment_IdOrderByReadAtDesc(Long equipmentId);
 
     List<HorometerReading> findByEquipment_IdAndReadAtBetweenOrderByReadAtDesc(

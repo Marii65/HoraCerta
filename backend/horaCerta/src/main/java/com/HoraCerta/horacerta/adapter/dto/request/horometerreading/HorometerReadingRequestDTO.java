@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public record HorometerReadingRequestDTO(
 
-        @Positive(message = "Equipment Plan ID must be positive")
+        @Positive(message = "Equipment ID must be positive")
         @NotNull(message = "Equipment ID is mandatory")
         Long equipmentId,
 

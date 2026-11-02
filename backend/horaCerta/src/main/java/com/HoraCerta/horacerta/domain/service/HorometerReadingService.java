@@ -150,6 +150,22 @@ public class HorometerReadingService {
     }
 
     /**
+     * Consulta todas as leituras de horímetro cadastradas,
+     * ordenadas da mais recente para a mais antiga.
+     *
+     * @return lista de leituras cadastradas
+     */
+    @Transactional(readOnly = true)
+    public List<HorometerReadingResponseDTO> findAll() {
+
+        return readingRepository
+                .findAllByOrderByReadAtDesc()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
+    /**
      * Busca uma leitura pelo identificador.
      *
      * @param id identificador da leitura

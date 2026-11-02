@@ -78,4 +78,20 @@ public class HorometerReadingController {
         );
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Consulta todas as leituras de horímetro cadastradas.
+     *
+     * @return lista de leituras ordenadas da mais recente
+     * para a mais antiga
+     */
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
+    public ResponseEntity<List<HorometerReadingResponseDTO>> findAll() {
+
+        List<HorometerReadingResponseDTO> response =
+                horometerReadingService.findAll();
+
+        return ResponseEntity.ok(response);
+    }
 }

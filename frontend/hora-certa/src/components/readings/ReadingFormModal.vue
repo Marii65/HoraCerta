@@ -24,17 +24,14 @@ const emit = defineEmits([
 const form = reactive({
     equipmentId: '',
     readingValue: '',
-    readAt: getCurrentDateTime(),
     observation: ''
 });
 
 
 const errorMessage = computed(() => {
-
     if (!form.equipmentId || form.readingValue === '') {
         return '';
     }
-
 
     if (
         Number(form.readingValue) <
@@ -42,36 +39,16 @@ const errorMessage = computed(() => {
     ) {
         return 'A nova leitura não pode ser menor que o horímetro atual.';
     }
-
-
     return '';
-
 });
 
 const selectedEquipment = computed(() => {
-
     return props.equipments.find(
         (equipment) =>
             String(equipment.id) ===
             String(form.equipmentId)
     );
-
 });
-
-function getCurrentDateTime() {
-
-    const now = new Date();
-
-    const offset =
-        now.getTimezoneOffset() * 60000;
-
-    return new Date(
-        now.getTime() - offset
-    )
-        .toISOString()
-        .slice(0, 16);
-
-}
 
 function formatHorometer(value) {
 
@@ -81,32 +58,23 @@ function formatHorometer(value) {
             maximumFractionDigits: 1
         }
     ).format(value ?? 0);
-
 }
 
 function submitForm() {
-
     if (
         !form.equipmentId ||
-        form.readingValue === '' ||
-        !form.readAt
+        form.readingValue === ''
     ) {
         return;
     }
-
-
     if (errorMessage.value) {
         return;
     }
-
-
     emit('save', {
         equipmentId: Number(form.equipmentId),
         readingValue: Number(form.readingValue),
-        readAt: form.readAt,
         observation: form.observation.trim()
     });
-
 }
 </script>
 
@@ -114,7 +82,6 @@ function submitForm() {
     <BaseModal size="md" title="Nova Leitura" description="Registre o horímetro atual do equipamento."
         @close="$emit('close')">
         <form id="reading-form" class="reading-form" @submit.prevent="submitForm">
-
             <div class="form-group">
                 <label for="reading-equipment">
                     Equipamento
@@ -124,7 +91,6 @@ function submitForm() {
                     <option value="" disabled>
                         Selecione um equipamento
                     </option>
-
                     <option v-for="equipment in equipments" :key="equipment.id" :value="equipment.id"
                         :disabled="equipment.status !== 'ACTIVE'">
                         {{ equipment.code }} — {{ equipment.name }}
@@ -158,29 +124,17 @@ function submitForm() {
                 </div>
             </div>
 
-            <div class="reading-form-grid">
+            <div class="form-group">
+                <label for="reading-value">
+                    Nova leitura (h)
+                </label>
 
-                <div class="form-group">
-                    <label for="reading-value">
-                        Nova leitura (h)
-                    </label>
+                <input id="reading-value" v-model="form.readingValue" type="number" min="0" step="0.1"
+                    placeholder="Ex.: 1500" required />
 
-                    <input id="reading-value" v-model="form.readingValue" type="number" min="0" step="0.1"
-                        placeholder="Ex.: 1500" required />
-
-                    <span v-if="errorMessage" class="reading-form-error">
-                        {{ errorMessage }}
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label for="reading-date">
-                        Data e hora
-                    </label>
-
-                    <input id="reading-date" v-model="form.readAt" type="datetime-local" required />
-                </div>
-
+                <span v-if="errorMessage" class="reading-form-error">
+                    {{ errorMessage }}
+                </span>
             </div>
 
             <div class="form-group">
@@ -194,18 +148,15 @@ function submitForm() {
                 <textarea id="reading-observation" v-model="form.observation" rows="3"
                     placeholder="Adicione alguma observação sobre a leitura..."></textarea>
             </div>
-
         </form>
 
         <template #footer>
             <button class="cancel-button" type="button" @click="$emit('close')">
                 Cancelar
             </button>
-
             <button class="save-button" type="submit" form="reading-form" :disabled="Boolean(errorMessage)">
                 Registrar leitura
             </button>
         </template>
-
     </BaseModal>
 </template>
