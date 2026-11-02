@@ -10,4 +10,5 @@ public interface MaintenancePlanItemRepository extends JpaRepository<Maintenance
     List<MaintenancePlanItem> findByMaintenancePlanId(Long maintenancePlanId);
 
 
+
 }

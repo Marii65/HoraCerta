@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.HoraCerta.horacerta.adapter.dto.request.maintenanceplanitem.MaintenancePlanItemUpdateRequestDTO;
 
 import java.util.List;
 
@@ -68,6 +69,23 @@ public class MaintenancePlanController {
     @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN','OPERATOR')")
     public ResponseEntity<MaintenancePlanResponseDTO> findById(@PathVariable Long id) {
         MaintenancePlanResponseDTO response = maintenancePlanService.findById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Lista os itens associados a um plano de manutenção.
+     *
+     * @param planId identificador do plano de manutenção
+     * @return lista de itens associados ao plano
+     */
+    @GetMapping("/{planId}/items")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN', 'OPERATOR')")
+    public ResponseEntity<List<MaintenancePlanItemResponseDTO>> findItemsByPlan(
+            @PathVariable Long planId
+    ) {
+        List<MaintenancePlanItemResponseDTO> response =
+                maintenancePlanItemService.findByPlanId(planId);
+
         return ResponseEntity.ok(response);
     }
 
@@ -130,5 +148,41 @@ public class MaintenancePlanController {
                 maintenancePlanItemService.register(planId, dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Atualiza um item de um plano de manutenção.
+     *
+     * @param itemId identificador do item
+     * @param dto novos dados do item
+     * @return item atualizado
+     */
+    @PutMapping("/items/{itemId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    public ResponseEntity<MaintenancePlanItemResponseDTO> updateItem(
+            @PathVariable Long itemId,
+            @RequestBody @Valid MaintenancePlanItemUpdateRequestDTO dto
+    ) {
+        MaintenancePlanItemResponseDTO response =
+                maintenancePlanItemService.update(itemId, dto);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Exclui um item de plano de manutenção quando não houver
+     * histórico de ordens de serviço associado.
+     *
+     * @param itemId identificador do item
+     * @return resposta sem conteúdo com status HTTP 204
+     */
+    @DeleteMapping("/items/{itemId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    public ResponseEntity<Void> deleteItem(
+            @PathVariable Long itemId
+    ) {
+        maintenancePlanItemService.delete(itemId);
+
+        return ResponseEntity.noContent().build();
     }
 }

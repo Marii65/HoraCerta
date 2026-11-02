@@ -12,6 +12,7 @@ import com.HoraCerta.horacerta.domain.repository.MaintenancePlanRepository;
 import com.HoraCerta.horacerta.domain.repository.WorkOrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.HoraCerta.horacerta.adapter.dto.request.maintenanceplanitem.MaintenancePlanItemUpdateRequestDTO;
 
 import java.util.List;
 
@@ -132,6 +133,49 @@ public class MaintenancePlanItemService {
 
         itemRepository.delete(item);
     }
+
+    /**
+     * Atualiza os dados de um item de plano de manutenção.
+     * A margem de alerta deve ser inferior ao intervalo de manutenção.
+     *
+     * @param id identificador do item
+     * @param dto novos dados do item
+     * @return dados atualizados do item
+     * @throws ResourceNotFoundException se o item não existir
+     * @throws IllegalArgumentException se a margem de alerta for maior ou igual
+     *                                  ao intervalo de manutenção
+     */
+    @Transactional
+    public MaintenancePlanItemResponseDTO update(
+            Long id,
+            MaintenancePlanItemUpdateRequestDTO dto
+    ) {
+        MaintenancePlanItem item = getItemOrThrow(id);
+
+        if (dto.alertMarginHours().compareTo(dto.intervalHours()) >= 0) {
+            throw new IllegalArgumentException(
+                    "Alert margin hours must be less than the interval hours."
+            );
+        }
+
+        item.setServiceDescription(
+                dto.serviceDescription().trim()
+        );
+
+        item.setIntervalHours(
+                dto.intervalHours()
+        );
+
+        item.setAlertMarginHours(
+                dto.alertMarginHours()
+        );
+
+        MaintenancePlanItem updatedItem =
+                itemRepository.save(item);
+
+        return toResponseDTO(updatedItem);
+    }
+
     private MaintenancePlanItemResponseDTO toResponseDTO(MaintenancePlanItem item) {
         return new MaintenancePlanItemResponseDTO(
                 item.getId(),
