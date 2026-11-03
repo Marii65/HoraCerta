@@ -249,7 +249,7 @@ cd HoraCerta
 ```
 ### 2. Acessar a pasta do backend
 
-Entre na pasta que contém o arquivo `pom.xml`.
+Entre na pasta com `cd backend/horaCerta`.
 
 ### 3. Execute a aplicação
 
@@ -258,6 +258,7 @@ No Windows:
 ```bash
 .\mvnw.cmd spring-boot:run
 ```
+### 4. Ou execute a aplicação diretamente na sua IDE
 
 A API será disponibilizada em:
 
@@ -267,7 +268,10 @@ http://localhost:8080
 
 ## Executando o frontend
 
-Em outro terminal, acesse a pasta do frontend.
+Em outro terminal, acesse a pasta do frontend:
+```bash
+cd frontend/hora-certa
+```
 Instale as dependências:
 
 ```bash
