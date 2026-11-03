@@ -93,7 +93,7 @@ As permissões são validadas no backend por meio do **Spring Security**.
 
 ## Arquitetura
 
-O backend está organizado em camadas para separar responsabilidades e facilitar a manutenção:
+O backend foi organizado em camadas, separando as responsabilidades e facilitando a manutenção da aplicação:
 
 - **Controllers:** recebem as requisições HTTP e encaminham as operações aos serviços.
 - **DTOs:** definem os dados de entrada e saída da API.
@@ -103,7 +103,7 @@ O backend está organizado em camadas para separar responsabilidades e facilitar
 - **Exceptions:** organizam o tratamento de erros da aplicação.
 - **Security:** reúne os componentes relacionados à autenticação e à autorização.
 
-O frontend está organizado em uma pasta separada dentro do mesmo repositório.
+O frontend está separado do backend e organizado em páginas, componentes reutilizáveis e serviços responsáveis pela comunicação com a API.
 
 ## Modelo de dados
 
@@ -119,15 +119,33 @@ O domínio da aplicação inclui as seguintes entidades:
 | `HorometerReading`    | Histórico de leituras de horímetro       |
 | `WorkOrder`           | Ordens de serviço e seus status          |
 
+O relacionamento `EquipmentPlan` permite que um mesmo plano seja utilizado por diferentes equipamentos.
+
 As alterações estruturais do banco são gerenciadas por migrações do Flyway.
+
+## Regras de negócio principais
+
+Algumas das regras implementadas no sistema:
+
+- Uma leitura de horímetro não pode ser inferior ao horímetro atual do equipamento.
+- Planos de manutenção possuem serviços com intervalo e margem de alerta definidos em horas.
+- Um equipamento pode possuir diferentes planos de manutenção.
+- Um mesmo vínculo entre equipamento e plano não é duplicado.
+- Ao reativar um vínculo anteriormente desativado, o horímetro inicial passa a considerar o horímetro atual do equipamento.
+- Planos inativos não podem receber novos vínculos.
+- A conclusão de uma ordem de serviço registra o horímetro em que a manutenção foi executada.
+- Usuários desativados não podem se autenticar ou acessar endpoints protegidos.
+
+# Executando o projeto
 
 ## Pré-requisitos
 
-Antes de executar o projeto, tenha instalado:
+Antes de executar o HoraCerta, tenha instalado:
 
-- JDK 21.
-- MySQL Server.
-- Git.
+- JDK 21
+- MySQL Server
+- Node.js
+- Git
 
 O Maven Wrapper está incluído no backend, dispensando a instalação separada do Maven.
 
@@ -142,35 +160,81 @@ O projeto utiliza o MySQL com as seguintes configurações locais de desenvolvim
 | Porta            | `3307`      |
 | Usuário          | `root`      |
 
-Ajuste as configurações conforme o ambiente utilizado. As credenciais e a chave secreta JWT devem ser configuradas localmente ou por variáveis de ambiente, sem serem publicadas no repositório.
+Ajuste as configurações conforme o ambiente utilizado. 
+
+As credenciais e a chave secreta JWT devem ser configuradas localmente ou por variáveis de ambiente, e não devem ser publicadas no repositório.
 
 Para criar o banco, caso ainda não exista, execute:
 
+```sql
 CREATE DATABASE horacerta     CHARACTER SET utf8mb4     COLLATE utf8mb4_unicode_ci;
+```
+Na inicialização do backend, o **Flyway** executará automaticamente as migrações disponíveis em:
 
-O Flyway deve aplicar as migrações configuradas na inicialização da aplicação.
+```text
+src/main/resources/db/migration
+```
+
+As migrações criam a estrutura necessária e inserem os dados utilizados para demonstração da aplicação.
 
 ## Como executar o backend
 
 ### 1. Clonar o repositório
 
-git clone [https://github.com/Marii65/HoraCerta.git](https://github.com/Marii65/HoraCerta.git) cd HoraCerta
-
+```bash
+git clone https://github.com/Marii65/HoraCerta.git
+cd HoraCerta
+```
 ### 2. Acessar a pasta do backend
 
 Entre na pasta que contém o arquivo `pom.xml`.
 
-### 3. Compilar o projeto
+### 3. Execute a aplicação
 
-No terminal do Windows:
+No Windows:
 
-.\mvnw\.cmd clean compile
+```bash
+.\mvnw.cmd spring-boot:run
+```
 
-### 4. Executar a aplicação
+A API será disponibilizada em:
 
-.\mvnw\.cmd spring-boot:run
+```text
+http://localhost:8080
+```
 
-Com a configuração padrão, a API estará disponível em `http://localhost:8080`, desde que a porta não tenha sido alterada.
+## Executando o frontend
+
+Em outro terminal, acesse a pasta do frontend.
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Execute o ambiente de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+A interface estará disponível em:
+
+```text
+http://localhost:5173
+```
+
+## Usuários de demonstração
+
+O banco inicial possui três usuários para demonstração dos diferentes níveis de acesso:
+
+| Perfil | E-mail | Senha |
+| --- | --- | --- |
+| Administrador | `admin@horacerta.com` | `HoraCerta@2026` |
+| Técnico | `tecnico@horacerta.com` | `HoraCerta@2026` |
+| Operador | `operador@horacerta.com` | `HoraCerta@2026` |
+
+> Essas credenciais são destinadas exclusivamente ao ambiente de demonstração do projeto.
 
 ## Documentação da API
 
@@ -183,15 +247,59 @@ O Swagger UI permite consultar os endpoints, visualizar os parâmetros e testar 
 
 As principais classes e operações do código também possuem documentação Javadoc.
 
-## Como executar os testes
+## Testes automatizados
 
-Na pasta do backend, execute:
+O projeto possui testes de integração para os principais fluxos da aplicação, incluindo:
 
-.\mvnw\.cmd test
+- autenticação;
+- autorização e perfis de acesso;
+- equipamentos;
+- planos de manutenção;
+- associação entre equipamentos e planos;
+- leituras de horímetro;
+- ordens de serviço;
+- regras de negócio relevantes.
 
-Os testes automatizados implementados no projeto foram executados com sucesso no ambiente de desenvolvimento.
+Para executar todos os testes:
 
-## Frontend
+```bash
+.\mvnw.cmd test
+```
+
+Os testes foram executados com sucesso durante a validação final do projeto.
+
+## Estrutura do projeto
+
+O HoraCerta mantém backend, frontend e documentação separados dentro do mesmo repositório:
+```text
+HoraCerta/
+├── backend/
+│   └── horaCerta/
+│       ├── src/
+│       ├── pom.xml
+│       ├── mvnw
+│       └── mvnw.cmd
+│
+├── frontend/
+│   └── hora-certa/
+│       ├── public/
+│       ├── src/
+│       ├── package.json
+│       └── vite.config.js
+│
+├── docs/
+│   └── ARQUITETURA-E-REGRAS.md
+│
+└── README.md
+```
+
+backend/horaCerta — API REST desenvolvida com Java e Spring Boot.
+
+frontend/hora-certa — aplicação web desenvolvida com Vue 3 e Vite.
+
+docs — documentação complementar sobre arquitetura e regras do sistema.
+
+README.md — documentação principal para instalação, execução e apresentação do projeto.
 
 ## Demonstração
 
