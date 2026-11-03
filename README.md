@@ -231,7 +231,7 @@ Para verificar se a variável foi configurada, execute:
 $env:JWT_SECRET
 ```
 
-O backend utiliza essa variável no `application.properties`:
+O backend utiliza essa variável no `application.properties` mas não é necessário alterar, a linha deve permanecer:
 
 ```properties
 security.jwt.secret=${JWT_SECRET}
