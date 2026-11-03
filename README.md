@@ -183,34 +183,27 @@ A aplicação utiliza JWT para autenticação. Antes de iniciar o backend, é ne
 
 A chave deve estar no formato **Base64** e, após decodificada, possuir pelo menos **32 bytes**.
 
-Uma chave para o ambiente local pode ser gerada utilizando:
+Uma chave para o ambiente local pode ser gerada no PowerShell utilizando:
 
 ```bash id="h6dxwx"
-openssl rand -base64 32
+$rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
+$bytes = New-Object byte[] 32
+$rng.GetBytes($bytes)
+[Convert]::ToBase64String($bytes)
 ```
-
-No Windows PowerShell, configure a variável de ambiente:
+Copie a chave gerada e registre-a como variável de ambiente do usuário:
 
 ```powershell id="g4zg8k"
-$env:JWT_SECRET="SUA_CHAVE_GERADA"
+[Environment]::SetEnvironmentVariable("JWT_SECRET", "SUA_CHAVE_GERADA", "User")
 ```
+Após configurar a variável, abra um novo terminal antes de iniciar a aplicação.
 
-No Linux ou macOS:
-
-```bash id="zup6fs"
-export JWT_SECRET="SUA_CHAVE_GERADA"
-```
-
-O backend utiliza essa variável na configuração:
+O backend utiliza essa variável no application.properties:
 
 ```properties id="dov4dz"
 security.jwt.secret=${JWT_SECRET}
-security.jwt.expiration-ms=${JWT_EXPIRATION_MS:86400000}
 ```
-
-`JWT_EXPIRATION_MS` é opcional. Quando não informada, o token utiliza o tempo de expiração padrão configurado acima.
-
-> A chave JWT utilizada localmente não deve ser publicada no repositório.
+A chave JWT é uma configuração local e não deve ser publicada no repositório.
 
 ## Como executar o backend
 
