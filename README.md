@@ -64,6 +64,8 @@ As permissões são validadas no backend por meio do **Spring Security**.
 
 ## Tecnologias
 
+### Backend
+
 | **Tecnologia**              | **Utilização**                              |
 | --------------------------- | ------------------------------------------- |
 | Java 21                     | Linguagem de programação                    |
@@ -72,11 +74,22 @@ As permissões são validadas no backend por meio do **Spring Security**.
 | Spring Data JPA e Hibernate | Persistência e mapeamento objeto-relacional |
 | Spring Security             | Autenticação e autorização                  |
 | JWT                         | Autenticação baseada em token               |
+| Bean Validation             | Validação dos dados de entrada              |
 | MySQL                       | Banco de dados relacional                   |
 | Flyway                      | Versionamento das migrações do banco        |
 | Maven Wrapper               | Compilação e execução do backend            |
 | SpringDoc OpenAPI           | Documentação interativa da API              |
-| Vue                         | Tecnologia prevista para o frontend         |
+
+### Frontend
+
+| **Tecnologia**              | **Utilização**                  |
+| --------------------------- | ----------------------------------- |
+| Vue 3                       | Construção da interface             |
+| Vite                        | Ambiente de desenvolvimento e build |
+| Vue Router                  | Navegação entre páginas             |
+| Pinia                       | Gerenciamento de estado             |
+| Fetch API                   | Comunicação com a API REST          |
+| Lucide                      | Ícones da interface                 |
 
 ## Arquitetura
 
