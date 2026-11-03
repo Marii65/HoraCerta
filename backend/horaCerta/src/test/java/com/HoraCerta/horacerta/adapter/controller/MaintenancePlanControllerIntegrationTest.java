@@ -3,8 +3,11 @@ package com.HoraCerta.horacerta.adapter.controller;
 import com.HoraCerta.horacerta.adapter.dto.request.maintenanceplan.MaintenancePlanRequestDTO;
 import com.HoraCerta.horacerta.adapter.dto.request.maintenanceplanitem.MaintenancePlanItemRequestDTO;
 import com.HoraCerta.horacerta.domain.entity.MaintenancePlan;
+import com.HoraCerta.horacerta.domain.entity.User;
+import com.HoraCerta.horacerta.domain.enums.Role;
 import com.HoraCerta.horacerta.domain.repository.MaintenancePlanItemRepository;
 import com.HoraCerta.horacerta.domain.repository.MaintenancePlanRepository;
+import com.HoraCerta.horacerta.domain.repository.UserRepository;
 import org.springframework.security.test.context.support.WithMockUser;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -43,13 +46,13 @@ class MaintenancePlanControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private String token;
 
     @BeforeEach
-    @WithMockUser(roles = "TECHNICIAN")
     void setUp() throws Exception {
-        maintenancePlanItemRepository.deleteAll();
-        maintenancePlanRepository.deleteAll();
 
         String registerBody = """
                 {
@@ -63,6 +66,17 @@ class MaintenancePlanControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerBody))
                 .andExpect(status().is2xxSuccessful());
+
+        User user = userRepository
+                .findByEmail("teste.integracao@exemplo.com")
+                .orElseThrow(() ->
+                        new IllegalStateException(
+                                "Usuário de teste não encontrado"
+                        )
+                );
+
+        user.setRole(Role.TECHNICIAN);
+        userRepository.saveAndFlush(user);
 
         String loginBody = """
                 {
@@ -92,7 +106,6 @@ class MaintenancePlanControllerIntegrationTest {
 
     @Test
     @DisplayName("POST /api/maintenance-plans - Deve criar um plano de manutenção")
-    @WithMockUser(roles = "TECHNICIAN")
     void shouldCreateMaintenancePlanSuccessfully() throws Exception {
         MaintenancePlanRequestDTO requestDTO =
                 new MaintenancePlanRequestDTO(
@@ -111,7 +124,6 @@ class MaintenancePlanControllerIntegrationTest {
 
     @Test
     @DisplayName("PATCH /api/maintenance-plans/{id}/status - Deve alternar o status do plano")
-    @WithMockUser(roles = "TECHNICIAN")
     void shouldToggleMaintenancePlanStatus() throws Exception {
         MaintenancePlan plan = new MaintenancePlan();
         plan.setName("Plano Temporário");
@@ -136,7 +148,6 @@ class MaintenancePlanControllerIntegrationTest {
 
     @Test
     @DisplayName("POST /api/maintenance-plans/{planId}/items - Deve adicionar item a plano ativo")
-    @WithMockUser(roles = "TECHNICIAN")
     void shouldAddMaintenancePlanItemSuccessfully() throws Exception {
         MaintenancePlan plan = new MaintenancePlan();
         plan.setName("Plano 500h");
@@ -168,7 +179,6 @@ class MaintenancePlanControllerIntegrationTest {
 
     @Test
     @DisplayName("POST /api/maintenance-plans/{planId}/items - Deve rejeitar item em plano inativo")
-    @WithMockUser(roles = "TECHNICIAN")
     void shouldRejectAddingItemToInactivePlan() throws Exception {
         MaintenancePlan plan = new MaintenancePlan();
         plan.setName("Plano Inativo");
