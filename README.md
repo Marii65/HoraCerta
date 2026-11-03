@@ -10,6 +10,22 @@ O HoraCerta busca facilitar o acompanhamento da manutenção preventiva de equip
 
 A partir das leituras de horímetro e dos intervalos definidos nos planos de manutenção, o sistema permite acompanhar a situação de cada equipamento e antecipar serviços antes que ultrapassem o período recomendado.
 
+---
+
+## Perfis de acesso
+
+O sistema possui três níveis de acesso:
+
+| Perfil | Permissões |
+| --- | --- |
+| `ADMIN` | Acesso administrativo, gerenciamento de equipamentos, planos, usuários e demais operações |
+| `TECHNICIAN` | Operações relacionadas às manutenções, planos e ordens de serviço |
+| `OPERATOR` | Consulta de informações e registro de leituras de horímetro |
+
+As permissões são validadas no backend por meio do **Spring Security**.
+
+---
+
 ## Funcionalidades do backend
 
 Dashboard de monitoramento
