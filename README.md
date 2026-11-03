@@ -151,31 +151,26 @@ O Maven Wrapper está incluído no backend, dispensando a instalação separada 
 
 ## Configuração do banco de dados
 
-O projeto utiliza o MySQL com as seguintes configurações locais de desenvolvimento:
+O projeto utiliza **MySQL** com as seguintes configurações padrão:
 
-| **Configuração** | **Valor**   |
-| ---------------- | ----------- |
-| Banco de dados   | `horacerta` |
-| Host             | `localhost` |
-| Porta            | `3307`      |
-| Usuário          | `root`      |
+| Configuração | Valor |
+| --- | --- |
+| Banco de dados | `horacerta` |
+| Host | `localhost` |
+| Porta | `3307` |
+| Usuário | `root` |
 
-Ajuste as configurações conforme o ambiente utilizado. 
+Caso necessário, ajuste as configurações de conexão no `application.properties` de acordo com o seu ambiente.
 
-As credenciais e a chave secreta JWT devem ser configuradas localmente ou por variáveis de ambiente, e não devem ser publicadas no repositório.
+Com o **MySQL em execução**, não é necessário criar o banco de dados manualmente. Ao iniciar o backend, o banco `horacerta` será criado automaticamente caso ainda não exista.
 
-Para criar o banco, caso ainda não exista, execute:
-
-```sql
-CREATE DATABASE horacerta     CHARACTER SET utf8mb4     COLLATE utf8mb4_unicode_ci;
-```
-Na inicialização do backend, o **Flyway** executará automaticamente as migrações disponíveis em:
+Em seguida, o **Flyway** executará automaticamente as migrações disponíveis em:
 
 ```text
 src/main/resources/db/migration
 ```
 
-As migrações criam a estrutura necessária e inserem os dados utilizados para demonstração da aplicação.
+As migrações são responsáveis pela criação das tabelas e pela inserção dos dados utilizados para demonstração da aplicação.
 
 ## Configuração do JWT
 
@@ -183,27 +178,54 @@ A aplicação utiliza JWT para autenticação. Antes de iniciar o backend, é ne
 
 A chave deve estar no formato **Base64** e, após decodificada, possuir pelo menos **32 bytes**.
 
-Uma chave para o ambiente local pode ser gerada no PowerShell utilizando:
+### Gerando a chave no Windows
 
-```bash id="h6dxwx"
+Abra o **PowerShell** e execute:
+
+```powershell
 $rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
 $bytes = New-Object byte[] 32
 $rng.GetBytes($bytes)
 [Convert]::ToBase64String($bytes)
 ```
-Copie a chave gerada e registre-a como variável de ambiente do usuário:
 
-```powershell id="g4zg8k"
+O último comando exibirá a chave gerada no terminal. Copie esse valor.
+
+Em seguida, ainda no **PowerShell**, registre a chave como uma variável de ambiente do usuário:
+
+```powershell
 [Environment]::SetEnvironmentVariable("JWT_SECRET", "SUA_CHAVE_GERADA", "User")
 ```
-Após configurar a variável, abra um novo terminal antes de iniciar a aplicação.
 
-O backend utiliza essa variável no application.properties:
+Por exemplo, se a chave gerada fosse:
 
-```properties id="dov4dz"
+```text
+AbCdEf1234567890GhIjKlMnOpQrStUvWxYz1234567=
+```
+
+o comando ficaria:
+
+```powershell
+[Environment]::SetEnvironmentVariable("JWT_SECRET", "AbCdEf1234567890GhIjKlMnOpQrStUvWxYz1234567=", "User")
+```
+
+> O valor acima é apenas um exemplo. Utilize a chave gerada no seu próprio PowerShell.
+
+Após configurar a variável, **feche o terminal e abra um novo PowerShell** antes de iniciar a aplicação.
+
+Para verificar se a variável foi configurada, execute:
+
+```powershell
+$env:JWT_SECRET
+```
+
+O backend utiliza essa variável no `application.properties`:
+
+```properties
 security.jwt.secret=${JWT_SECRET}
 ```
-A chave JWT é uma configuração local e não deve ser publicada no repositório.
+
+> A chave JWT é uma configuração local e não deve ser publicada no repositório.
 
 ## Como executar o backend
 
