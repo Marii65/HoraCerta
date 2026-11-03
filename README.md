@@ -12,15 +12,43 @@ A partir das leituras de horímetro e dos intervalos definidos nos planos de man
 
 ## Funcionalidades do backend
 
-- **Autenticação:** cadastro e login de usuários com autenticação JWT.
-- **Gerenciamento de usuários:** consulta, atualização e gerenciamento de perfis de acesso.
-- **Equipamentos:** cadastro, consulta, atualização e controle de equipamentos.
-- **Planos de manutenção:** cadastro e gerenciamento de planos reutilizáveis.
-- **Itens de manutenção:** definição de serviços, intervalos de horas e margens de alerta.
-- **Vínculos equipamento-plano:** associação e ativação ou desativação de planos para equipamentos.
-- **Leituras de horímetro:** registro e consulta do histórico de leituras.
-- **Ordens de serviço:** criação, consulta, conclusão e cancelamento.
-- **Monitoramento preventivo:** cálculo do limite de alerta com base no horímetro atual, no intervalo e na margem de alerta configurada.
+Dashboard de monitoramento
+- Visão geral da frota.
+- Equipamentos em dia, em atenção ou com manutenção vencida.
+- Exibição das manutenções mais críticas.
+
+Equipamentos
+- Cadastro, consulta e atualização.
+- Controle do horímetro atual.
+- Controle de status.
+- Associação com planos de manutenção.
+
+Planos de manutenção
+- Cadastro de planos reutilizáveis.
+- Definição dos serviços de cada plano.
+- Intervalos de manutenção em horas.
+- Margem de alerta antes do vencimento.
+- Ativação e desativação de planos.
+
+Leituras de horímetro
+- Registro de novas leituras.
+- Atualização do horímetro atual do equipamento.
+- Histórico de leituras.
+- Consulta por período.
+
+Ordens de serviço
+- Manutenções preventivas e corretivas.
+- Agendamento de serviços.
+- Controle de status.
+- Registro da conclusão da manutenção.
+- Cancelamento de ordens.
+
+Usuários e segurança
+- Cadastro e login.
+- Autenticação com JWT.
+- Controle de acesso baseado em perfis.
+- Ativação e desativação de usuários.
+- Gerenciamento de usuários por administradores.
 
 ## Tecnologias
 
