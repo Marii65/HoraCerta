@@ -162,7 +162,19 @@ O projeto utiliza **MySQL** com as seguintes configurações padrão:
 
 Caso necessário, ajuste as configurações de conexão no `application.properties` de acordo com o seu ambiente.
 
-Com o **MySQL em execução**, não é necessário criar o banco de dados manualmente. Ao iniciar o backend, o banco `horacerta` será criado automaticamente caso ainda não exista.
+### Iniciando o MySQL
+
+Antes de executar o backend, certifique-se de que o **servidor MySQL está em execução**.
+
+Você pode iniciar o MySQL pela ferramenta utilizada em seu ambiente, como:
+
+- **XAMPP:** abra o XAMPP Control Panel e inicie o serviço **MySQL**;
+- **MySQL Server:** inicie o serviço do MySQL instalado no sistema;
+- ou utilize outra ferramenta de gerenciamento do MySQL de sua preferência.
+
+> O HoraCerta está configurado para acessar o MySQL pela porta `3307`. Caso seu MySQL utilize outra porta, altere `spring.datasource.url` no `application.properties`.
+
+Não é necessário criar o banco de dados manualmente. Ao iniciar o backend, o banco `horacerta` será criado automaticamente caso ainda não exista.
 
 Em seguida, o **Flyway** executará automaticamente as migrações disponíveis em:
 
