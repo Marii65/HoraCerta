@@ -7,7 +7,7 @@ import {
   Bell,
   ChevronDown,
   UserRound,
-  Settings,
+  Users,
   LogOut
 } from 'lucide-vue-next';
 
@@ -18,6 +18,10 @@ const router = useRouter();
 
 const isProfileMenuOpen = ref(false);
 const currentUser = ref(null);
+
+const isAdmin = computed(() =>
+  currentUser.value?.role === 'ADMIN'
+);
 
 const roleLabels = {
   ADMIN: 'Administrador',
@@ -84,6 +88,11 @@ onMounted(() => {
   loadCurrentUser();
 });
 
+async function goToUsers() {
+  isProfileMenuOpen.value = false;
+
+  await router.push('/app/usuarios');
+}
 </script>
 
 <template>
@@ -135,9 +144,9 @@ onMounted(() => {
             <span>Meu perfil</span>
           </button>
 
-          <button class="profile-dropdown-item" type="button">
-            <Settings :size="17" />
-            <span>Configurações</span>
+          <button v-if="isAdmin" class="profile-dropdown-item" type="button" @click="goToUsers">
+            <Users :size="17" />
+            <span>Gerenciar usuários</span>
           </button>
 
           <div class="profile-dropdown-divider"></div>

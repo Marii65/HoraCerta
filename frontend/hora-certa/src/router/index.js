@@ -11,7 +11,9 @@ import WorkOrdersPage from '../pages/WorkOrdersPage.vue';
 import LoginPage from '../pages/LoginPage.vue';
 import RegisterPage from '../pages/RegisterPage.vue';
 import LandingPage from '../pages/LandingPage.vue';
+import UsersPage from '../pages/UsersPage.vue';
 
+import { getCurrentUser } from '../services/userService';
 import { isAuthenticated } from '../services/authService';
 
 const routes = [
@@ -94,6 +96,15 @@ const routes = [
         meta: {
           title: 'Ordens de Serviço'
         }
+      },
+      {
+        path: 'usuarios',
+        name: 'users',
+        component: UsersPage,
+        meta: {
+          title: 'Usuários',
+          adminOnly: true
+        }
       }
     ]
   },
@@ -111,7 +122,7 @@ const router = createRouter({
 });
 
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
 
   const authenticated = isAuthenticated();
 
@@ -127,6 +138,26 @@ router.beforeEach((to) => {
         redirect: to.fullPath
       }
     };
+  }
+
+  if (
+    to.matched.some(
+      route => route.meta.adminOnly
+    )
+  ) {
+    try {
+      const user = await getCurrentUser();
+
+      if (user.role !== 'ADMIN') {
+        return {
+          name: 'dashboard'
+        };
+      }
+    } catch {
+      return {
+        name: 'login'
+      };
+    }
   }
 
   if (

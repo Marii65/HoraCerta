@@ -154,6 +154,25 @@ public class UserService {
     }
 
     /**
+     * Altera o status de ativação de um usuário.
+     *
+     * @param id identificador UUID do usuário
+     * @return dados atualizados do usuário
+     * @throws ResourceNotFoundException se o usuário não existir
+     */
+    @Transactional
+    public UserResponseDTO toggleStatus(UUID id) {
+
+        User user = getUserOrThrow(id);
+
+        user.setActive(!user.getActive());
+
+        User updatedUser = userRepository.save(user);
+
+        return toResponseDTO(updatedUser);
+    }
+
+    /**
      * Converte uma entidade de usuário para seu DTO de resposta,
      * sem expor o hash da senha.
      *
