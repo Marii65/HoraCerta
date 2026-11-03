@@ -177,6 +177,41 @@ src/main/resources/db/migration
 
 As migrações criam a estrutura necessária e inserem os dados utilizados para demonstração da aplicação.
 
+## Configuração do JWT
+
+A aplicação utiliza JWT para autenticação. Antes de iniciar o backend, é necessário configurar uma chave secreta para assinatura dos tokens.
+
+A chave deve estar no formato **Base64** e, após decodificada, possuir pelo menos **32 bytes**.
+
+Uma chave para o ambiente local pode ser gerada utilizando:
+
+```bash id="h6dxwx"
+openssl rand -base64 32
+```
+
+No Windows PowerShell, configure a variável de ambiente:
+
+```powershell id="g4zg8k"
+$env:JWT_SECRET="SUA_CHAVE_GERADA"
+```
+
+No Linux ou macOS:
+
+```bash id="zup6fs"
+export JWT_SECRET="SUA_CHAVE_GERADA"
+```
+
+O backend utiliza essa variável na configuração:
+
+```properties id="dov4dz"
+security.jwt.secret=${JWT_SECRET}
+security.jwt.expiration-ms=${JWT_EXPIRATION_MS:86400000}
+```
+
+`JWT_EXPIRATION_MS` é opcional. Quando não informada, o token utiliza o tempo de expiração padrão configurado acima.
+
+> A chave JWT utilizada localmente não deve ser publicada no repositório.
+
 ## Como executar o backend
 
 ### 1. Clonar o repositório
