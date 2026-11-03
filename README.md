@@ -12,7 +12,7 @@ A partir das leituras de horímetro e dos intervalos definidos nos planos de man
 
 ## Funcionalidades do backend
 
-Dashboard de monitoramento
+Painel de alertas (Dashboard)
 - Visão geral da frota.
 - Equipamentos em dia, em atenção ou com manutenção vencida.
 - Exibição das manutenções mais críticas.
