@@ -6,7 +6,9 @@ Sistema para gerenciamento de equipamentos e acompanhamento de manutenções pre
 
 ## Objetivo
 
-Oferecer uma solução para registrar equipamentos, configurar planos de manutenção, acompanhar leituras de horímetro e gerenciar ordens de serviço, auxiliando no planejamento das manutenções preventivas.
+O HoraCerta busca facilitar o acompanhamento da manutenção preventiva de equipamentos cuja utilização é medida em horas de operação.
+
+A partir das leituras de horímetro e dos intervalos definidos nos planos de manutenção, o sistema permite acompanhar a situação de cada equipamento e antecipar serviços antes que ultrapassem o período recomendado.
 
 ## Funcionalidades do backend
 
