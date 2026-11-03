@@ -10,8 +10,6 @@ O HoraCerta busca facilitar o acompanhamento da manutenção preventiva de equip
 
 A partir das leituras de horímetro e dos intervalos definidos nos planos de manutenção, o sistema permite acompanhar a situação de cada equipamento e antecipar serviços antes que ultrapassem o período recomendado.
 
----
-
 ## Perfis de acesso
 
 O sistema possui três níveis de acesso:
