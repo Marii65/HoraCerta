@@ -231,8 +231,19 @@ async function loadDashboard() {
       }
     );
 
+    const uniqueEquipmentMaintenances = [];
+
+    const equipmentCodes = new Set();
+
+    for (const maintenance of allMaintenances) {
+      if (!equipmentCodes.has(maintenance.code)) {
+        equipmentCodes.add(maintenance.code);
+        uniqueEquipmentMaintenances.push(maintenance);
+      }
+    }
+
     maintenances.value =
-      allMaintenances.slice(0, 4);
+      uniqueEquipmentMaintenances.slice(0, 4);
 
 
     const total =
