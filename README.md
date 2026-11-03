@@ -22,8 +22,6 @@ O sistema possui três níveis de acesso:
 
 As permissões são validadas no backend por meio do **Spring Security**.
 
----
-
 ## Funcionalidades do backend
 
 Dashboard de monitoramento
