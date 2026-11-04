@@ -130,6 +130,8 @@ Algumas das regras implementadas no sistema:
 - Uma leitura de horímetro não pode ser inferior ao horímetro atual do equipamento.
 - Planos de manutenção possuem serviços com intervalo e margem de alerta definidos em horas.
 - Um equipamento pode possuir diferentes planos de manutenção.
+- Não é possível registrar dois equipamentos com o mesmo código.
+- Equipamentos com histórico de manutenção, não podem ser excluídos.
 - Um mesmo vínculo entre equipamento e plano não é duplicado.
 - Ao reativar um vínculo anteriormente desativado, o horímetro inicial passa a considerar o horímetro atual do equipamento.
 - Planos inativos não podem receber novos vínculos.
