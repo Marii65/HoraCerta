@@ -130,8 +130,6 @@ Algumas das regras implementadas no sistema:
 - Uma leitura de horímetro não pode ser inferior ao horímetro atual do equipamento.
 - Planos de manutenção possuem serviços com intervalo e margem de alerta definidos em horas.
 - Um equipamento pode possuir diferentes planos de manutenção.
-- Não é possível registrar dois equipamentos com o mesmo código.
-- Equipamentos com histórico de manutenção, não podem ser excluídos.
 - Um mesmo vínculo entre equipamento e plano não é duplicado.
 - Ao reativar um vínculo anteriormente desativado, o horímetro inicial passa a considerar o horímetro atual do equipamento.
 - Planos inativos não podem receber novos vínculos.
@@ -250,8 +248,9 @@ git clone https://github.com/Marii65/HoraCerta.git
 cd HoraCerta
 ```
 ### 2. Acessar a pasta do backend
-
-Entre na pasta com `cd backend/horaCerta`.
+```bash
+cd backend/horaCerta`.
+```	
 
 ### 3. Execute a aplicação
 
@@ -260,7 +259,9 @@ No Windows:
 ```bash
 .\mvnw.cmd spring-boot:run
 ```
-### 4. Ou execute a aplicação diretamente na sua IDE
+### 4. Alternativa: executar pela IDE
+
+Também é possível iniciar o backend diretamente pela IDE executando a classe principal `HoraCertaApplication`.
 
 A API será disponibilizada em:
 
