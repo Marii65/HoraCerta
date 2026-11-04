@@ -149,6 +149,50 @@ Antes de executar o HoraCerta, tenha instalado:
 
 O Maven Wrapper está incluído no backend, dispensando a instalação separada do Maven.
 
+### Configuração do Java
+
+O HoraCerta utiliza **Java 21 (JDK 21)**, necessário para compilar e executar o backend.
+
+Existem duas formas de iniciar a aplicação:
+
+**1. Pela IDE (IntelliJ IDEA)**
+
+É possível executar o backend diretamente pela IDE, sem precisar configurar manualmente a variável `JAVA_HOME` do Windows.
+
+Para isso:
+
+1. Abra a pasta `backend/horaCerta` no IntelliJ IDEA.
+2. Configure o **Project SDK** para o JDK 21.
+3. Aguarde o carregamento das dependências do Maven.
+4. Execute a classe principal `HoraCertaApplication` pelo botão **Run**.
+
+**2. Pelo terminal (Maven Wrapper)**
+
+Para executar o backend pelo terminal no Windows:
+
+```cmd
+.\mvnw.cmd spring-boot:run
+```
+
+Caso apareça um erro relacionado ao `JAVA_HOME`, verifique se essa variável aponta para a pasta de instalação do JDK 21.
+
+Exemplo:
+
+```text
+C:\Program Files\Java\jdk-21
+```
+
+O caminho pode variar conforme a instalação.
+
+Para conferir a configuração no CMD:
+
+```cmd
+java -version
+echo %JAVA_HOME%
+```
+
+**Observação:** o Maven Wrapper já está incluído no projeto, portanto não é necessário instalar o Maven separadamente. Independentemente da forma de execução, o MySQL deve estar em funcionamento e a variável `JWT_SECRET` deve estar configurada.
+
 ## Configuração do banco de dados
 
 O projeto utiliza **MySQL** com as seguintes configurações padrão:
@@ -372,7 +416,7 @@ README.md — documentação principal para instalação, execução e apresenta
 
 ## Demonstração
 
-**Vídeo de apresentação:** a ser adicionado.
+**Vídeo de apresentação:** [Projeto Hora Certa - Maria Luiza](https://drive.google.com/file/d/1l4zBJ1H6tovYoVMEZ6M3dyS2cVw4xrNo/view?usp=sharing)
 
 ## Autoria
 
