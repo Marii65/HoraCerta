@@ -415,7 +415,7 @@ README.md — documentação principal para instalação, execução e apresenta
 
 ## Demonstração
 
-**Vídeo de apresentação:** a ser adicionado.
+**Vídeo de apresentação:** [Projeto Hora Certa - Maria Luiza](https://drive.google.com/file/d/1fSk7rK001tuw_ea6ajevBuG7oWwUlTRw/view?usp=sharing)
 
 ## Autoria
 
